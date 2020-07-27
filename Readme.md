@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Роман Довгий](https://up.htmlacademy.ru/ecmascript/12/user/1047897).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Рубенов](https://htmlacademy.ru/profile/rubenovdev).
 
 ---
 
