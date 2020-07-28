@@ -1,5 +1,8 @@
 "use strict";
 
+const CARD_COUNT_MAIN = 5;
+const CARD_COUNT_EXTRA = 2;
+
 const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
@@ -298,39 +301,36 @@ const generateCards = (number, container) => {
   }
 };
 
-const CARD_COUNT_MAIN = 5;
-const CARD_COUNT_EXTRA = 2;
+const header = document.querySelector(`.header`);
+const main = document.querySelector(`.main`);
+const footer = document.querySelector(`.footer`);
 
-const HEADER = document.querySelector(`.header`);
-const MAIN = document.querySelector(`.main`);
-const FOOTER = document.querySelector(`.footer`);
+render(header, generateRank(), RenderPosition.BEFOREEND);
 
-render(HEADER, generateRank(), RenderPosition.BEFOREEND);
+render(main, generateMenu(), RenderPosition.BEFOREEND);
+render(main, generateSort(), RenderPosition.BEFOREEND);
+render(main, generateFilmsMain(), RenderPosition.BEFOREEND);
 
-render(MAIN, generateMenu(), RenderPosition.BEFOREEND);
-render(MAIN, generateSort(), RenderPosition.BEFOREEND);
-render(MAIN, generateFilmsMain(), RenderPosition.BEFOREEND);
+const filmsMainContainer = main.querySelector(`.films`);
 
-const FILMS_MAIN_CONTAINER = MAIN.querySelector(`.films`);
+render(filmsMainContainer, generateFilmsContainer(), RenderPosition.BEFOREEND);
+render(filmsMainContainer, generateFilmsContainer(MovieContainerTypes.TOP), RenderPosition.BEFOREEND);
+render(filmsMainContainer, generateFilmsContainer(MovieContainerTypes.COMMENTED), RenderPosition.BEFOREEND);
 
-render(FILMS_MAIN_CONTAINER, generateFilmsContainer(), RenderPosition.BEFOREEND);
-render(FILMS_MAIN_CONTAINER, generateFilmsContainer(MovieContainerTypes.TOP), RenderPosition.BEFOREEND);
-render(FILMS_MAIN_CONTAINER, generateFilmsContainer(MovieContainerTypes.COMMENTED), RenderPosition.BEFOREEND);
+const filmsAllMain = filmsMainContainer.querySelector(`.films-list`);
 
-const FILMS_ALL_MAIN = FILMS_MAIN_CONTAINER.querySelector(`.films-list`);
+render(filmsAllMain, generateMoreButton(), RenderPosition.BEFOREEND);
 
-render(FILMS_ALL_MAIN, generateMoreButton(), RenderPosition.BEFOREEND);
+const filmsAll = filmsMainContainer.querySelector(`.films-list .films-list__container`);
+const filmsTop = filmsMainContainer.querySelector(`.films-list--top .films-list__container`);
+const filmsCommented = filmsMainContainer.querySelector(`.films-list--commented .films-list__container`);
 
-const FILMS_ALL = FILMS_MAIN_CONTAINER.querySelector(`.films-list .films-list__container`);
-const FILMS_TOP = FILMS_MAIN_CONTAINER.querySelector(`.films-list--top .films-list__container`);
-const FILMS_COMMENTED = FILMS_MAIN_CONTAINER.querySelector(`.films-list--commented .films-list__container`);
+generateCards(CARD_COUNT_MAIN, filmsAll);
+generateCards(CARD_COUNT_EXTRA, filmsTop);
+generateCards(CARD_COUNT_EXTRA, filmsCommented);
 
-generateCards(CARD_COUNT_MAIN, FILMS_ALL);
-generateCards(CARD_COUNT_EXTRA, FILMS_TOP);
-generateCards(CARD_COUNT_EXTRA, FILMS_COMMENTED);
+const footerStats = footer.querySelector(`.footer__statistics`);
 
-const FOOTER_STATS = FOOTER.querySelector(`.footer__statistics`);
-
-render(FOOTER_STATS, generateStats(), RenderPosition.BEFOREEND);
-render(FOOTER, generatePopup(), RenderPosition.AFTEREND);
+render(footerStats, generateStats(), RenderPosition.BEFOREEND);
+render(footer, generatePopup(), RenderPosition.AFTEREND);
 
