@@ -14,17 +14,17 @@ const MovieContainers = {
   ALL: {
     elementClass: `films-list`,
     heading: `All movies. Upcoming`,
-    visuallyHidden: `visually-hidden`,
+    visuallyHidden: true,
   },
   TOP: {
     elementClass: `films-list--extra films-list--top`,
     heading: `Top rated`,
-    visuallyHidden: ``,
+    visuallyHidden: false,
   },
   COMMENTED: {
     elementClass: `films-list--extra films-list--commented`,
     heading: `Most commented`,
-    visuallyHidden: ``,
+    visuallyHidden: false,
   },
 };
 
@@ -75,7 +75,7 @@ const generateFilmsMain = () => {
 const generateFilmsContainer = (container) => {
   return `
   <section class="${container.elementClass}">
-    <h2 class="films-list__title ${container.visuallyHidden}">${container.heading}</h2>
+    <h2 class="films-list__title ${container.visuallyHidden ? `visually-hidden` : ``}">${container.heading}</h2>
     <div class="films-list__container"></div>
   </section>
   `;
