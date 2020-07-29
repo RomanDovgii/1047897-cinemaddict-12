@@ -10,9 +10,22 @@ const RenderPosition = {
   AFTEREND: `afterend`,
 };
 
-const MovieContainerTypes = {
-  TOP: `top`,
-  COMMENTED: `commented`,
+const MovieContainers = {
+  ALL: {
+    elementClass: `films-list`,
+    heading: `All movies. Upcoming`,
+    visuallyHidden: `visually-hidden`,
+  },
+  TOP: {
+    elementClass: `films-list--extra films-list--top`,
+    heading: `Top rated`,
+    visuallyHidden: ``,
+  },
+  COMMENTED: {
+    elementClass: `films-list--extra films-list--commented`,
+    heading: `Most commented`,
+    visuallyHidden: ``,
+  },
 };
 
 const render = (container, element, position) => {
@@ -59,29 +72,10 @@ const generateFilmsMain = () => {
   `;
 };
 
-const generateFilmsContainer = (type) => {
-  let elementClass = `films-list`;
-  let heading;
-  let visuallyHidden;
-
-  switch (type) {
-    case MovieContainerTypes.TOP:
-      elementClass = `${elementClass}--extra ${elementClass}--${MovieContainerTypes.TOP}`;
-      heading = `Top rated`;
-      break;
-    case MovieContainerTypes.COMMENTED:
-      elementClass = `${elementClass}--extra ${elementClass}--${MovieContainerTypes.COMMENTED}`;
-      heading = `Most commented`;
-      break;
-    default:
-      heading = `All movies. Upcoming`;
-      visuallyHidden = `visually-hidden`;
-      break;
-  }
-
+const generateFilmsContainer = (container) => {
   return `
-  <section class="${elementClass}">
-    <h2 class="films-list__title ${visuallyHidden}">${heading}</h2>
+  <section class="${container.elementClass}">
+    <h2 class="films-list__title ${container.visuallyHidden}">${container.heading}</h2>
     <div class="films-list__container"></div>
   </section>
   `;
@@ -313,9 +307,9 @@ render(main, generateFilmsMain(), RenderPosition.BEFOREEND);
 
 const filmsMainContainer = main.querySelector(`.films`);
 
-render(filmsMainContainer, generateFilmsContainer(), RenderPosition.BEFOREEND);
-render(filmsMainContainer, generateFilmsContainer(MovieContainerTypes.TOP), RenderPosition.BEFOREEND);
-render(filmsMainContainer, generateFilmsContainer(MovieContainerTypes.COMMENTED), RenderPosition.BEFOREEND);
+render(filmsMainContainer, generateFilmsContainer(MovieContainers.ALL), RenderPosition.BEFOREEND);
+render(filmsMainContainer, generateFilmsContainer(MovieContainers.TOP), RenderPosition.BEFOREEND);
+render(filmsMainContainer, generateFilmsContainer(MovieContainers.COMMENTED), RenderPosition.BEFOREEND);
 
 const filmsAllMain = filmsMainContainer.querySelector(`.films-list`);
 
