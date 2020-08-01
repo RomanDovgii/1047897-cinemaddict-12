@@ -8,7 +8,7 @@ import {generateRank} from "./view/rank.js";
 import {generateSort} from "./view/sort.js";
 import {generateStats} from "./view/stats.js";
 import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
-import {render} from "./utils/index.js";
+import {render} from "./utils/main.js";
 
 const generateCards = (number, container) => {
   for (let i = 0; i < number; i++) {
