@@ -25,7 +25,3 @@ export const MovieContainers = {
     visuallyHidden: false,
   },
 };
-
-export const render = (container, element, position) => {
-  container.insertAdjacentHTML(position, element);
-};
