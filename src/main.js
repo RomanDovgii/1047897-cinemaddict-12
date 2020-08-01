@@ -7,7 +7,7 @@ import {generatePopup} from "./view/popup";
 import {generateRank} from "./view/rank.js";
 import {generateSort} from "./view/sort.js";
 import {generateStats} from "./view/stats.js";
-import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./const";
+import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
 import {render} from "./utils/index.js";
 
 const generateCards = (number, container) => {
