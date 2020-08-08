@@ -1,4 +1,4 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MOCKS_COUNT, ImageTypes, movieNames, userNames, countries, genres} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MOCKS_COUNT, ImageTypes, movieNames, userNames, countries, genres, contentRaiting} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
@@ -86,6 +86,7 @@ export const createMovie = () => {
     country: getRandomElementFromArray(countries),
     genres: getGenres(),
     description: getDescription(),
+    movieRaiting: getRandomElementFromArray(contentRaiting),
     raiting: getRandomDoubleNumber(),
     path: getPath(),
     isWatchlist: Boolean(getRandomNumber()),

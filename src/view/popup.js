@@ -7,14 +7,16 @@ const generateGenres = (array) => {
 };
 
 const generateComments = (array) => {
+  console.log(array);
+
   return array.reduce(
-      (accumulator, comment) => `
+      (accumulator, comment) => accumulator + `
             <li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-angry">
+                <img src="./images/emoji/${comment.emoji.replace(`emoji-`, ``)}.png" width="55" height="55" alt="${comment.emoji}">
               </span>
               <div>
-                <p class="film-details__comment-text">${comment.description}</p>
+                <p class="film-details__comment-text">${comment.text}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${comment.author}</span>
                   <span class="film-details__comment-day">${comment.date}</span>
@@ -28,7 +30,7 @@ const generateComments = (array) => {
 
 export const generatePopup = (mock) => {
 
-  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
+  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
 
   const writersText = `${writers.join(`, `)}`;
   const actorsText = `${actors.join(`, `)}`;
@@ -52,7 +54,7 @@ export const generatePopup = (mock) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${path}" alt="">
 
-            <p class="film-details__age">${raiting}</p>
+            <p class="film-details__age">${movieRaiting}</p>
           </div>
 
           <div class="film-details__info">
@@ -119,7 +121,7 @@ export const generatePopup = (mock) => {
 
       <div class="form-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length()}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
             ${commentText}

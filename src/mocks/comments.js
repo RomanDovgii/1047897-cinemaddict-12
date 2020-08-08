@@ -18,7 +18,7 @@ const createComment = () => {
   return {
     author: userNames[getRandomNumber(userNames.length - 1)],
     text: sentences[getRandomNumber(sentences.length - 1)],
-    emotionDescription: emojiDescription[getRandomNumber(0, emojiDescription.length)],
+    emoji: emojiDescription[getRandomNumber(0, emojiDescription.length - 1)],
     date: getRandomDate()
   };
 };
