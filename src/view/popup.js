@@ -7,8 +7,6 @@ const generateGenres = (array) => {
 };
 
 const generateComments = (array) => {
-  console.log(array);
-
   return array.reduce(
       (accumulator, comment) => accumulator + `
             <li class="film-details__comment">
