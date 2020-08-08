@@ -1,53 +1,102 @@
-import {movieNames, fishText, generateArrayFromString} from "../utils/main.js";
-import {generateGenres} from "./genre-mock.js";
-import {generateComments} from "./comment-mock.js";
-const numberOfMocks = 40;
-const maxRaiting = 10;
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MOCKS_COUNT, ImageTypes, movieNames, userNames, countries, genres} from "../utils/const.js";
+import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
+import {generateComments} from "./comments.js";
 
-// gets a random movie name
-const generateMovieName = () => {
-  return movieNames[Math.floor((Math.random() * movieNames.length) + 0)];
+let movieMocks = [];
+
+const getMovieName = () => {
+  return movieNames[getRandomNumber(movieNames.length - 1)];
 };
 
-// generates movie description
-const generateMovieDescription = () => {
-  const maxSentencesCount = 5;
-  const descriptionSentencesArray = generateArrayFromString(fishText);
-  let description = ``;
+const getPeopleList = (quantity) => {
+  let people = [];
 
-  for (let i = 0; i < maxSentencesCount; i++) {
-    description += descriptionSentencesArray[Math.floor((Math.random() * descriptionSentencesArray.length) + 0)];
-    description += `. `;
+  for (let i = 0; i < quantity; i++) {
+    people.push(userNames[getRandomNumber(userNames.length - 1)]);
   }
 
-  return description;
+  return people;
 };
 
-// generates movie raiting
-const createMovieMock = (number) => {
+const getDescription = () => {
+  const sentencesCount = getRandomNumber(1, 10);
+  let descriptionText = ``;
+
+  for (let i = 0; i < sentencesCount; i++) {
+    descriptionText += sentences[getRandomNumber(sentences.length - 1)];
+  }
+
+  return descriptionText;
+};
+
+const getGenres = () => {
+  let genresCount = getRandomNumber(5);
+  let genresLocal = [];
+
+  for (let i = 0; i < genresCount; i++) {
+    const genre = genres[getRandomNumber(genres.length - 1)];
+
+    if (!genresLocal.includes(genre)) {
+      genresLocal.push(genre);
+    } else {
+      i--;
+    }
+
+  }
+
+  return genresLocal;
+};
+
+const getPath = () => {
+  let imageName = movieNames[getRandomNumber(movieNames.length - 1)].toLowerCase().split(` `).join(`-`);
+  let fileFormat = ``;
+
+  switch (imageName) {
+    case `made-for-each-other`:
+      fileFormat = `.png`;
+      break;
+
+    case `popeye-the-sailor-meets-sindbad-the-sailor`:
+      imageName = `popeye-meets-sinbad`;
+      fileFormat = `.png`;
+      break;
+
+    default:
+      fileFormat = `.jpg`;
+      break;
+  }
+
+  return `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/${imageName}${fileFormat}`;
+};
+
+const getRandomDate = () => {
+  const DATE = new Date();
+  return DATE;
+};
+
+export const createMovie = () => {
   return {
-    name: generateMovieName(),
-    id: `film_` + number,
-    country: `USA`,
-    esrbRaiting: `18+`,
-    genre: generateGenres(),
-    raiting: generateMovieRaiting(),
-    description: generateMovieDescription(),
-    comments: generateComments(),
-    isWatchlist: Math.random() >= 0.5,
-    isWatched: Math.random() >= 0.5,
-    isFavorite: Math.random() >= 0.5,
+    name: getMovieName(),
+    originalName: getMovieName(),
+    director: getRandomElementFromArray(userNames),
+    writers: getPeopleList(3),
+    actors: getPeopleList(5),
+    release: getRandomDate(),
+    runtime: getRandomNumber(MIN_DURATION, MAX_DURATION),
+    country: getRandomElementFromArray(countries),
+    genres: getGenres(),
+    description: getDescription(),
+    raiting: getRandomDoubleNumber(),
+    path: getPath(),
+    isWatchlist: Boolean(getRandomNumber()),
+    isWatched: Boolean(getRandomNumber()),
+    isFavorite: Boolean(getRandomNumber()),
+    comments: generateComments()
   };
 };
 
-const generateMovieRaiting = () => {
-  return ((Math.random() * maxRaiting) + 0).toFixed(1);
-};
-
-let mocks = [];
-
-for (let i = 0; i < numberOfMocks; i++) {
-  mocks.push(createMovieMock(i));
+for (let i = 0; i < MOCKS_COUNT; i++) {
+  movieMocks.push(createMovie());
 }
 
-export const readyMocks = mocks;
+export const mocks = movieMocks;

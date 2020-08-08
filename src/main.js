@@ -9,11 +9,11 @@ import {generateSort} from "./view/sort.js";
 import {generateStats} from "./view/stats.js";
 import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
 import {render} from "./utils/main.js";
+import {mocks} from "./mocks/movie.js";
 
-const generateCards = (number, container) => {
-  for (let i = 0; i < number; i++) {
-    render(container, generateCard(), RenderPosition.BEFOREEND);
-  }
+const generateCards = (number = 8) => {
+  let preparedMocks = mocks.slice(0, number);
+  return preparedMocks.reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
 };
 
 const header = document.querySelector(`.header`);
@@ -44,8 +44,11 @@ generateCards(CARD_COUNT_MAIN, filmsAll);
 generateCards(CARD_COUNT_EXTRA, filmsTop);
 generateCards(CARD_COUNT_EXTRA, filmsCommented);
 
+render(filmsAll, generateCards(5), RenderPosition.BEFOREEND);
+render(filmsTop, generateCards(2), RenderPosition.BEFOREEND);
+render(filmsCommented, generateCards(2), RenderPosition.BEFOREEND);
+
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, generateStats(), RenderPosition.BEFOREEND);
 render(footer, generatePopup(), RenderPosition.AFTEREND);
-
