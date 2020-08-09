@@ -7,6 +7,7 @@ export const MIN_DURATION = 30;
 export const MAX_DURATION = 360;
 export const MIN_SENTENCE = 1;
 export const MAX_SENTENCE = 10;
+export const MAX_STRING_LENGTH = 139;
 
 export const MAIN_IMAGES_PATH = `./images`;
 
