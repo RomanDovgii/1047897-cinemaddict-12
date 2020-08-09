@@ -10,14 +10,14 @@ export const MAX_SENTENCE = 10;
 
 export const MAIN_IMAGES_PATH = `./images`;
 
-export const RenderPosition = {
+export const RENDER_POSITION = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`
 };
 
-export const MovieContainers = {
+export const MOVIE_CONTAINERS = {
   ALL: {
     elementClass: `films-list`,
     heading: `All movies. Upcoming`,
@@ -35,10 +35,10 @@ export const MovieContainers = {
   }
 };
 
-export const fishText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
+export const FISH_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
 
-export const movieNames = [
+export const MOVIE_NAMES = [
   `The Dance of Life`,
   `Sagebrush Trail`,
   `The Man with the Golden Arm`,
@@ -48,7 +48,7 @@ export const movieNames = [
   `Made for Each Other`
 ];
 
-export const genres = [
+export const GENRES = [
   `Absurdic`,
   `Surreal`,
   `Whimiscal`,
@@ -77,7 +77,7 @@ export const genres = [
   `Western`
 ];
 
-export const userNames = [
+export const USER_NAMES = [
   `Egor Dmitriev`,
   `Nicko Belick`,
   `Roman Belick`,
@@ -86,7 +86,7 @@ export const userNames = [
   `Evgenii Batkovich`
 ];
 
-export const contentRaiting = [
+export const CONTENT_RAITING = [
   `0+`,
   `6+`,
   `12+`,
@@ -94,7 +94,7 @@ export const contentRaiting = [
   `18+`
 ];
 
-export const countries = [
+export const COUNTRIES = [
   `USA`,
   `Canada`,
   `Mexico`,
@@ -108,34 +108,14 @@ export const countries = [
   `Columbia`
 ];
 
-export const MovieDuration = {
-  THE_DANCE_OF_LIFE: 115,
-  SAGEBRUSH_TRAIL: 54,
-  THE_MAN_WITH_THE_GOLDEN_ARM: 119,
-  SANTA_CLAUS_CONQUERS_THE_MARTIANS: 81,
-  POPEYE_THE_SAILOR_MEETS_SINDBAD_THE_SAILOR: 16,
-  THE_GREAT_FLAMARION: 78,
-  MADE_FOR_EACH_OTHER: 92
-};
-
-export const PosterNames = {
-  THE_DANCE_OF_LIFE: `the-dance-of-life.jpg`,
-  SAGEBRUSH_TRAIL: `sagebrush-trail.jpg`,
-  THE_MAN_WITH_THE_GOLDEN_ARM: `the-man-with-the-golden-arm.jpg`,
-  SANTA_CLAUS_CONQUERS_THE_MARTIANS: `santa-claus-conquers-the-martians.jpg`,
-  POPEYE_THE_SAILOR_MEETS_SINDBAD_THE_SAILOR: `popeye-meets-sinbad.png`,
-  THE_GREAT_FLAMARION: `the-great-flamarion.jpg`,
-  MADE_FOR_EACH_OTHER: `made-for-each-other.png`
-};
-
-export const emojiDescription = [
+export const EMOJI_DESCRIPTION = [
   `emoji-smile`,
   `emoji-sleeping`,
   `emoji-puke`,
   `emoji-angry`
 ];
 
-export const ImageTypes = {
+export const IMAGE_TYPES = {
   POSTER: `posters`,
   ICON: `icons`,
   EMOJI: `emoji`

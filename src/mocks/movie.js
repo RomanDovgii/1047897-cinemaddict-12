@@ -1,18 +1,18 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, ImageTypes, movieNames, userNames, countries, genres, contentRaiting} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, IMAGE_TYPES, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
 let movieMocks = [];
 
 const getMovieName = () => {
-  return movieNames[getRandomNumber(0, movieNames.length - 1)];
+  return MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)];
 };
 
 const getPeopleList = (quantity) => {
   let people = [];
 
   for (let i = 0; i < quantity; i++) {
-    people.push(userNames[getRandomNumber(0, userNames.length - 1)]);
+    people.push(USER_NAMES[getRandomNumber(0, USER_NAMES.length - 1)]);
   }
 
   return people;
@@ -30,11 +30,11 @@ const getDescription = () => {
 };
 
 const getGenres = () => {
-  let genresCount = getRandomNumber(1, 5);
-  let genresLocal = [];
+  const genresCount = getRandomNumber(1, 5);
+  const genresLocal = [];
 
   for (let i = 0; i < genresCount; i++) {
-    const genre = genres[getRandomNumber(0, genres.length - 1)];
+    const genre = GENRES[getRandomNumber(0, GENRES.length - 1)];
 
     if (!genresLocal.includes(genre)) {
       genresLocal.push(genre);
@@ -48,7 +48,7 @@ const getGenres = () => {
 };
 
 const getPath = () => {
-  let imageName = movieNames[getRandomNumber(0, movieNames.length - 1)].toLowerCase().split(` `).join(`-`);
+  let imageName = MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)].toLowerCase().split(` `).join(`-`);
   let fileFormat = ``;
 
   switch (imageName) {
@@ -66,7 +66,7 @@ const getPath = () => {
       break;
   }
 
-  return `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/${imageName}${fileFormat}`;
+  return `${MAIN_IMAGES_PATH}/${IMAGE_TYPES.POSTER}/${imageName}${fileFormat}`;
 };
 
 const getRandomDate = () => {
@@ -78,15 +78,15 @@ export const createMovie = () => {
   return {
     name: getMovieName(),
     originalName: getMovieName(),
-    director: getRandomElementFromArray(userNames),
+    director: getRandomElementFromArray(USER_NAMES),
     writers: getPeopleList(3),
     actors: getPeopleList(5),
     release: getRandomDate(),
     runtime: getRandomNumber(MIN_DURATION, MAX_DURATION),
-    country: getRandomElementFromArray(countries),
+    country: getRandomElementFromArray(COUNTRIES),
     genres: getGenres(),
     description: getDescription(),
-    movieRaiting: getRandomElementFromArray(contentRaiting),
+    movieRaiting: getRandomElementFromArray(CONTENT_RAITING),
     raiting: getRandomDoubleNumber(0, MAX_RAITING),
     path: getPath(),
     isWatchlist: Boolean(getRandomNumber(0, 1)),

@@ -1,4 +1,4 @@
-import {MAIN_IMAGES_PATH, ImageTypes, fishText} from "./const.js";
+import {MAIN_IMAGES_PATH, IMAGE_TYPES, FISH_TEXT} from "./const.js";
 
 export const render = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
@@ -49,10 +49,10 @@ export const getPath = (type, imageName) => {
 
   switch (type) {
     case `icons`:
-      path += `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
+      path += `${MAIN_IMAGES_PATH}/${IMAGE_TYPES.ICON}/${imageName}.svg`;
       break;
     case `emoji`:
-      path += `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName}.png`;
+      path += `${MAIN_IMAGES_PATH}/${IMAGE_TYPES.EMOJI}/${imageName}.png`;
       break;
     default:
       path += MAIN_IMAGES_PATH;
@@ -62,4 +62,4 @@ export const getPath = (type, imageName) => {
   return path;
 };
 
-export const sentences = generateArrayFromString(fishText);
+export const sentences = generateArrayFromString(FISH_TEXT);
