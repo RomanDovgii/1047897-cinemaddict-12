@@ -11,11 +11,24 @@ import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from
 import {render} from "./utils/main.js";
 import {mocks} from "./mocks/movie.js";
 
-const generateCards = (min = 0, max = 0) => {
+const generateCards = (min, max, type) => {
   const bottom = Math.min(min, max);
   const ceiling = Math.max(min, max);
 
-  let preparedMocks = mocks.slice(bottom, ceiling);
+  let preparedMocks = [];
+
+  switch (type) {
+    case MovieContainers.TOP:
+      preparedMocks = mocks.slice().sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling);
+      break;
+    case MovieContainers.COMMENTED:
+      preparedMocks = mocks.slice().sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling);
+      break;
+    default:
+      preparedMocks = mocks.slice(bottom, ceiling);
+      break;
+  }
+
   return preparedMocks.reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
 };
 
@@ -43,9 +56,9 @@ const filmsAll = filmsMainContainer.querySelector(`.films-list .films-list__cont
 const filmsTop = filmsMainContainer.querySelector(`.films-list--top .films-list__container`);
 const filmsCommented = filmsMainContainer.querySelector(`.films-list--commented .films-list__container`);
 
-render(filmsAll, generateCards(CARD_COUNT_MAIN), RenderPosition.BEFOREEND);
-render(filmsTop, generateCards(CARD_COUNT_EXTRA), RenderPosition.BEFOREEND);
-render(filmsCommented, generateCards(CARD_COUNT_EXTRA), RenderPosition.BEFOREEND);
+render(filmsAll, generateCards(0, CARD_COUNT_MAIN, MovieContainers.ALL), RenderPosition.BEFOREEND);
+render(filmsTop, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP), RenderPosition.BEFOREEND);
+render(filmsCommented, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED), RenderPosition.BEFOREEND);
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 

@@ -1,5 +1,7 @@
+import {mocks} from "../mocks/movie.js";
+
 export const generateStats = () => {
   return `
-  <p>130 291 movies inside</p>
+  <p>${mocks.length} movies inside</p>
   `;
 };

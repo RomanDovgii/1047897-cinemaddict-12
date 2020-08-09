@@ -17,7 +17,7 @@ const generateComments = (array) => {
                 <p class="film-details__comment-text">${comment.text}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${comment.author}</span>
-                  <span class="film-details__comment-day">${comment.date}</span>
+                  <span class="film-details__comment-day">${comment.date.getFullYear()}/${comment.date.getMonth()}/${comment.date.getDate()} ${comment.date.getHours()}:${comment.date.getMinutes()}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
