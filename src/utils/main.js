@@ -8,15 +8,15 @@ export const generateArrayFromString = (string) => {
   return string.split(`. `);
 };
 
-export const getRandomNumber = (min = 0, max = 1) => {
-  const bottom = Math.ceil(Math.min(min, max));
-  const top = Math.floor(Math.max(min, max));
+export const getRandomNumber = (firstNumber, secondNumber) => {
+  const bottom = Math.ceil(Math.min(firstNumber, secondNumber));
+  const top = Math.floor(Math.max(firstNumber, secondNumber));
   return Math.floor(bottom + Math.random() * (top - bottom + 1));
 };
 
-export const getRandomDoubleNumber = (min = 0, max = 10) => {
-  const bottom = Math.min(min, max);
-  const top = Math.max(min, max);
+export const getRandomDoubleNumber = (firstNumber, secondNumber) => {
+  const bottom = Math.min(firstNumber, secondNumber);
+  const top = Math.max(firstNumber, secondNumber);
   return (bottom + Math.random() * (top - bottom)).toFixed(1);
 };
 
@@ -41,7 +41,7 @@ export const formateDuration = (duration) => {
 };
 
 export const getRandomElementFromArray = (array) => {
-  return array[getRandomNumber(array.length - 1)];
+  return array[getRandomNumber(0, array.length - 1)];
 };
 
 export const getPath = (type, imageName) => {

@@ -16,8 +16,8 @@ export const generateComments = () => {
 
 const createComment = () => {
   return {
-    author: userNames[getRandomNumber(userNames.length - 1)],
-    text: sentences[getRandomNumber(sentences.length - 1)],
+    author: userNames[getRandomNumber(0, userNames.length - 1)],
+    text: sentences[getRandomNumber(0, sentences.length - 1)],
     emoji: emojiDescription[getRandomNumber(0, emojiDescription.length - 1)],
     date: getRandomDate()
   };

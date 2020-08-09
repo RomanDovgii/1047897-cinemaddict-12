@@ -1,40 +1,40 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MOCKS_COUNT, ImageTypes, movieNames, userNames, countries, genres, contentRaiting} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, ImageTypes, movieNames, userNames, countries, genres, contentRaiting} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
 let movieMocks = [];
 
 const getMovieName = () => {
-  return movieNames[getRandomNumber(movieNames.length - 1)];
+  return movieNames[getRandomNumber(0, movieNames.length - 1)];
 };
 
 const getPeopleList = (quantity) => {
   let people = [];
 
   for (let i = 0; i < quantity; i++) {
-    people.push(userNames[getRandomNumber(userNames.length - 1)]);
+    people.push(userNames[getRandomNumber(0, userNames.length - 1)]);
   }
 
   return people;
 };
 
 const getDescription = () => {
-  const sentencesCount = getRandomNumber(1, 10);
+  const sentencesCount = getRandomNumber(MIN_SENTENCE, MAX_SENTENCE);
   let descriptionText = ``;
 
   for (let i = 0; i < sentencesCount; i++) {
-    descriptionText += sentences[getRandomNumber(sentences.length - 1)];
+    descriptionText += sentences[getRandomNumber(0, sentences.length - 1)];
   }
 
   return descriptionText;
 };
 
 const getGenres = () => {
-  let genresCount = getRandomNumber(5);
+  let genresCount = getRandomNumber(1, 5);
   let genresLocal = [];
 
   for (let i = 0; i < genresCount; i++) {
-    const genre = genres[getRandomNumber(genres.length - 1)];
+    const genre = genres[getRandomNumber(0, genres.length - 1)];
 
     if (!genresLocal.includes(genre)) {
       genresLocal.push(genre);
@@ -48,7 +48,7 @@ const getGenres = () => {
 };
 
 const getPath = () => {
-  let imageName = movieNames[getRandomNumber(movieNames.length - 1)].toLowerCase().split(` `).join(`-`);
+  let imageName = movieNames[getRandomNumber(0, movieNames.length - 1)].toLowerCase().split(` `).join(`-`);
   let fileFormat = ``;
 
   switch (imageName) {
@@ -87,11 +87,11 @@ export const createMovie = () => {
     genres: getGenres(),
     description: getDescription(),
     movieRaiting: getRandomElementFromArray(contentRaiting),
-    raiting: getRandomDoubleNumber(),
+    raiting: getRandomDoubleNumber(0, MAX_RAITING),
     path: getPath(),
-    isWatchlist: Boolean(getRandomNumber()),
-    isWatched: Boolean(getRandomNumber()),
-    isFavorite: Boolean(getRandomNumber()),
+    isWatchlist: Boolean(getRandomNumber(0, 1)),
+    isWatched: Boolean(getRandomNumber(0, 1)),
+    isFavorite: Boolean(getRandomNumber(0, 1)),
     comments: generateComments()
   };
 };
