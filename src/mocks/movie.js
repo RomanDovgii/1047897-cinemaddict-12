@@ -1,4 +1,4 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, IMAGE_TYPES, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
@@ -66,7 +66,7 @@ const getPath = () => {
       break;
   }
 
-  return `${MAIN_IMAGES_PATH}/${IMAGE_TYPES.POSTER}/${imageName}${fileFormat}`;
+  return `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/${imageName}${fileFormat}`;
 };
 
 const getRandomDate = () => {

@@ -10,14 +10,20 @@ export const MAX_SENTENCE = 10;
 
 export const MAIN_IMAGES_PATH = `./images`;
 
-export const RENDER_POSITION = {
+export const ImageTypes = {
+  POSTER: `posters`,
+  ICON: `icons`,
+  EMOJI: `emoji`
+};
+
+export const RenderPosition = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`
 };
 
-export const MOVIE_CONTAINERS = {
+export const MovieContainers = {
   ALL: {
     elementClass: `films-list`,
     heading: `All movies. Upcoming`,
@@ -114,9 +120,3 @@ export const EMOJI_DESCRIPTION = [
   `emoji-puke`,
   `emoji-angry`
 ];
-
-export const IMAGE_TYPES = {
-  POSTER: `posters`,
-  ICON: `icons`,
-  EMOJI: `emoji`
-};
