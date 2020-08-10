@@ -3,9 +3,10 @@ import {mocks} from "../mocks/movie.js";
 
 const generateFilterMarkup = (filter, isChecked) => {
   const checked = isChecked ? `main-navigation__item--active` : ``;
-  const count = filter.count !== 0 && filter.title !== `all` ? `<span class="main-navigation__item-count"> ${filter.count}</span></a>` : ``;
+  const notAll = filter.count !== 0 && filter.title !== `all`;
+  const count = notAll ? `<span class="main-navigation__item-count"> ${filter.count}</span></a>` : ``;
   const filterName = filter.title;
-  let name = filterName === `all` ? `All movies` : `${filterName.charAt(0).toUpperCase() + filterName.slice(1)}`;
+  const name = filterName === `all` ? `All movies` : `${filterName.charAt(0).toUpperCase() + filterName.slice(1)}`;
 
   return `<a href="#${filterName}" class="main-navigation__item ${checked}">${name}${count}</a>`;
 };
