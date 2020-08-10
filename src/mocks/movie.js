@@ -1,15 +1,15 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCE, MAX_SENTENCE, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCES, MAX_SENTENCES, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
-let movieMocks = [];
+const movieMocks = [];
 
 const getMovieName = () => {
   return MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)];
 };
 
 const getPeopleList = (quantity) => {
-  let people = [];
+  const people = [];
 
   for (let i = 0; i < quantity; i++) {
     people.push(USER_NAMES[getRandomNumber(0, USER_NAMES.length - 1)]);
@@ -19,7 +19,7 @@ const getPeopleList = (quantity) => {
 };
 
 const getDescription = () => {
-  const sentencesCount = getRandomNumber(MIN_SENTENCE, MAX_SENTENCE);
+  const sentencesCount = getRandomNumber(MIN_SENTENCES, MAX_SENTENCES);
   let descriptionText = ``;
 
   for (let i = 0; i < sentencesCount; i++) {
@@ -70,8 +70,8 @@ const getPath = () => {
 };
 
 const getRandomDate = () => {
-  const DATE = new Date();
-  return DATE;
+  const date = new Date();
+  return date;
 };
 
 export const createMovie = () => {

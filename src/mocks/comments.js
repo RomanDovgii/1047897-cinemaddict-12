@@ -1,11 +1,9 @@
 import {getRandomNumber, getRandomDate, sentences} from "../utils/main.js";
-import {USER_NAMES, EMOJI_DESCRIPTION} from "../utils/const.js";
-
-const max = 9;
+import {USER_NAMES, EMOJI_DESCRIPTION, MAX_COMMENTS} from "../utils/const.js";
 
 export const generateComments = () => {
-  const commentsCount = getRandomNumber(0, max);
-  let comments = [];
+  const commentsCount = getRandomNumber(0, MAX_COMMENTS);
+  const comments = [];
 
   for (let i = 0; i < commentsCount; i++) {
     comments.push(createComment());

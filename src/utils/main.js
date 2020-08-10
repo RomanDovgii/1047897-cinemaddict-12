@@ -4,10 +4,6 @@ export const render = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
 };
 
-export const generateArrayFromString = (string) => {
-  return string.split(`. `);
-};
-
 export const getRandomNumber = (firstNumber, secondNumber) => {
   const bottom = Math.ceil(Math.min(firstNumber, secondNumber));
   const top = Math.floor(Math.max(firstNumber, secondNumber));
@@ -45,21 +41,14 @@ export const getRandomElementFromArray = (array) => {
 };
 
 export const getPath = (type, imageName) => {
-  let path = ``;
-
   switch (type) {
     case `icons`:
-      path += `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
-      break;
+      return `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
     case `emoji`:
-      path += `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName}.png`;
-      break;
+      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName}.png`;
     default:
-      path += MAIN_IMAGES_PATH;
-      break;
+      return MAIN_IMAGES_PATH;
   }
-
-  return path;
 };
 
-export const sentences = generateArrayFromString(FISH_TEXT);
+export const sentences = FISH_TEXT.split(`. `);
