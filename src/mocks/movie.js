@@ -50,23 +50,22 @@ const getGenres = () => {
 const getPath = () => {
   let imageName = MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)].toLowerCase().split(` `).join(`-`);
   let fileFormat = ``;
+  let pathToFile = `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/`;
 
   switch (imageName) {
     case `made-for-each-other`:
       fileFormat = `.png`;
-      break;
+      return `${pathToFile}${imageName}${fileFormat}`;
 
     case `popeye-the-sailor-meets-sindbad-the-sailor`:
       imageName = `popeye-meets-sinbad`;
       fileFormat = `.png`;
-      break;
+      return `${pathToFile}${imageName}${fileFormat}`;
 
     default:
       fileFormat = `.jpg`;
-      break;
+      return `${pathToFile}${imageName}${fileFormat}`;
   }
-
-  return `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/${imageName}${fileFormat}`;
 };
 
 export const createMovie = () => {
