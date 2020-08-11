@@ -19,9 +19,9 @@ const generateCards = (min, max, type) => {
 
   switch (type) {
     case MovieContainers.TOP:
-      return preparedMocks.slice().sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
+      return preparedMocks.sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
     case MovieContainers.COMMENTED:
-      return preparedMocks.slice().sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
+      return preparedMocks.sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
     default:
       return preparedMocks.slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
   }
