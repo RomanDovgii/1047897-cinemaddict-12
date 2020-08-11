@@ -1,4 +1,4 @@
-import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCES, MAX_SENTENCES, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING} from "../utils/const.js";
+import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCES, MAX_SENTENCES, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING, JPG_EXTENSION, PNG_EXTENSION, POPEY_MEETS_SINDBAD_NAME} from "../utils/const.js";
 import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
@@ -48,23 +48,19 @@ const getGenres = () => {
 };
 
 const getPath = () => {
-  let imageName = MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)].toLowerCase().split(` `).join(`-`);
-  let fileFormat = ``;
-  let pathToFile = `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/`;
+  const pathToFile = `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/`;
+  const imageName = MOVIE_NAMES[getRandomNumber(0, MOVIE_NAMES.length - 1)].toLowerCase().split(` `).join(`-`);
+
 
   switch (imageName) {
     case `made-for-each-other`:
-      fileFormat = `.png`;
-      return `${pathToFile}${imageName}${fileFormat}`;
+      return `${pathToFile}${imageName}${PNG_EXTENSION}`;
 
     case `popeye-the-sailor-meets-sindbad-the-sailor`:
-      imageName = `popeye-meets-sinbad`;
-      fileFormat = `.png`;
-      return `${pathToFile}${imageName}${fileFormat}`;
+      return `${pathToFile}${POPEY_MEETS_SINDBAD_NAME}${PNG_EXTENSION}`;
 
     default:
-      fileFormat = `.jpg`;
-      return `${pathToFile}${imageName}${fileFormat}`;
+      return `${pathToFile}${imageName}${JPG_EXTENSION}`;
   }
 };
 
