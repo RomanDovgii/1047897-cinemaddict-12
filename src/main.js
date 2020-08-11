@@ -15,21 +15,16 @@ const generateCards = (min, max, type) => {
   const bottom = Math.min(min, max);
   const ceiling = Math.max(min, max);
 
-  let preparedMocks = [];
+  const preparedMocks = [...mocks];
 
   switch (type) {
     case MovieContainers.TOP:
-      preparedMocks = mocks.slice().sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling);
-      break;
+      return preparedMocks.slice().sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
     case MovieContainers.COMMENTED:
-      preparedMocks = mocks.slice().sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling);
-      break;
+      return preparedMocks.slice().sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
     default:
-      preparedMocks = mocks.slice(bottom, ceiling);
-      break;
+      return preparedMocks.slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
   }
-
-  return preparedMocks.reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
 };
 
 const header = document.querySelector(`.header`);
