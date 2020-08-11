@@ -69,11 +69,6 @@ const getPath = () => {
   return `${MAIN_IMAGES_PATH}/${ImageTypes.POSTER}/${imageName}${fileFormat}`;
 };
 
-const getRandomDate = () => {
-  const date = new Date();
-  return date;
-};
-
 export const createMovie = () => {
   return {
     name: getMovieName(),
@@ -81,7 +76,7 @@ export const createMovie = () => {
     director: getRandomElementFromArray(USER_NAMES),
     writers: getPeopleList(3),
     actors: getPeopleList(5),
-    release: getRandomDate(),
+    release: new Date(),
     runtime: getRandomNumber(MIN_DURATION, MAX_DURATION),
     country: getRandomElementFromArray(COUNTRIES),
     genres: getGenres(),
