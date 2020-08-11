@@ -9,11 +9,27 @@ import {generateSort} from "./view/sort.js";
 import {generateStats} from "./view/stats.js";
 import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
 import {render} from "./utils/main.js";
+import {mocks} from "./mocks/movie.js";
 
-const generateCards = (number, container) => {
-  for (let i = 0; i < number; i++) {
-    render(container, generateCard(), RenderPosition.BEFOREEND);
+const getPreparedMocks = (type) => {
+  const mocksCopy = [...mocks];
+
+  switch (type) {
+    case MovieContainers.TOP:
+      return mocksCopy.sort((a, b) => b.raiting - a.raiting);
+    case MovieContainers.COMMENTED:
+      return mocksCopy.sort((a, b) => b.comments.length - a.comments.length);
+    default:
+      return mocksCopy;
   }
+};
+
+const generateCards = (min, max, type) => {
+  const bottom = Math.min(min, max);
+  const ceiling = Math.max(min, max);
+  const preparedMocks = getPreparedMocks(type).slice(bottom, ceiling);
+
+  return preparedMocks.reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
 };
 
 const header = document.querySelector(`.header`);
@@ -40,12 +56,27 @@ const filmsAll = filmsMainContainer.querySelector(`.films-list .films-list__cont
 const filmsTop = filmsMainContainer.querySelector(`.films-list--top .films-list__container`);
 const filmsCommented = filmsMainContainer.querySelector(`.films-list--commented .films-list__container`);
 
-generateCards(CARD_COUNT_MAIN, filmsAll);
-generateCards(CARD_COUNT_EXTRA, filmsTop);
-generateCards(CARD_COUNT_EXTRA, filmsCommented);
+render(filmsAll, generateCards(0, CARD_COUNT_MAIN, MovieContainers.ALL), RenderPosition.BEFOREEND);
+render(filmsTop, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP), RenderPosition.BEFOREEND);
+render(filmsCommented, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED), RenderPosition.BEFOREEND);
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, generateStats(), RenderPosition.BEFOREEND);
-render(footer, generatePopup(), RenderPosition.AFTEREND);
 
+const showMoreButton = document.querySelector(`.films-list__show-more`);
+
+let generatedCardCount = CARD_COUNT_MAIN;
+
+showMoreButton.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+
+  render(filmsAll, generateCards(generatedCardCount, generatedCardCount + CARD_COUNT_MAIN), RenderPosition.BEFOREEND);
+
+  generatedCardCount += CARD_COUNT_MAIN;
+  if (generatedCardCount >= mocks.length) {
+    showMoreButton.remove();
+  }
+});
+
+render(footer, generatePopup(mocks[0]), RenderPosition.AFTEREND);

@@ -1,20 +1,32 @@
-export const generateCard = () => {
+import {formateDuration} from "../utils/main.js";
+import {MAX_STRING_LENGTH} from "../utils/const.js";
+
+export const generateCard = (mock) => {
+
+  const {name, release, runtime, genres, description, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
+
+  const commentNumber = comments.length === 1 ? `${comments.length} comment` : `${comments.length} comments`;
+
+  const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
+  const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
+  const favoriteControl = isFavorite ? `film-card__controls-item--active` : ``;
+
   return `
   <article class="film-card">
-    <h3 class="film-card__title">The Dance of Life</h3>
-    <p class="film-card__rating">8.3</p>
+    <h3 class="film-card__title">${name}</h3>
+    <p class="film-card__rating">${raiting}</p>
     <p class="film-card__info">
-      <span class="film-card__year">1929</span>
-      <span class="film-card__duration">1h 55m</span>
-      <span class="film-card__genre">Musical</span>
+      <span class="film-card__year">${release.getFullYear()}</span>
+      <span class="film-card__duration">${formateDuration(runtime)}</span>
+      <span class="film-card__genre">${genres[0]}</span>
     </p>
-    <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
-    <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>
-    <a class="film-card__comments">5 comments</a>
+    <img src="${path}" alt="" class="film-card__poster">
+    <p class="film-card__description">${description.length > 140 ? `${description.slice(0, MAX_STRING_LENGTH)}…` : `${description}`}</p>
+    <a class="film-card__comments">${commentNumber}</a>
     <form class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${wathcedControl}">Mark as watched</button>
+      <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteControl}">Mark as favorite</button>
     </form>
   </article>
   `;
