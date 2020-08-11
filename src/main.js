@@ -11,20 +11,25 @@ import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from
 import {render} from "./utils/main.js";
 import {mocks} from "./mocks/movie.js";
 
-const generateCards = (min, max, type) => {
-  const bottom = Math.min(min, max);
-  const ceiling = Math.max(min, max);
-
-  const preparedMocks = [...mocks];
+const getPreparedMocks = (type) => {
+  const mocksCopy = [...mocks];
 
   switch (type) {
     case MovieContainers.TOP:
-      return preparedMocks.sort((a, b) => b.raiting - a.raiting).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
+      return mocksCopy.sort((a, b) => b.raiting - a.raiting);
     case MovieContainers.COMMENTED:
-      return preparedMocks.sort((a, b) => b.comments.length - a.comments.length).slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
+      return mocksCopy.sort((a, b) => b.comments.length - a.comments.length);
     default:
-      return preparedMocks.slice(bottom, ceiling).reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
+      return mocksCopy;
   }
+};
+
+const generateCards = (min, max, type) => {
+  const bottom = Math.min(min, max);
+  const ceiling = Math.max(min, max);
+  const preparedMocks = getPreparedMocks(type).slice(bottom, ceiling);
+
+  return preparedMocks.reduce((accumulator, movie) => accumulator + generateCard(movie), ``);
 };
 
 const header = document.querySelector(`.header`);
