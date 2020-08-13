@@ -1,25 +1,50 @@
 import {mocks} from "../mocks/movie.js";
+import {createElement} from "../utils/main.js";
 
-const getRank = (count) => {
+const getRank = () => {
+  const moviesWatched = mocks.slice().filter((mock) => mock.isWatched).length;
+
   switch (true) {
-    case (count <= 10) && (count > 0):
+    case (moviesWatched <= 10) && (moviesWatched > 0):
       return `novice`;
-    case (count <= 20) && (count > 10):
+    case (moviesWatched <= 20) && (moviesWatched > 10):
       return `fan`;
-    case (count > 20):
+    case (moviesWatched > 20):
       return `movie buff`;
     default:
       return ``;
   }
 };
 
-export const generateRank = () => {
-  const moviesWatched = mocks.slice().filter((mock) => mock.isWatched).length;
-
+const createRankTemplate = (rank) => {
   return `
   <section class="header__profile profile">
-    <p class="profile__rating">${getRank(moviesWatched)}</p>
+    <p class="profile__rating">${rank}</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>
   `;
 };
+
+export default class UserRank {
+  constructor() {
+    this.rank = getRank();
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createRankTemplate(this.rank);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

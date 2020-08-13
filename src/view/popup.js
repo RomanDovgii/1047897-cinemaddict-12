@@ -1,4 +1,4 @@
-import {formateDuration} from "../utils/main.js";
+import {formateDuration, createElement} from "../utils/main.js";
 
 const generateGenres = (array) => {
   return array.reduce(
@@ -26,9 +26,9 @@ const generateComments = (array) => {
   );
 };
 
-export const generatePopup = (mock) => {
+const createPopupTemplate = (movie) => {
 
-  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
+  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, raiting, path, isWatchlist, isWatched, isFavorite, comments} = movie;
 
   const writersText = `${writers.join(`, `)}`;
   const actorsText = `${actors.join(`, `)}`;
@@ -160,3 +160,27 @@ export const generatePopup = (mock) => {
   </section>
   `;
 };
+
+export default class Popup {
+  constructor(movie) {
+    this.movie = movie;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this.movie);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
