@@ -11,6 +11,8 @@ import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from
 import {render} from "./utils/main.js";
 import {mocks} from "./mocks/movie.js";
 
+let popup;
+
 const getPreparedMocks = (type) => {
   const mocksCopy = [...mocks];
 
@@ -34,11 +36,21 @@ const generateCards = (min, max, type) => {
   preparedMocks.forEach((movie) => {
     const card = new Card(movie).getElement();
     fragment.append(card);
+    card.querySelector(`.film-card__poster`).addEventListener(`click`, (evt) => {
+      showPopup(evt, movie);
+    });
+    card.querySelector(`.film-card__comments`).addEventListener(`click`, (evt) => {
+      showPopup(evt, movie);
+    });
+    card.querySelector(`.film-card__title`).addEventListener(`click`, (evt) => {
+      showPopup(evt, movie);
+    });
   });
 
   return fragment;
 };
 
+const body = document.querySelector(`.body`);
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
@@ -86,4 +98,40 @@ showMoreButton.addEventListener(`click`, (evt) => {
   }
 });
 
-render(footer, new Popup(mocks[0]).getElement(), RenderPosition.AFTEREND);
+const showPopup = (evt, movie) => {
+  evt.stopPropagation();
+
+  if (popup) {
+    removePopup();
+  }
+
+  popup = new Popup(movie);
+
+  render(body, popup.getElement(), RenderPosition.BEFOREEND);
+
+  popup.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, removePopup);
+
+  if (popup) {
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentEscKeydownHandler);
+  }
+};
+
+const removePopup = () => {
+  popup.removeElement();
+  document.removeEventListener(`click`, documentClickHandler);
+  document.removeEventListener(`keydown`, documentEscKeydownHandler);
+};
+
+const documentClickHandler = (evt) => {
+  let eventTarget = evt.target;
+  if ((!eventTarget.closest(`.film-details`))) {
+    removePopup();
+  }
+};
+
+const documentEscKeydownHandler = (evt) => {
+  if (evt.keyCode === 27) {
+    removePopup();
+  }
+};
