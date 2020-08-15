@@ -36,13 +36,13 @@ const createCardTemplate = (mock) => {
 
 export default class Card {
   constructor(movie) {
-    this.movie = movie;
+    this._movie = movie;
 
     this._element = null;
   }
 
   getTemplate() {
-    return createCardTemplate(this.movie);
+    return createCardTemplate(this._movie);
   }
 
   getElement() {

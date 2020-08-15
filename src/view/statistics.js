@@ -8,13 +8,13 @@ const createStatisticsTemplate = (count) => {
 
 export default class Statistics {
   constructor(movies) {
-    this.moviesNumber = movies.length;
+    this._moviesNumber = movies.length;
 
     this._element = null;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this.moviesNumber);
+    return createStatisticsTemplate(this._moviesNumber);
   }
 
   getElement() {

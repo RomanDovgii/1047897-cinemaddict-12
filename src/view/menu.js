@@ -30,12 +30,12 @@ const createMenuTemplate = (movies) => {
 
 export default class Menu {
   constructor(movies) {
-    this.movies = movies;
+    this._movies = movies;
     this._element = null;
   }
 
   getTemplate() {
-    return createMenuTemplate(this.movies);
+    return createMenuTemplate(this._movies);
   }
 
   getElement() {

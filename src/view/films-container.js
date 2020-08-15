@@ -13,13 +13,13 @@ const createFilmsContainerTemplate = (container) => {
 
 export default class FilmsContainer {
   constructor(container) {
-    this.container = container;
+    this._container = container;
 
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsContainerTemplate(this.container);
+    return createFilmsContainerTemplate(this._container);
   }
 
   getElement() {

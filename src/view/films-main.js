@@ -7,7 +7,7 @@ const createFilmsMainTemplate = () => {
   `;
 };
 
-export default class FilmnsMain {
+export default class FilmsMain {
   constructor() {
     this._element = null;
   }

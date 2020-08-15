@@ -27,13 +27,13 @@ const createRankTemplate = (rank) => {
 
 export default class UserRank {
   constructor() {
-    this.rank = getRank();
+    this._rank = getRank();
 
     this._element = null;
   }
 
   getTemplate() {
-    return createRankTemplate(this.rank);
+    return createRankTemplate(this._rank);
   }
 
   getElement() {
