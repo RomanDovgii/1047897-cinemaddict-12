@@ -95,8 +95,6 @@ const generateCards = (min, max, type) => {
     cardElement.querySelector(`.film-card__title`).addEventListener(`click`, (evt) => {
       showPopup(evt, popup);
     });
-
-
   });
 
   return fragment;
