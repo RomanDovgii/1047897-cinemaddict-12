@@ -24,6 +24,56 @@ const getPreparedMocks = (type) => {
   }
 };
 
+const showPopup = (evt, popupLocal) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  if (document.querySelector(`.film-details`)) {
+    document.querySelector(`.film-details`).remove();
+  }
+
+  render(body, popupLocal.getElement(), RenderPosition.BEFOREEND);
+
+  const closeButton = popupLocal.getElement().querySelector(`.film-details__close-btn`);
+
+  const removePopup = (evnt) => {
+    evnt.preventDefault();
+    evnt.stopPropagation();
+
+    closeButton.removeEventListener(`click`, removePopup);
+    document.removeEventListener(`click`, documentClickHandler);
+    document.removeEventListener(`keydown`, documentEscKeydownHandler);
+
+    popupLocal.removeElement();
+  };
+
+  const documentClickHandler = (evnt) => {
+    evnt.preventDefault();
+    evnt.stopPropagation();
+
+    let eventTarget = evnt.target;
+    if ((!eventTarget.closest(`.film-details`))) {
+      removePopup(evnt);
+    }
+  };
+
+  const documentEscKeydownHandler = (evnt) => {
+    if (evnt.keyCode === 27) {
+      evnt.preventDefault();
+      evnt.stopPropagation();
+
+      removePopup(evnt);
+    }
+  };
+
+  closeButton.addEventListener(`click`, removePopup);
+
+  if (popupLocal) {
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentEscKeydownHandler);
+  }
+};
+
 const generateCards = (min, max, type) => {
   const bottom = Math.min(min, max);
   const ceiling = Math.max(min, max);
@@ -36,56 +86,14 @@ const generateCards = (min, max, type) => {
     const popup = new Popup(movie);
     fragment.append(cardElement);
 
-    const showPopup = (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-
-      if (document.querySelector(`.film-details`)) {
-        document.querySelector(`.film-details`).remove();
-      }
-
-      render(body, popup.getElement(), RenderPosition.BEFOREEND);
-
-      const closeButton = popup.getElement().querySelector(`.film-details__close-btn`);
-
-      closeButton.addEventListener(`click`, removePopup);
-
-      if (popup) {
-        document.addEventListener(`click`, documentClickHandler);
-        document.addEventListener(`keydown`, documentEscKeydownHandler);
-      }
-    };
-
-    const removePopup = () => {
-      popup.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, removePopup);
-      popup.removeElement();
-      document.removeEventListener(`click`, documentClickHandler);
-      document.removeEventListener(`keydown`, documentEscKeydownHandler);
-    };
-
-    const documentClickHandler = (evt) => {
-      evt.preventDefault();
-      let eventTarget = evt.target;
-      if ((!eventTarget.closest(`.film-details`))) {
-        removePopup();
-      }
-    };
-
-    const documentEscKeydownHandler = (evt) => {
-      if (evt.keyCode === 27) {
-        evt.preventDefault();
-        removePopup();
-      }
-    };
-
     cardElement.querySelector(`.film-card__poster`).addEventListener(`click`, (evt) => {
-      showPopup(evt);
+      showPopup(evt, popup);
     });
     cardElement.querySelector(`.film-card__comments`).addEventListener(`click`, (evt) => {
-      showPopup(evt);
+      showPopup(evt, popup);
     });
     cardElement.querySelector(`.film-card__title`).addEventListener(`click`, (evt) => {
-      showPopup(evt);
+      showPopup(evt, popup);
     });
 
 
