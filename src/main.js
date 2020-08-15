@@ -29,12 +29,12 @@ const generateCards = (min, max, type) => {
   const ceiling = Math.max(min, max);
   const preparedMocks = getPreparedMocks(type).slice(bottom, ceiling);
 
-  let fragment = new DocumentFragment();
+  const fragment = new DocumentFragment();
 
   preparedMocks.forEach((movie) => {
-    const card = new Card(movie).getElement();
+    const cardElement = new Card(movie).getElement();
     const popup = new Popup(movie);
-    fragment.append(card);
+    fragment.append(cardElement);
 
     const showPopup = (evt) => {
       evt.preventDefault();
@@ -78,13 +78,13 @@ const generateCards = (min, max, type) => {
       }
     };
 
-    card.querySelector(`.film-card__poster`).addEventListener(`click`, (evt) => {
+    cardElement.querySelector(`.film-card__poster`).addEventListener(`click`, (evt) => {
       showPopup(evt);
     });
-    card.querySelector(`.film-card__comments`).addEventListener(`click`, (evt) => {
+    cardElement.querySelector(`.film-card__comments`).addEventListener(`click`, (evt) => {
       showPopup(evt);
     });
-    card.querySelector(`.film-card__title`).addEventListener(`click`, (evt) => {
+    cardElement.querySelector(`.film-card__title`).addEventListener(`click`, (evt) => {
       showPopup(evt);
     });
 
