@@ -3,12 +3,12 @@ import {createElement} from "../utils/main.js";
 
 const generateFilterMarkup = (filter, isChecked) => {
   const checked = isChecked ? `main-navigation__item--active` : ``;
-  const notAll = filter.count !== 0 && filter.title !== `all`;
-  const count = notAll ? `<span class="main-navigation__item-count"> ${filter.count}</span></a>` : ``;
+  const notAll = filter.count >= 0 && filter.title !== `all`;
+  const count = notAll ? `<span class="main-navigation__item-count">${filter.count}</span></a>` : ``;
   const filterName = filter.title;
   const name = filterName === `all` ? `All movies` : `${filterName.charAt(0).toUpperCase() + filterName.slice(1)}`;
 
-  return `<a href="#${filterName}" class="main-navigation__item ${checked}">${name}${count}</a>`;
+  return `<a href="#${filterName}" class="main-navigation__item ${checked}">${name} ${count}</a>`;
 };
 
 const generateFilterBlock = (movies) => {
