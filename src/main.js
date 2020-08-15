@@ -48,7 +48,7 @@ const showPopup = (evt, popupLocal) => {
   };
 
   const documentClickHandler = (evnt) => {
-    let eventTarget = evnt.target;
+    const eventTarget = evnt.target;
     if ((!eventTarget.closest(`.film-details`))) {
       removePopup(evnt);
     }
