@@ -48,9 +48,6 @@ const showPopup = (evt, popupLocal) => {
   };
 
   const documentClickHandler = (evnt) => {
-    evnt.preventDefault();
-    evnt.stopPropagation();
-
     let eventTarget = evnt.target;
     if ((!eventTarget.closest(`.film-details`))) {
       removePopup(evnt);
@@ -59,9 +56,6 @@ const showPopup = (evt, popupLocal) => {
 
   const documentEscKeydownHandler = (evnt) => {
     if (evnt.keyCode === 27) {
-      evnt.preventDefault();
-      evnt.stopPropagation();
-
       removePopup(evnt);
     }
   };
