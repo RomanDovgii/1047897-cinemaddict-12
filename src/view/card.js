@@ -1,7 +1,8 @@
 import {formateDuration} from "../utils/main.js";
+import {createElement} from "../utils/main.js";
 import {MAX_STRING_LENGTH} from "../utils/const.js";
 
-export const generateCard = (mock) => {
+const createCardTemplate = (mock) => {
 
   const {name, release, runtime, genres, description, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
 
@@ -31,3 +32,32 @@ export const generateCard = (mock) => {
   </article>
   `;
 };
+
+
+export default class Card {
+  constructor(movie) {
+    this._movie = movie;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._movie);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    if (this._element) {
+      this._element.remove();
+    }
+
+    this._element = null;
+  }
+}

@@ -1,7 +1,21 @@
-import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT} from "./const.js";
+import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, RenderPosition} from "./const.js";
 
-export const render = (container, element, position) => {
+export const renderTemplate = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    default:
+      container.append(element);
+      break;
+  }
 };
 
 export const getRandomNumber = (firstNumber, secondNumber) => {
@@ -49,6 +63,13 @@ export const getPath = (type, imageName) => {
     default:
       return MAIN_IMAGES_PATH;
   }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstElementChild;
 };
 
 export const sentences = FISH_TEXT.split(`. `);

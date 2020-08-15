@@ -1,19 +1,20 @@
-import {createElement} from "../utils/main";
+import {createElement} from "../utils/main.js";
 
-const createFilmsMainTemplate = () => {
+const createStatisticsTemplate = (count) => {
   return `
-  <section class="films">
-  </section>
+  <p>${count} movies inside</p>
   `;
 };
 
-export default class FilmsMain {
-  constructor() {
+export default class Statistics {
+  constructor(movies) {
+    this._moviesNumber = movies.length;
+
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsMainTemplate();
+    return createStatisticsTemplate(this._moviesNumber);
   }
 
   getElement() {
