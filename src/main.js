@@ -109,7 +109,7 @@ render(main, new FilmsMain().getElement(), RenderPosition.BEFOREEND);
 const filmsMainContainer = main.querySelector(`.films`);
 
 const mainInfoGeneration = () => {
-  if (mocks.length === 0) {
+  if (!mocks.length) {
     render(filmsMainContainer, new FilmsContainer(MovieContainers.EMPTY).getElement(), RenderPosition.BEFOREEND);
     const filmsEmptyMain = filmsMainContainer.querySelector(`.films-list`);
     render(filmsEmptyMain, new NoMovies().getElement(), RenderPosition.BEFOREEND);
