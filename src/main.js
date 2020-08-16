@@ -146,7 +146,7 @@ const mainInfoGeneration = () => {
       showMoreButton.remove();
     }
   });
-}
+};
 
 mainInfoGeneration();
 
