@@ -7,6 +7,7 @@ import Popup from "./view/popup.js";
 import UserRank from "./view/user-rank.js";
 import SortMenu from "./view/sort-menu.js";
 import Statistics from "./view/statistics.js";
+import NoMovies from "./view/no-movies.js";
 import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
 import {render} from "./utils/main.js";
 import {mocks} from "./mocks/movie.js";
@@ -107,37 +108,50 @@ render(main, new FilmsMain().getElement(), RenderPosition.BEFOREEND);
 
 const filmsMainContainer = main.querySelector(`.films`);
 
-render(filmsMainContainer, new FilmsContainer(MovieContainers.ALL).getElement(), RenderPosition.BEFOREEND);
-render(filmsMainContainer, new FilmsContainer(MovieContainers.TOP).getElement(), RenderPosition.BEFOREEND);
-render(filmsMainContainer, new FilmsContainer(MovieContainers.COMMENTED).getElement(), RenderPosition.BEFOREEND);
+const mainInfoGeneration = () => {
+  if (!mocks.length) {
+    render(filmsMainContainer, new FilmsContainer(MovieContainers.EMPTY).getElement(), RenderPosition.BEFOREEND);
+    const filmsEmptyMain = filmsMainContainer.querySelector(`.films-list`);
+    render(filmsEmptyMain, new NoMovies().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
 
-const filmsAllMain = filmsMainContainer.querySelector(`.films-list`);
+  render(filmsMainContainer, new FilmsContainer(MovieContainers.ALL).getElement(), RenderPosition.BEFOREEND);
+  render(filmsMainContainer, new FilmsContainer(MovieContainers.TOP).getElement(), RenderPosition.BEFOREEND);
+  render(filmsMainContainer, new FilmsContainer(MovieContainers.COMMENTED).getElement(), RenderPosition.BEFOREEND);
 
-render(filmsAllMain, new MoreButton().getElement(), RenderPosition.BEFOREEND);
+  const filmsAllMain = filmsMainContainer.querySelector(`.films-list`);
 
-const filmsAll = filmsMainContainer.querySelector(`.films-list .films-list__container`);
-const filmsTop = filmsMainContainer.querySelector(`.films-list--top .films-list__container`);
-const filmsCommented = filmsMainContainer.querySelector(`.films-list--commented .films-list__container`);
+  const filmsAll = filmsMainContainer.querySelector(`.films-list .films-list__container`);
+  const filmsTop = filmsMainContainer.querySelector(`.films-list--top .films-list__container`);
+  const filmsCommented = filmsMainContainer.querySelector(`.films-list--commented .films-list__container`);
 
-render(filmsAll, generateCards(0, CARD_COUNT_MAIN, MovieContainers.ALL), RenderPosition.BEFOREEND);
-render(filmsTop, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP), RenderPosition.BEFOREEND);
-render(filmsCommented, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED), RenderPosition.BEFOREEND);
+  render(filmsAll, generateCards(0, CARD_COUNT_MAIN, MovieContainers.ALL), RenderPosition.BEFOREEND);
+  render(filmsTop, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP), RenderPosition.BEFOREEND);
+  render(filmsCommented, generateCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED), RenderPosition.BEFOREEND);
+
+  render(filmsAllMain, new MoreButton().getElement(), RenderPosition.BEFOREEND);
+
+  const showMoreButton = document.querySelector(`.films-list__show-more`);
+
+  let generatedCardCount = CARD_COUNT_MAIN;
+
+  showMoreButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+
+    render(filmsAll, generateCards(generatedCardCount, generatedCardCount + CARD_COUNT_MAIN), RenderPosition.BEFOREEND);
+
+    generatedCardCount += CARD_COUNT_MAIN;
+    if (generatedCardCount >= mocks.length) {
+      showMoreButton.remove();
+    }
+  });
+};
+
+mainInfoGeneration();
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, new Statistics(mocks).getElement(), RenderPosition.BEFOREEND);
 
-const showMoreButton = document.querySelector(`.films-list__show-more`);
 
-let generatedCardCount = CARD_COUNT_MAIN;
-
-showMoreButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-
-  render(filmsAll, generateCards(generatedCardCount, generatedCardCount + CARD_COUNT_MAIN), RenderPosition.BEFOREEND);
-
-  generatedCardCount += CARD_COUNT_MAIN;
-  if (generatedCardCount >= mocks.length) {
-    showMoreButton.remove();
-  }
-});
