@@ -108,7 +108,14 @@ render(main, new FilmsMain().getElement(), RenderPosition.BEFOREEND);
 
 const filmsMainContainer = main.querySelector(`.films`);
 
-if (mocks.length > 0) {
+const mainInfoGeneration = () => {
+  if (mocks.length === 0) {
+    render(filmsMainContainer, new FilmsContainer(MovieContainers.EMPTY).getElement(), RenderPosition.BEFOREEND);
+    const filmsEmptyMain = filmsMainContainer.querySelector(`.films-list`);
+    render(filmsEmptyMain, new NoMovies().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
   render(filmsMainContainer, new FilmsContainer(MovieContainers.ALL).getElement(), RenderPosition.BEFOREEND);
   render(filmsMainContainer, new FilmsContainer(MovieContainers.TOP).getElement(), RenderPosition.BEFOREEND);
   render(filmsMainContainer, new FilmsContainer(MovieContainers.COMMENTED).getElement(), RenderPosition.BEFOREEND);
@@ -139,11 +146,9 @@ if (mocks.length > 0) {
       showMoreButton.remove();
     }
   });
-} else {
-  render(filmsMainContainer, new FilmsContainer(MovieContainers.EMPTY).getElement(), RenderPosition.BEFOREEND);
-  const filmsEmptyMain = filmsMainContainer.querySelector(`.films-list`);
-  render(filmsEmptyMain, new NoMovies().getElement(), RenderPosition.BEFOREEND);
 }
+
+mainInfoGeneration();
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
