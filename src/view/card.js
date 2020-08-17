@@ -1,6 +1,6 @@
 import {formateDuration} from "../utils/main.js";
-import {createElement} from "../utils/main.js";
 import {MAX_STRING_LENGTH} from "../utils/const.js";
+import Abstract from "./abstract.js";
 
 const createCardTemplate = (mock) => {
 
@@ -34,30 +34,13 @@ const createCardTemplate = (mock) => {
 };
 
 
-export default class Card {
+export default class Card extends Abstract {
   constructor(movie) {
+    super();
     this._movie = movie;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._movie);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }

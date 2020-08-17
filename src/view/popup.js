@@ -1,4 +1,5 @@
-import {formateDuration, createElement} from "../utils/main.js";
+import Abstract from "./abstract.js";
+import {formateDuration} from "../utils/main.js";
 
 const generateGenres = (array) => {
   return array.reduce(
@@ -161,30 +162,13 @@ const createPopupTemplate = (movie) => {
   `;
 };
 
-export default class Popup {
+export default class Popup extends Abstract {
   constructor(movie) {
+    super();
     this._movie = movie;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupTemplate(this._movie);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }

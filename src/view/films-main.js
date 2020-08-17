@@ -1,4 +1,4 @@
-import {createElement} from "../utils/main";
+import Abstract from "./abstract";
 
 const createFilmsMainTemplate = () => {
   return `
@@ -7,28 +7,8 @@ const createFilmsMainTemplate = () => {
   `;
 };
 
-export default class FilmsMain {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsMain extends Abstract {
   getTemplate() {
     return createFilmsMainTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }

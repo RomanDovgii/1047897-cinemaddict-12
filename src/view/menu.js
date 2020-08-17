@@ -1,5 +1,5 @@
 import {createFilters} from "../mocks/filter.js";
-import {createElement} from "../utils/main.js";
+import Abstract from "./abstract.js";
 
 const generateFilterMarkup = (filter, isChecked) => {
   const checked = isChecked ? `main-navigation__item--active` : ``;
@@ -28,29 +28,13 @@ const createMenuTemplate = (movies) => {
   `;
 };
 
-export default class Menu {
+export default class Menu extends Abstract {
   constructor(movies) {
+    super();
     this._movies = movies;
-    this._element = null;
   }
 
   getTemplate() {
     return createMenuTemplate(this._movies);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }
