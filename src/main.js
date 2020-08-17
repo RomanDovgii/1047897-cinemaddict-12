@@ -9,7 +9,7 @@ import SortMenu from "./view/sort-menu.js";
 import Statistics from "./view/statistics.js";
 import NoMovies from "./view/no-movies.js";
 import {CARD_COUNT_MAIN, CARD_COUNT_EXTRA, RenderPosition, MovieContainers} from "./utils/const";
-import {render} from "./utils/main.js";
+import {render} from "./utils/render.js";
 import {mocks} from "./mocks/movie.js";
 
 const getPreparedMocks = (type) => {

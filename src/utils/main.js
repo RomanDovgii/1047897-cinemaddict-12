@@ -1,22 +1,4 @@
-import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, RenderPosition} from "./const.js";
-
-export const renderTemplate = (container, element, position) => {
-  container.insertAdjacentHTML(position, element);
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    default:
-      container.append(element);
-      break;
-  }
-};
+import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT} from "./const.js";
 
 export const getRandomNumber = (firstNumber, secondNumber) => {
   const bottom = Math.ceil(Math.min(firstNumber, secondNumber));
