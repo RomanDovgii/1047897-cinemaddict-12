@@ -166,9 +166,22 @@ export default class Popup extends Abstract {
   constructor(movie) {
     super();
     this._movie = movie;
+
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._movie);
+  }
+
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._closeButtonClickHandler);
+    this._callback.closeClick();
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
 }
