@@ -1,4 +1,4 @@
-import {createElement} from "../utils/main.js";
+import Abstract from "./abstract.js";
 
 const createFilmsContainerTemplate = (container) => {
   const {elementClass, heading, visuallyHidden} = container;
@@ -13,30 +13,13 @@ const createFilmsContainerTemplate = (container) => {
   `;
 };
 
-export default class FilmsContainer {
+export default class FilmsContainer extends Abstract {
   constructor(container) {
+    super();
     this._container = container;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmsContainerTemplate(this._container);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }

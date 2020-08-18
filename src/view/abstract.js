@@ -1,20 +1,18 @@
-import {createElement} from "../utils/main.js";
+import {createElement} from "../utils/main";
 
-const createNoMoviesTemplate = () => {
-  return `
-  <h2 class="films-list__title">There are no movies in our database</h2>
-  `;
-};
-
-export default class NoMovies {
+export default class Abstract {
   constructor() {
+    if (new.target === Abstract) {
+      throw new Error(`Can't instantiate Abstract, only concrete one.`);
+    }
+
     this._element = null;
+    this._callback = {};
   }
 
   getTemplate() {
-    return createNoMoviesTemplate();
+    throw new Error(`Abstract method not implemented: getTemplate`);
   }
-
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
@@ -22,7 +20,6 @@ export default class NoMovies {
 
     return this._element;
   }
-
   removeElement() {
     if (this._element) {
       this._element.remove();

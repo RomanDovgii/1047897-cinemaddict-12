@@ -1,5 +1,5 @@
+import Abstract from "./abstract.js";
 import {mocks} from "../mocks/movie.js";
-import {createElement} from "../utils/main.js";
 
 const getRank = () => {
   const moviesWatched = mocks.slice().filter((mock) => mock.isWatched).length;
@@ -25,30 +25,13 @@ const createRankTemplate = (rank) => {
   `;
 };
 
-export default class UserRank {
+export default class UserRank extends Abstract {
   constructor() {
+    super();
     this._rank = getRank();
-
-    this._element = null;
   }
 
   getTemplate() {
     return createRankTemplate(this._rank);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
   }
 }

@@ -1,6 +1,6 @@
 import {formateDuration} from "../utils/main.js";
-import {createElement} from "../utils/main.js";
 import {MAX_STRING_LENGTH} from "../utils/const.js";
+import Abstract from "./abstract.js";
 
 const createCardTemplate = (mock) => {
 
@@ -34,30 +34,29 @@ const createCardTemplate = (mock) => {
 };
 
 
-export default class Card {
+export default class Card extends Abstract {
   constructor(movie) {
+    super();
     this._movie = movie;
-
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createCardTemplate(this._movie);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _clickHandler(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
 
-    return this._element;
+    this._callback.click();
   }
 
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
+  setClickHandler(callback) {
+    this._callback.click = callback;
 
-    this._element = null;
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, this._clickHandler);
   }
 }

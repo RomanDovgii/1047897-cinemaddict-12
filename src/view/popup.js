@@ -1,4 +1,5 @@
-import {formateDuration, createElement} from "../utils/main.js";
+import Abstract from "./abstract.js";
+import {formateDuration} from "../utils/main.js";
 
 const generateGenres = (array) => {
   return array.reduce(
@@ -161,30 +162,26 @@ const createPopupTemplate = (movie) => {
   `;
 };
 
-export default class Popup {
+export default class Popup extends Abstract {
   constructor(movie) {
+    super();
     this._movie = movie;
 
-    this._element = null;
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._movie);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._closeButtonClickHandler);
+    this._callback.closeClick();
   }
 
-  removeElement() {
-    if (this._element) {
-      this._element.remove();
-    }
-
-    this._element = null;
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
 }
