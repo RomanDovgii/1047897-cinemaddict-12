@@ -1,5 +1,4 @@
 import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, CARD_COUNT_EXTRA} from "../utils/const.js";
-import {mocks} from "../mocks/movie.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
 import CardView from "../view/card.js";
@@ -10,15 +9,13 @@ import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 
-export default class Films {
-  constructor(mainContainer, movies) {
+export default class MovieList {
+  constructor(mainContainer) {
     this._mainContainer = mainContainer;
-    this._movies = movies;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
     this.popup = new PopupView();
 
-    this._menuComponent = new NavigationView(this._movies);
     this._sortComponent = new SortView();
 
     this._filmsComponent = new FilmsView();
@@ -37,16 +34,28 @@ export default class Films {
     this._newPopup = ``;
   }
 
+  init(movies) {
+    this._movies = movies.slice();
+
+    this._menuComponent = new NavigationView(this._movies);
+
+    this._renderMenu();
+    this._renderSort();
+    this._renderFilmsContainer();
+
+    this._renderMain();
+  }
+
   _prepareMovies(type) {
-    const mocksCopy = [...mocks];
+    const moviesCopy = [...this._movies];
 
     switch (type) {
       case MovieContainers.TOP:
-        return mocksCopy.sort((a, b) => b.raiting - a.raiting);
+        return moviesCopy.sort((a, b) => b.raiting - a.raiting);
       case MovieContainers.COMMENTED:
-        return mocksCopy.sort((a, b) => b.comments.length - a.comments.length);
+        return moviesCopy.sort((a, b) => b.comments.length - a.comments.length);
       default:
-        return mocksCopy;
+        return moviesCopy;
     }
   }
 
@@ -171,7 +180,7 @@ export default class Films {
     this._renderFilmsCards(this._renderFilms, this._renderFilms + 5, MovieContainers.ALL, cardsContainer);
     this._renderFilms += CARD_COUNT_MAIN;
 
-    if (this._renderFilms >= mocks.length) {
+    if (this._renderFilms >= this._movies.length) {
       this._loadMoreButtonComponent.removeElement();
     }
   }
@@ -181,10 +190,6 @@ export default class Films {
   }
 
   _renderMain() {
-    this._renderMenu();
-    this._renderSort();
-    this._renderFilmsContainer();
-
     if (!this._movies.length) {
       this._renderNoFilms();
       return;
