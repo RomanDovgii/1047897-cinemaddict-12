@@ -29,8 +29,6 @@ export default class MovieList {
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleCardClick = this._handleCardClick(this);
-
-    this._previousPopup = ``;
     this._newPopup = ``;
   }
 
