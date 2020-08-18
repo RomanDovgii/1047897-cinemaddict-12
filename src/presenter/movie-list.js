@@ -185,10 +185,6 @@ export default class MovieList {
     }
   }
 
-  _handleCardClick() {
-
-  }
-
   _renderMain() {
     if (!this._movies.length) {
       this._renderNoFilms();
