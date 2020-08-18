@@ -29,7 +29,7 @@ export default class MovieList {
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleCardClick = this._handleCardClick(this);
-    this._newPopup = ``;
+    this._newPopup = null;
   }
 
   init(movies) {
@@ -110,7 +110,6 @@ export default class MovieList {
       };
 
       const removePopup = () => {
-        // console.log(`strike`);
         this._oldPopup.removeElement();
         document.removeEventListener(`keydown`, documentEscKeydownHandler);
         document.removeEventListener(`click`, documentClickHandler);
