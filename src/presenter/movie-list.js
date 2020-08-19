@@ -28,11 +28,16 @@ export default class MovieList {
     this._loadMoreButtonComponent = new LoadMoreButtonView();
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+    this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
     this._newPopup = null;
+    this._previousSortMethod = `default`;
+    this._sortMethod = `default`;
+    this._moviesSorted = null;
   }
 
   init(movies) {
     this._movies = movies.slice();
+    this._moviesOrign = movies.slice();
 
     this._menuComponent = new NavigationView(this._movies);
 
@@ -127,6 +132,8 @@ export default class MovieList {
 
   _renderSort() {
     render(this._mainContainer, this._sortComponent, RenderPosition.BEFOREEND);
+
+    this._sortComponent.setClickHandler(this._handleSortButtonClick);
   }
 
   _renderFilmsContainer() {
@@ -168,6 +175,38 @@ export default class MovieList {
     render(this._filmsAllComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
     this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
+  }
+
+  _handleSortButtonClick() {
+    const selectedButton = this._sortComponent.getElement().querySelector(`.sort__button--active`);
+    const moviesContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
+
+    switch (true) {
+      case (selectedButton.classList.contains(`sort__button--date`)):
+        this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
+        this._sortMethod = `date`;
+        break;
+      case (selectedButton.classList.contains(`sort__button--raiting`)):
+        this._movies = this._moviesOrign.slice().sort((a, b) => b.raiting - a.raiting);
+        this._sortMethod = `raiting`;
+        break;
+      default:
+        this._movies = this._moviesOrign.slice();
+        this._sortMethod = `default`;
+        break;
+    }
+
+    if (this._sortMethod !== this._previousSortMethod) {
+      this._renderFilms = CARD_COUNT_MAIN;
+      moviesContainer.innerHTML = ``;
+      this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, moviesContainer);
+
+      if (this._movies.length > CARD_COUNT_MAIN) {
+        this._renderMoreButton();
+      }
+    }
+
+    this._previousSortMethod = this._sortMethod;
   }
 
   _handleLoadMoreButtonClick() {
