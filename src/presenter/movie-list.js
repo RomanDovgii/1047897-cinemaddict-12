@@ -28,7 +28,6 @@ export default class MovieList {
     this._loadMoreButtonComponent = new LoadMoreButtonView();
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
-    this._handleCardClick = this._handleCardClick(this);
     this._newPopup = null;
   }
 
