@@ -33,7 +33,6 @@ export default class MovieList {
     this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
-    this._moviesSorted = null;
   }
 
   init(movies) {
