@@ -55,3 +55,9 @@ export const createElement = (template) => {
 };
 
 export const sentences = FISH_TEXT.split(`. `);
+
+export const convertEnumToArray = (loaclEnum) => {
+  const localArray = [];
+  Object.keys(loaclEnum).forEach((element) => localArray.push(loaclEnum[element]));
+  return localArray;
+}

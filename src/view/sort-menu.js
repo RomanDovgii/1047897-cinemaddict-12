@@ -1,14 +1,15 @@
 import Abstract from "./abstract.js";
-import {SORT_TYPES} from "../utils/const.js";
+import {SortType} from "../utils/const.js";
+import {convertEnumToArray} from "../utils/main.js";
 
 const createSortMenuButton = (sortTypes) => {
   return sortTypes.reduce((accumulator, element) => accumulator + `<li><a href="#" class="sort__button sort__button--${element}">Sort by ${element}</a></li>`, ``);
 };
 
-const createSortMenuTemplate = () => {
+const createSortMenuTemplate = (array) => {
   return `
   <ul class="sort">
-    ${createSortMenuButton(SORT_TYPES)}
+    ${createSortMenuButton(array)}
   </ul>
   `;
 };
@@ -17,10 +18,11 @@ export default class SortMenu extends Abstract {
   constructor() {
     super();
     this._clickHandler = this._clickHandler.bind(this);
+    this._sortTypes = convertEnumToArray(SortType);
   }
 
   getTemplate() {
-    return createSortMenuTemplate();
+    return createSortMenuTemplate(this._sortTypes);
   }
 
   _clickHandler(evt) {
@@ -28,7 +30,7 @@ export default class SortMenu extends Abstract {
 
     evt.target.classList.add(`sort__button--active`);
 
-    SORT_TYPES.forEach((element) => {
+    this._sortTypes.forEach((element) => {
       const layoutElement = this.getElement().querySelector(`.sort__button--${element}`);
       if (layoutElement !== evt.target) {
         layoutElement.classList.remove(`sort__button--active`);
@@ -46,7 +48,7 @@ export default class SortMenu extends Abstract {
       this.getElement().querySelector(`.sort__button--default`).classList.add(`sort__button--active`);
     }
 
-    SORT_TYPES.forEach((element) => {
+    this._sortTypes.forEach((element) => {
       this.getElement().querySelector(`.sort__button--${element}`).addEventListener(`click`, this._clickHandler);
     });
   }

@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, CARD_COUNT_EXTRA} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA} from "../utils/const.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
 import CardView from "../view/card.js";
@@ -184,15 +184,15 @@ export default class MovieList {
     switch (true) {
       case (selectedButton.classList.contains(`sort__button--date`)):
         this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
-        this._sortMethod = `date`;
+        this._sortMethod = SortType.DATA;
         break;
       case (selectedButton.classList.contains(`sort__button--raiting`)):
         this._movies = this._moviesOrign.slice().sort((a, b) => b.raiting - a.raiting);
-        this._sortMethod = `raiting`;
+        this._sortMethod = SortType.RAITING;
         break;
       default:
         this._movies = this._moviesOrign.slice();
-        this._sortMethod = `default`;
+        this._sortMethod = SortType.DEFAULT;
         break;
     }
 
