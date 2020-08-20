@@ -141,6 +141,11 @@ export default class MovieList {
     render(this._mainContainer, this._filmsComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderMainFilmsCards() {
+    this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
+    this._renderMoreButton();
+  }
+
   _renderFilmsContainerAll() {
     render(this._filmsComponent, this._filmsAllComponent, RenderPosition.BEFOREEND);
     this._renderMainFilmsCards();
@@ -189,16 +194,15 @@ export default class MovieList {
     }
   }
 
-  _renderMainFilmsCards() {
+  _clearMainMoviesContainer() {
     this._renderFilms = CARD_COUNT_MAIN;
     this._moviesMainContainer.innerHTML = ``;
-    this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
-    this._renderMoreButton();
   }
 
   _handleSortButtonClick(sortMethod) {
     if (sortMethod !== this._previousSortMethod) {
       this._sortMovies(sortMethod);
+      this._clearMainMoviesContainer();
       this._renderMainFilmsCards();
       this._previousSortMethod = sortMethod;
     }
