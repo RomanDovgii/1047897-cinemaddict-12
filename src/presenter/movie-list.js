@@ -180,13 +180,13 @@ export default class MovieList {
   _handleSortButtonClick(type) {
     switch (true) {
       case (type === SortType.DATE):
-        this._sortMethod = SortType.DATE;
+        this._sortMethod = type;
         break;
       case (type === SortType.RAITING):
-        this._sortMethod = SortType.RAITING;
+        this._sortMethod = type;
         break;
       default:
-        this._sortMethod = SortType.DEFAULT;
+        this._sortMethod = type;
         break;
     }
 
