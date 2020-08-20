@@ -60,4 +60,4 @@ export const convertEnumToArray = (loaclEnum) => {
   const localArray = [];
   Object.keys(loaclEnum).forEach((element) => localArray.push(loaclEnum[element]));
   return localArray;
-}
+};
