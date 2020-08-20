@@ -176,27 +176,31 @@ export default class MovieList {
     }
   }
 
+  _sortMovies(sortMethod) {
+    switch (sortMethod) {
+      case SortType.DATE:
+        this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
+        break;
+      case SortType.RAITING:
+        this._movies = this._moviesOrign.slice().sort((a, b) => b.raiting - a.raiting);
+        break;
+      default:
+        this._movies = this._moviesOrign.slice();
+        break;
+    }
+  }
+
+  _rerenderFilmsCards() {
+    this._renderFilms = CARD_COUNT_MAIN;
+    this._moviesMainContainer.innerHTML = ``;
+    this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
+    this._renderMoreButton();
+  }
+
   _handleSortButtonClick(sortMethod) {
     if (sortMethod !== this._previousSortMethod) {
-      this._renderFilms = CARD_COUNT_MAIN;
-
-
-      switch (sortMethod) {
-        case SortType.DATE:
-          this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
-          break;
-        case SortType.RAITING:
-          this._movies = this._moviesOrign.slice().sort((a, b) => b.raiting - a.raiting);
-          break;
-        default:
-          this._movies = this._moviesOrign.slice();
-          break;
-      }
-
-      this._moviesMainContainer.innerHTML = ``;
-      this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
-      this._renderMoreButton();
-
+      this._sortMovies(sortMethod);
+      this._rerenderFilmsCards();
       this._previousSortMethod = sortMethod;
     }
   }
