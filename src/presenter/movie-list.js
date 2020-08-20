@@ -33,7 +33,6 @@ export default class MovieList {
     this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
-    this._sortMethod = SortType.DEFAULT;
     this._moviesSorted = null;
   }
 
@@ -177,14 +176,12 @@ export default class MovieList {
     }
   }
 
-  _handleSortButtonClick(type) {
-    this._sortMethod = type;
-
-    if (this._sortMethod !== this._previousSortMethod) {
+  _handleSortButtonClick(sortMethod) {
+    if (sortMethod !== this._previousSortMethod) {
       this._renderFilms = CARD_COUNT_MAIN;
 
 
-      switch (this._sortMethod) {
+      switch (sortMethod) {
         case SortType.DATE:
           this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
           break;
@@ -200,7 +197,7 @@ export default class MovieList {
       this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
       this._renderMoreButton();
 
-      this._previousSortMethod = this._sortMethod;
+      this._previousSortMethod = sortMethod;
     }
   }
 
