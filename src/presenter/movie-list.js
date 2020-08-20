@@ -177,14 +177,12 @@ export default class MovieList {
     }
   }
 
-  _handleSortButtonClick() {
-    const selectedButton = this._sortComponent.getElement().querySelector(`.sort__button--active`);
-
+  _handleSortButtonClick(type) {
     switch (true) {
-      case (selectedButton.dataset.type === SortType.DATE):
+      case (type === SortType.DATE):
         this._sortMethod = SortType.DATE;
         break;
-      case (selectedButton.dataset.type === SortType.RAITING):
+      case (type === SortType.RAITING):
         this._sortMethod = SortType.RAITING;
         break;
       default:

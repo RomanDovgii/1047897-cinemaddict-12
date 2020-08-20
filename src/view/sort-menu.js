@@ -37,8 +37,7 @@ export default class SortMenu extends Abstract {
       }
     });
 
-    this._callback.click();
-    return evt.target;
+    this._callback.click(evt.target.dataset.type);
   }
 
   setClickHandler(callback) {
