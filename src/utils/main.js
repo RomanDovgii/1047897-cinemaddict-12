@@ -59,3 +59,17 @@ export const sentences = FISH_TEXT.split(`. `);
 export const convertEnumToArray = (localEnum) => {
   return Object.values(localEnum);
 };
+
+export const updateItem = (elements, updatedElement) => {
+  const index = elements.findIndex((item) => item.id === updatedElement.id);
+
+  if (index === -1) {
+    return elements;
+  }
+
+  return [
+    ...elements.slice(0, index),
+    updatedElement,
+    ...elements.slice(index + 1)
+  ];
+};

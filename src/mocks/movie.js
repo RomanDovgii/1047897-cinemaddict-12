@@ -82,7 +82,8 @@ export const createMovie = () => {
     isWatchlist: Boolean(getRandomNumber(0, 1)),
     isWatched: Boolean(getRandomNumber(0, 1)),
     isFavorite: Boolean(getRandomNumber(0, 1)),
-    comments: generateComments()
+    comments: generateComments(),
+    id: getRandomNumber(0, 1000000)
   };
 };
 

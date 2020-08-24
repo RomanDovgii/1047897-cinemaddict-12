@@ -1,19 +1,21 @@
 import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA} from "../utils/const.js";
+import {updateItem} from "../utils/main.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
-import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
 import NavigationView from "../view/menu.js";
 import SortView from "../view/sort-menu.js";
 import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
+import MoviePresenter from "./movie.js";
 
 export default class MovieList {
   constructor(mainContainer) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
+    this._moviePresenter = {};
     this.popup = new PopupView();
 
     this._sortComponent = new SortView();
@@ -31,21 +33,29 @@ export default class MovieList {
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
+    this._handleMovieChange = this._handleMovieChange.bind(this);
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
   }
 
   init(movies) {
     this._movies = movies.slice();
-    this._moviesOrign = movies.slice();
+    this._moviesOrigin = movies.slice();
 
     this._menuComponent = new NavigationView(this._movies);
+    this._moviePresenter = new MoviePresenter(this._handleMovieChange);
 
     this._renderMenu();
     this._renderSort();
     this._renderFilmsContainer();
 
     this._renderMain();
+  }
+
+  _handleMovieChange(updatedMovie) {
+    this._moviesOrigin = updateItem(this._moviesOrigin, updatedMovie);
+    this._movies = updateItem(this._movies, updatedMovie);
+    this._moviePresenter[updatedMovie.id].rerenderCard(updatedMovie);
   }
 
   _prepareMovies(type) {
@@ -69,58 +79,12 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const cardComponent = new CardView(movie);
-      const cardElement = cardComponent.getElement();
-      const popup = new PopupView(movie);
-
-      fragment.append(cardElement);
-
-      const documentClickHandler = (evnt) => {
-        const eventTarget = evnt.target;
-        if ((!eventTarget.closest(`.film-details`))) {
-          removePopup(evnt);
-        }
-      };
-
-      const documentEscKeydownHandler = (evnt) => {
-        if (evnt.keyCode === 27) {
-          removePopup(evnt);
-        }
-      };
-
-      const showPopup = () => {
-
-        const body = document.querySelector(`.body`);
-
-        this._newPopup = popup;
-
-        if (!this._popupOpen) {
-          this._popupOpen = true;
-          this._oldPopup = popup;
-
-          render(body, popup, RenderPosition.BEFOREEND);
-          popup.setCloseButtonClickHandler(removePopup);
-          document.addEventListener(`click`, documentClickHandler);
-          document.addEventListener(`keydown`, documentEscKeydownHandler);
-        } else if (this._oldPopup !== this._newPopup) {
-          this._oldPopup.removeElement();
-
-          render(body, popup, RenderPosition.BEFOREEND);
-          popup.setCloseButtonClickHandler(removePopup);
-          this._oldPopup = popup;
-        }
-
-
-      };
-
-      const removePopup = () => {
-        this._oldPopup.removeElement();
-        document.removeEventListener(`keydown`, documentEscKeydownHandler);
-        document.removeEventListener(`click`, documentClickHandler);
-        this._popupOpen = false;
-      };
-
-      cardComponent.setClickHandler(showPopup);
+      const moviePresenter = new MoviePresenter(this._handleMovieChange);
+      const card = moviePresenter.init(movie);
+      if (type === MovieContainers.ALL) {
+        this._moviePresenter[movie.id] = moviePresenter;
+      }
+      fragment.append(card);
     });
 
     return fragment;
@@ -182,13 +146,13 @@ export default class MovieList {
   _sortMovies(sortMethod) {
     switch (sortMethod) {
       case SortType.DATE:
-        this._movies = this._moviesOrign.slice().sort((a, b) => b.release - a.release);
+        this._movies = this._moviesOrigin.slice().sort((a, b) => b.release - a.release);
         break;
       case SortType.RAITING:
-        this._movies = this._moviesOrign.slice().sort((a, b) => b.raiting - a.raiting);
+        this._movies = this._moviesOrigin.slice().sort((a, b) => b.raiting - a.raiting);
         break;
       default:
-        this._movies = this._moviesOrign.slice();
+        this._movies = this._moviesOrigin.slice();
         break;
     }
   }
