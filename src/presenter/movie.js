@@ -21,10 +21,7 @@ export default class Movie {
     this._cardComponent = new CardView(this._movie);
     this._popupComponent = new PopupView(this._movie);
 
-    this._cardComponent.setClickHandler(this._showPopup);
-    this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._setHandlers();
 
     this._cardComponentOld = this._cardComponent;
     this._cardComponentNew = null;
@@ -33,8 +30,13 @@ export default class Movie {
   }
 
   rerenderCard(updatedMovie) {
-    const newCard = new CardView(updatedMovie);
-    replace(newCard, this._cardComponent);
+    this._oldCardComponent = this._cardComponent;
+    this._cardComponent = new CardView(updatedMovie);
+    this._movie = updatedMovie;
+    replace(this._cardComponent, this._oldCardComponent);
+    this._oldCardComponent.removeElement();
+
+    this._setHandlers();
   }
 
   _showPopup() {
@@ -107,5 +109,12 @@ export default class Movie {
     if ((!eventTarget.closest(`.film-details`))) {
       this._removePopup();
     }
+  }
+
+  _setHandlers() {
+    this._cardComponent.setClickHandler(this._showPopup);
+    this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
   }
 }
