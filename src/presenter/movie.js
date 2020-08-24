@@ -6,6 +6,7 @@ import PopupView from "../view/popup.js";
 export default class Movie {
   constructor(changeData) {
     this._changeData = changeData;
+    this._popupOpen = false;
 
     this._showPopup = this._showPopup.bind(this);
     this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
@@ -21,7 +22,7 @@ export default class Movie {
     this._cardComponent = new CardView(this._movie);
     this._popupComponent = new PopupView(this._movie);
 
-    this._setHandlers();
+    this._setHandlersForCard();
 
     this._cardComponentOld = this._cardComponent;
     this._cardComponentNew = null;
@@ -31,41 +32,40 @@ export default class Movie {
 
   rerenderCard(updatedMovie) {
     this._oldCardComponent = this._cardComponent;
-    this._cardComponent = new CardView(updatedMovie);
-    this._movie = updatedMovie;
-    replace(this._cardComponent, this._oldCardComponent);
-    this._oldCardComponent.removeElement();
+    this._oldPopupComponent = this._popupComponent;
 
-    this._setHandlers();
+    this._cardComponent = new CardView(updatedMovie);
+    this._popupComponent = new PopupView(updatedMovie);
+
+    this._movie = updatedMovie;
+
+    replace(this._cardComponent, this._oldCardComponent);
+    this._setHandlersForCard();
+
+    if (this._popupOpen === true) {
+      replace(this._popupComponent, this._oldPopupComponent);
+      this._setHandlersForPopup();
+    }
+
+
+    this._oldCardComponent.removeElement();
+    this._oldPopupComponent.removeElement();
   }
 
   _showPopup() {
+    this._popupOpen = true;
+
     const body = document.querySelector(`.body`);
-
-    this._newPopup = this._popupComponent;
-
-    if (!this._popupOpen) {
-      this._popupOpen = true;
-      this._oldPopup = this._popupComponent;
-
-      render(body, this._popupComponent, RenderPosition.BEFOREEND);
-      this._popupComponent.setCloseButtonClickHandler(this._removePopup);
-      document.addEventListener(`click`, this._handleDocumentClick);
-      document.addEventListener(`keydown`, this._handleEscKeyDown);
-    } else if (this._oldPopup !== this._newPopup) {
-      this._oldPopup.removeElement();
-
-      render(body, this._popupComponent, RenderPosition.BEFOREEND);
-      this._popupComponent.setCloseButtonClickHandler(this._removePopup);
-      this._oldPopup = this._popupComponent;
-    }
+    render(body, this._popupComponent, RenderPosition.BEFOREEND);
+    this._setHandlersForPopup();
   }
 
   _removePopup() {
-    this._oldPopup.removeElement();
+    this._popupOpen = false;
+
+    this._popupComponent.removeElement();
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
-    this._popupOpen = false;
   }
 
   _handleWatchlistClick() {
@@ -111,10 +111,20 @@ export default class Movie {
     }
   }
 
-  _setHandlers() {
+  _setHandlersForCard() {
     this._cardComponent.setClickHandler(this._showPopup);
     this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+  }
+
+  _setHandlersForPopup() {
+    this._popupComponent.setCloseButtonClickHandler(this._removePopup);
+    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
+    document.addEventListener(`click`, this._handleDocumentClick);
+    document.addEventListener(`keydown`, this._handleEscKeyDown);
   }
 }
