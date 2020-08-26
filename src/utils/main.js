@@ -41,7 +41,7 @@ export const getPath = (type, imageName) => {
     case `icons`:
       return `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
     case `emoji`:
-      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName}.png`;
+      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName.replace(`emoji-`, ``)}.png`;
     default:
       return MAIN_IMAGES_PATH;
   }

@@ -15,12 +15,13 @@ export default class Movie {
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
+    this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
   }
 
   init(movie) {
     this._movie = movie;
+    this._comments = this._movie.comments;
     this._cardComponent = new CardView(this._movie);
-    this._popupComponent = new PopupView(this._movie);
 
     this._setHandlersForCard();
 
@@ -32,31 +33,25 @@ export default class Movie {
 
   rerenderCard(updatedMovie) {
     this._oldCardComponent = this._cardComponent;
-    this._oldPopupComponent = this._popupComponent;
 
     this._cardComponent = new CardView(updatedMovie);
-    this._popupComponent = new PopupView(updatedMovie);
 
     this._movie = updatedMovie;
 
     replace(this._cardComponent, this._oldCardComponent);
     this._setHandlersForCard();
 
-    if (this._popupOpen === true) {
-      replace(this._popupComponent, this._oldPopupComponent);
-      this._setHandlersForPopup();
-    }
-
-
     this._oldCardComponent.removeElement();
-    this._oldPopupComponent.removeElement();
   }
 
   _showPopup() {
+    this._popupComponent = new PopupView(this._movie);
     this._popupOpen = true;
 
     const body = document.querySelector(`.body`);
+
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
+
     this._setHandlersForPopup();
   }
 
@@ -104,6 +99,10 @@ export default class Movie {
     }
   }
 
+  _handlePopupButtonClick(updatedMovie) {
+    this.rerenderCard(updatedMovie);
+  }
+
   _handleDocumentClick(evt) {
     const eventTarget = evt.target;
     if ((!eventTarget.closest(`.film-details`))) {
@@ -120,11 +119,9 @@ export default class Movie {
 
   _setHandlersForPopup() {
     this._popupComponent.setCloseButtonClickHandler(this._removePopup);
-    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupComponent.setButtonsHandlers(this._handlePopupButtonClick);
 
-    document.addEventListener(`click`, this._handleDocumentClick);
+    // document.addEventListener(`click`, this._handleDocumentClick);
     document.addEventListener(`keydown`, this._handleEscKeyDown);
   }
 }

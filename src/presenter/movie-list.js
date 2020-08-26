@@ -2,7 +2,6 @@ import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_E
 import {updateItem} from "../utils/main.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
-import PopupView from "../view/popup.js";
 import NavigationView from "../view/menu.js";
 import SortView from "../view/sort-menu.js";
 import FilmsContainerView from "../view/films-container.js";
@@ -16,7 +15,6 @@ export default class MovieList {
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
     this._moviePresenter = {};
-    this.popup = new PopupView();
 
     this._sortComponent = new SortView();
 
