@@ -47,6 +47,7 @@ export default class AddComment extends Abstract {
   constructor() {
     super();
     this._comment = {};
+    this._handleEmojiClick = this._handleEmojiClick.bind(this);
   }
 
   getTemplate() {

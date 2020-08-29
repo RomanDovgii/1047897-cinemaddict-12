@@ -1,4 +1,6 @@
 import SmartView from "./smart.js";
+import {createElement} from "../utils/main.js";
+import {replace} from "../utils/render.js";
 
 const createCommentTemplate = (comment) => {
   return `
@@ -18,6 +20,12 @@ const createCommentTemplate = (comment) => {
   `;
 };
 
+const countTemplate = (comments) => {
+  return `
+  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+  `;
+};
+
 export default class Comment extends SmartView {
   constructor(comment, comments) {
     super();
@@ -32,8 +40,16 @@ export default class Comment extends SmartView {
 
   _handleDeleteClick(evt) {
     evt.preventDefault();
+    evt.stopPropagation();
     this.removeElement();
     this._removeCommentFromComments();
+
+    if (document.querySelector(`.film-details`)) {
+      const oldElement = document.querySelector(`.film-details__comments-title`);
+      const newElement = createElement(countTemplate(this._comments));
+
+      replace(newElement, oldElement);
+    }
   }
 
   _removeCommentFromComments() {

@@ -1,11 +1,29 @@
 import {RenderPosition} from "../utils/const.js";
 import {render, replace} from "../utils/render.js";
+import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
 
+const templateForControls = (movie) => {
+  const {isWatchlist, isWatched, isFavorite} = movie;
+
+  const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
+  const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
+  const favoriteControl = isFavorite ? `film-card__controls-item--active` : ``;
+
+  return `
+  <form class="film-card__controls">
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${wathcedControl}">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteControl}">Mark as favorite</button>
+  </form>
+  `;
+};
+
 export default class Movie {
-  constructor(changeData) {
+  constructor(changeData, handlePopup) {
     this._changeData = changeData;
+    this._handlePopup = handlePopup;
     this._popupOpen = false;
 
     this._showPopup = this._showPopup.bind(this);
@@ -18,10 +36,12 @@ export default class Movie {
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
   }
 
-  init(movie) {
+  init(movie, observerNotify) {
+    this._observerNotify = observerNotify;
     this._movie = movie;
     this._comments = this._movie.comments;
     this._cardComponent = new CardView(this._movie);
+    this._popupComponent = new PopupView(this._movie);
 
     this._setHandlersForCard();
 
@@ -44,9 +64,26 @@ export default class Movie {
     this._oldCardComponent.removeElement();
   }
 
+  rerenderControls(updatedMovie) {
+    this._oldControls = this._cardComponent.getElement().querySelector(`.film-card__controls`);
+
+    this._newControls = createElement(templateForControls(updatedMovie));
+
+    this._movie = updatedMovie;
+
+    replace(this._newControls, this._oldControls);
+    this._setHandlersForCard();
+
+    this._oldControls.removeElement();
+  }
+
   _showPopup() {
-    this._popupComponent = new PopupView(this._movie);
     this._popupOpen = true;
+    if (this._popupOpen) {
+      this._handlePopup();
+    }
+
+    this._popupComponent = new PopupView(this._movie);
 
     const body = document.querySelector(`.body`);
 
@@ -56,11 +93,10 @@ export default class Movie {
   }
 
   _removePopup() {
-    this._popupOpen = false;
-
     this._popupComponent.removeElement();
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
+    this._popupOpen = false;
   }
 
   _handleWatchlistClick() {
@@ -70,7 +106,7 @@ export default class Movie {
         {
           isWatchlist: !this._movie.isWatchlist
         }
-    ));
+    ), `control`);
   }
 
   _handleWatchedClick() {
@@ -80,7 +116,7 @@ export default class Movie {
         {
           isWatched: !this._movie.isWatched
         }
-    ));
+    ), `control`);
   }
 
   _handleFavoriteClick() {
@@ -90,7 +126,7 @@ export default class Movie {
         {
           isFavorite: !this._movie.isFavorite
         }
-    ));
+    ), `control`);
   }
 
   _handleEscKeyDown(evt) {
@@ -104,6 +140,7 @@ export default class Movie {
   }
 
   _handleDocumentClick(evt) {
+
     const eventTarget = evt.target;
     if ((!eventTarget.closest(`.film-details`))) {
       this._removePopup();
@@ -120,8 +157,7 @@ export default class Movie {
   _setHandlersForPopup() {
     this._popupComponent.setCloseButtonClickHandler(this._removePopup);
     this._popupComponent.setButtonsHandlers(this._handlePopupButtonClick);
-
-    // document.addEventListener(`click`, this._handleDocumentClick);
+    document.addEventListener(`click`, this._handleDocumentClick);
     document.addEventListener(`keydown`, this._handleEscKeyDown);
   }
 }

@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, ChangeType, CARD_COUNT_EXTRA} from "../utils/const.js";
 import {updateItem} from "../utils/main.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
@@ -15,6 +15,7 @@ export default class MovieList {
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
     this._moviePresenter = {};
+    this._moviePresenters = {};
 
     this._sortComponent = new SortView();
 
@@ -32,6 +33,7 @@ export default class MovieList {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
     this._handleMovieChange = this._handleMovieChange.bind(this);
+    this._handlePopups = this._handlePopups.bind(this);
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
   }
@@ -41,7 +43,6 @@ export default class MovieList {
     this._moviesOrigin = movies.slice();
 
     this._menuComponent = new NavigationView(this._movies);
-    this._moviePresenter = new MoviePresenter(this._handleMovieChange);
 
     this._renderMenu();
     this._renderSort();
@@ -50,10 +51,20 @@ export default class MovieList {
     this._renderMain();
   }
 
-  _handleMovieChange(updatedMovie) {
+  _handlePopups() {
+    Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
+  }
+
+  _handleMovieChange(updatedMovie, type) {
     this._moviesOrigin = updateItem(this._moviesOrigin, updatedMovie);
     this._movies = updateItem(this._movies, updatedMovie);
-    this._moviePresenter[updatedMovie.id].rerenderCard(updatedMovie);
+
+    if (type !== ChangeType.CONTROL) {
+      this._moviePresenter[updatedMovie.id].rerenderCard(updatedMovie);
+    } else {
+      this._moviePresenter[updatedMovie.id].rerenderControls(updatedMovie);
+    }
+
   }
 
   _prepareMovies(type) {
@@ -77,12 +88,13 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const moviePresenter = new MoviePresenter(this._handleMovieChange);
+      const moviePresenter = new MoviePresenter(this._handleMovieChange, this._handlePopups);
       const card = moviePresenter.init(movie);
+      fragment.append(card);
+      this._moviePresenters[movie.id] = moviePresenter;
       if (type === MovieContainers.ALL) {
         this._moviePresenter[movie.id] = moviePresenter;
       }
-      fragment.append(card);
     });
 
     return fragment;

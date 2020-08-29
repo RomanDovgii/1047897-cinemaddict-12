@@ -145,6 +145,7 @@ export default class Popup extends SmartView {
 
       const newComment = new AddComment();
       render(commentsSection, newComment, RenderPosition.BEFOREEND);
+      newComment.setEmojiClickHandler();
     }
 
     return this._element;
@@ -172,7 +173,6 @@ export default class Popup extends SmartView {
     this._callback.closeClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
-
   _watchlistClickHandler(evt) {
     evt.preventDefault();
 
