@@ -1,6 +1,7 @@
 import SmartView from "./smart.js";
 import Comment from "./comment.js";
-import {formateDuration, getPath, createElement} from "../utils/main.js";
+import AddComment from "./add-comment.js";
+import {formateDuration, createElement} from "../utils/main.js";
 import {render} from "../utils/render.js";
 import {RenderPosition} from "../utils/const.js";
 
@@ -106,47 +107,11 @@ const createPopupTemplate = (movie) => {
 
           <ul class="film-details__comments-list">
           </ul>
-
-          <div class="film-details__new-comment">
-            <div for="add-emoji" class="film-details__add-emoji-label">
-            </div>
-
-            <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-            </label>
-
-            <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
-            </div>
-          </div>
         </section>
       </div>
     </form>
   </section>
   `;
-};
-
-const emojiPreviewTemplate = (emoji) => {
-  const emojiPath = getPath(`emoji`, emoji);
-  return `<img class="film-details__emoji-preview" src="${emojiPath}" width="55" height="55" alt="${emoji}">`;
 };
 
 export default class Popup extends SmartView {
@@ -159,7 +124,6 @@ export default class Popup extends SmartView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._handleEmojiClick = this._handleEmojiClick.bind(this);
   }
 
   getTemplate() {
@@ -170,13 +134,17 @@ export default class Popup extends SmartView {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
       const commentsContainer = this._element.querySelector(`.film-details__comments-list`);
+      const commentsSection = this._element.querySelector(`.film-details__comments-wrap`);
 
       this._comments.map((element) => {
-        const comment = new Comment(element);
+        const comment = new Comment(element, this._comments);
 
         render(commentsContainer, comment, RenderPosition.BEFOREEND);
         comment.setDeleteHandler();
       });
+
+      const newComment = new AddComment();
+      render(commentsSection, newComment, RenderPosition.BEFOREEND);
     }
 
     return this._element;
@@ -192,8 +160,6 @@ export default class Popup extends SmartView {
     this._setWatchlistClickHandler(callback);
     this._setWatchedClickHandler(callback);
     this._setFavoriteClickHandler(callback);
-
-    this._setEmojiClickHandler();
   }
 
   _closeButtonClickHandler(evt) {
@@ -237,11 +203,6 @@ export default class Popup extends SmartView {
     this._callback.favoriteClick(Popup.parseDataToMovie(this._data));
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(Popup.parseDataToMovie(this._data));
-  }
-
   _setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);
@@ -255,25 +216,6 @@ export default class Popup extends SmartView {
   _setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
-  _handleEmojiClick(evt) {
-    const emoji = evt.target.closest(`.film-details__emoji-label`).getAttribute(`for`);
-    const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    const imagePreviewElement = createElement(emojiPreviewTemplate(emoji));
-    const existingImagePreviewElement = this.getElement().querySelector(`.film-details__emoji-preview`);
-
-    if (!existingImagePreviewElement) {
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
-    } else {
-      existingImagePreviewElement.remove();
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
-    }
-  }
-
-  _setEmojiClickHandler() {
-    const labels = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
-    labels.map((element) => element.addEventListener(`click`, this._handleEmojiClick));
   }
 
   static parseMovieToData(movie) {

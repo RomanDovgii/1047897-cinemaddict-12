@@ -19,8 +19,9 @@ const createCommentTemplate = (comment) => {
 };
 
 export default class Comment extends SmartView {
-  constructor(comment) {
+  constructor(comment, comments) {
     super();
+    this._comments = comments;
     this._comment = comment;
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
@@ -32,6 +33,13 @@ export default class Comment extends SmartView {
   _handleDeleteClick(evt) {
     evt.preventDefault();
     this.removeElement();
+    this._removeCommentFromComments();
+  }
+
+  _removeCommentFromComments() {
+    const index = this._comments.indexOf(this._comment);
+    this._comments.splice(index, 1);
+    this._comment = null;
   }
 
   setDeleteHandler() {
