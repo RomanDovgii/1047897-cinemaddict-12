@@ -1,4 +1,5 @@
-import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT} from "./const.js";
+import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, minutesInHour} from "./const.js";
+import moment from "moment";
 
 export const getRandomNumber = (firstNumber, secondNumber) => {
   const bottom = Math.ceil(Math.min(firstNumber, secondNumber));
@@ -23,13 +24,14 @@ export const getRandomDate = () => {
 };
 
 export const formateDuration = (duration) => {
-  const minute = duration % 60;
-  const hour = (duration - minute) / 60;
-
-  const hourText = hour > 0 ? `${hour}h ` : ``;
-  const minuteText = minute > 0 ? `${minute}m` : ``;
-
-  return `${hourText} ${minuteText}`;
+  switch (true) {
+    case duration < minutesInHour:
+      return moment.utc().startOf(`day`).add({minutes: duration}).format(`m[m]`);
+    case duration > minutesInHour && duration % minutesInHour === 0:
+      return moment.utc().startOf(`day`).add({minutes: duration}).format(`H[h]`);
+    default:
+      return moment.utc().startOf(`day`).add({minutes: duration}).format(`H[h] M[m]`);
+  }
 };
 
 export const getRandomElementFromArray = (array) => {
@@ -72,4 +74,18 @@ export const updateItem = (elements, updatedElement) => {
     updatedElement,
     ...elements.slice(index + 1)
   ];
+};
+
+const formatDigitsProperly = (digit) => {
+  return digit < 10 ? `0${digit}` : digit;
+};
+
+export const generateDateString = (minimumYear) => {
+  const year = getRandomNumber(minimumYear, 2020);
+  const month = getRandomNumber(1, 12);
+  const day = getRandomNumber(1, 30);
+  const hour = getRandomNumber(0, 23);
+  const minute = getRandomNumber(0, 59);
+  const second = getRandomNumber(0, 59);
+  return `${year}-${formatDigitsProperly(month)}-${formatDigitsProperly(day)}T${formatDigitsProperly(hour)}:${formatDigitsProperly(minute)}:${formatDigitsProperly(second)}`;
 };

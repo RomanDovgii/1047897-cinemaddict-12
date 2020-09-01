@@ -1,4 +1,4 @@
-import {getRandomNumber, sentences} from "../utils/main.js";
+import {getRandomNumber, sentences, generateDateString} from "../utils/main.js";
 import {USER_NAMES, EMOJI_DESCRIPTION, MAX_COMMENTS} from "../utils/const.js";
 
 export const generateComments = () => {
@@ -17,6 +17,6 @@ const createComment = () => {
     author: USER_NAMES[getRandomNumber(0, USER_NAMES.length - 1)],
     text: sentences[getRandomNumber(0, sentences.length - 1)],
     emoji: EMOJI_DESCRIPTION[getRandomNumber(0, EMOJI_DESCRIPTION.length - 1)],
-    date: new Date()
+    date: generateDateString(2019)
   };
 };
