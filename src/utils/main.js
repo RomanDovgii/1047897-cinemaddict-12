@@ -41,7 +41,7 @@ export const getPath = (type, imageName) => {
     case `icons`:
       return `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
     case `emoji`:
-      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName}.png`;
+      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName.replace(`emoji-`, ``)}.png`;
     default:
       return MAIN_IMAGES_PATH;
   }
@@ -58,4 +58,18 @@ export const sentences = FISH_TEXT.split(`. `);
 
 export const convertEnumToArray = (localEnum) => {
   return Object.values(localEnum);
+};
+
+export const updateItem = (elements, updatedElement) => {
+  const index = elements.findIndex((item) => item.id === updatedElement.id);
+
+  if (index === -1) {
+    return elements;
+  }
+
+  return [
+    ...elements.slice(0, index),
+    updatedElement,
+    ...elements.slice(index + 1)
+  ];
 };
