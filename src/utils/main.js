@@ -24,13 +24,14 @@ export const getRandomDate = () => {
 };
 
 export const formateDuration = (duration) => {
+  const time = moment.utc().startOf(`day`).add({minutes: duration});
   switch (true) {
     case duration < minutesInHour:
-      return moment.utc().startOf(`day`).add({minutes: duration}).format(`m[m]`);
+      return time.format(`m[m]`);
     case duration > minutesInHour && duration % minutesInHour === 0:
-      return moment.utc().startOf(`day`).add({minutes: duration}).format(`H[h]`);
+      return time.format(`H[h]`);
     default:
-      return moment.utc().startOf(`day`).add({minutes: duration}).format(`H[h] M[m]`);
+      return time.format(`H[h] M[m]`);
   }
 };
 
