@@ -8,6 +8,7 @@ import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 import MoviePresenter from "./movie.js";
+import moment from "moment";
 
 export default class MovieList {
   constructor(mainContainer) {
@@ -156,7 +157,7 @@ export default class MovieList {
   _sortMovies(sortMethod) {
     switch (sortMethod) {
       case SortType.DATE:
-        this._movies = this._moviesOrigin.slice().sort((a, b) => b.release - a.release);
+        this._movies = this._moviesOrigin.slice().sort((a, b) => moment(b.release).format(`YYYYMMDD`) - moment(a.release).format(`YYYYMMDD`));
         break;
       case SortType.RAITING:
         this._movies = this._moviesOrigin.slice().sort((a, b) => b.raiting - a.raiting);

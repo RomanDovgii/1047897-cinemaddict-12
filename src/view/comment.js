@@ -1,8 +1,11 @@
 import SmartView from "./smart.js";
 import {createElement} from "../utils/main.js";
 import {replace} from "../utils/render.js";
+import moment from "moment";
 
 const createCommentTemplate = (comment) => {
+  const date = moment(comment.date).format(`YYYY/MM/DD HH:MM`);
+
   return `
   <li class="film-details__comment">
     <span class="film-details__comment-emoji">
@@ -12,7 +15,7 @@ const createCommentTemplate = (comment) => {
       <p class="film-details__comment-text">${comment.text}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comment.author}</span>
-        <span class="film-details__comment-day">${comment.date.getFullYear()}/${comment.date.getMonth()}/${comment.date.getDate()} ${comment.date.getHours()}:${comment.date.getMinutes()}</span>
+        <span class="film-details__comment-day">${date}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>

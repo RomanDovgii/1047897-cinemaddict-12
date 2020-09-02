@@ -1,5 +1,5 @@
 import {MIN_DURATION, MAX_DURATION, MAIN_IMAGES_PATH, MAX_RAITING, MOCKS_COUNT, MIN_SENTENCES, MAX_SENTENCES, ImageTypes, MOVIE_NAMES, USER_NAMES, COUNTRIES, GENRES, CONTENT_RAITING, JPG_EXTENSION, PNG_EXTENSION, POPEY_MEETS_SINDBAD_NAME} from "../utils/const.js";
-import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences} from "../utils/main.js";
+import {getRandomNumber, getRandomDoubleNumber, getRandomElementFromArray, sentences, generateDateString} from "../utils/main.js";
 import {generateComments} from "./comments.js";
 
 const movieMocks = [];
@@ -71,7 +71,7 @@ export const createMovie = () => {
     director: getRandomElementFromArray(USER_NAMES),
     writers: getPeopleList(3),
     actors: getPeopleList(5),
-    release: new Date(),
+    release: generateDateString(1900),
     runtime: getRandomNumber(MIN_DURATION, MAX_DURATION),
     country: getRandomElementFromArray(COUNTRIES),
     genres: getGenres(),

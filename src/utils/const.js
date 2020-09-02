@@ -9,6 +9,7 @@ export const MIN_SENTENCES = 1;
 export const MAX_SENTENCES = 10;
 export const MAX_COMMENTS = 9;
 export const MAX_STRING_LENGTH = 139;
+export const MINUTES_IN_HOUR = 60;
 
 export const MAIN_IMAGES_PATH = `./images`;
 export const JPG_EXTENSION = `.jpg`;

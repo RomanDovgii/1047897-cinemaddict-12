@@ -1,9 +1,10 @@
 import SmartView from "./smart.js";
 import Comment from "./comment.js";
 import AddComment from "./add-comment.js";
-import {formateDuration, createElement} from "../utils/main.js";
+import {createElement, formateDuration} from "../utils/main.js";
 import {render} from "../utils/render.js";
 import {RenderPosition} from "../utils/const.js";
+import moment from "moment";
 
 const generateGenres = (array) => {
   return array.reduce(
@@ -66,7 +67,7 @@ const createPopupTemplate = (movie) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${date}</td>
+                <td class="film-details__cell">${moment(date).format(`D MMMM YYYY`)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
