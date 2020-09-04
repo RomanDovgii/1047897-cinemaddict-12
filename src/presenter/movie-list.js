@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, ChangeType, CARD_COUNT_EXTRA, UserAction, UpdateType} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType} from "../utils/const.js";
 import {render} from "../utils/render.js";
 import FilmsView from "../view/films-main.js";
 import NavigationView from "../view/menu.js";
@@ -143,11 +143,14 @@ export default class MovieList {
 
   _renderMainFilmsCards() {
     this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
-    this._renderMoreButton();
+    if (!this._loadMoreButtonComponent) {
+      this._renderMoreButton();
+    }
   }
 
   _renderFilmsContainerAll() {
     render(this._filmsComponent, this._filmsAllComponent, RenderPosition.BEFOREEND);
+
     this._renderMainFilmsCards();
   }
 
@@ -175,6 +178,7 @@ export default class MovieList {
   _renderMoreButton() {
     if (this._loadMoreButtonComponent) {
       this._loadMoreButtonComponent = null;
+      this._loadMoreButtonComponent.removeElement();
     }
 
 
