@@ -21,6 +21,18 @@ export const ChangeType = {
   COMMENT: `comment`
 };
 
+export const UserAction = {
+  ADD_COMMENT: `ADD_COMMENT`,
+  REMOVE_COMMENT: `REMOVE_COMMENT`,
+  ADD_TO_LIST: `ADD_TO_LIST`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
 export const ImageTypes = {
   POSTER: `posters`,
   ICON: `icons`,

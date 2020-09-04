@@ -1,4 +1,4 @@
-import {RenderPosition} from "../utils/const.js";
+import {RenderPosition, UserAction, UpdateType} from "../utils/const.js";
 import {render, replace} from "../utils/render.js";
 import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
@@ -100,33 +100,42 @@ export default class Movie {
   }
 
   _handleWatchlistClick() {
-    this._changeData(Object.assign(
-        {},
-        this._movie,
-        {
-          isWatchlist: !this._movie.isWatchlist
-        }
-    ), `control`);
+    this._changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isWatchlist: !this._movie.isWatchlist
+            }
+        ), `control`);
   }
 
   _handleWatchedClick() {
-    this._changeData(Object.assign(
-        {},
-        this._movie,
-        {
-          isWatched: !this._movie.isWatched
-        }
-    ), `control`);
+    this._changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isWatched: !this._movie.isWatched
+            }
+        ), `control`);
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign(
-        {},
-        this._movie,
-        {
-          isFavorite: !this._movie.isFavorite
-        }
-    ), `control`);
+    this._changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isFavorite: !this._movie.isFavorite
+            }
+        ), `control`);
   }
 
   _handleEscKeyDown(evt) {
