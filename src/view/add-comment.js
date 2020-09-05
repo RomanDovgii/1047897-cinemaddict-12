@@ -1,7 +1,8 @@
-import Abstract from "./abstract.js";
+import SmartView from "./smart.js";
 import {render} from "../utils/render.js";
-import {RenderPosition} from "../utils/const.js";
-import {getPath, createElement} from "../utils/main.js";
+import {RenderPosition, USER_NAMES, UpdateType, UserAction} from "../utils/const.js";
+import {getPath, createElement, getRandomNumber} from "../utils/main.js";
+import moment from "moment";
 
 const createNewCommentTemplate = () => {
   return `
@@ -43,11 +44,13 @@ const emojiPreviewTemplate = (emoji) => {
   return `<img class="film-details__emoji-preview" src="${emojiPath}" width="55" height="55" alt="${emoji}">`;
 };
 
-export default class AddComment extends Abstract {
-  constructor() {
+export default class AddComment extends SmartView {
+  constructor(action) {
     super();
+    this._action = action;
     this._comment = {};
     this._handleEmojiClick = this._handleEmojiClick.bind(this);
+    this._handleSendMessageKeydown = this._handleSendMessageKeydown.bind(this);
   }
 
   getTemplate() {
@@ -68,8 +71,30 @@ export default class AddComment extends Abstract {
     }
   }
 
+  _handleSendMessageKeydown(evt) {
+    if (evt.ctrlKey && evt.keyCode === 13) {
+      const element = this.getElement();
+      const textLocal = element.querySelector(`.film-details__comment-input`).value;
+
+      const emojiLocal = element.querySelector(`.film-details__emoji-preview`).alt;
+
+      const comment = {
+        author: USER_NAMES[getRandomNumber(0, USER_NAMES.length - 1)],
+        text: textLocal,
+        emoji: emojiLocal,
+        date: moment()
+      };
+
+      this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
+    }
+  }
+
   setEmojiClickHandler() {
     const labels = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
     labels.map((element) => element.addEventListener(`click`, this._handleEmojiClick));
+  }
+
+  setSendMessageKeydownHandler() {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
   }
 }

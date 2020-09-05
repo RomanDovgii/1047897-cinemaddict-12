@@ -1,9 +1,5 @@
 import SmartView from "./smart.js";
-import Comment from "./comment.js";
-import AddComment from "./add-comment.js";
 import {createElement, formateDuration} from "../utils/main.js";
-import {render} from "../utils/render.js";
-import {RenderPosition} from "../utils/const.js";
 import moment from "moment";
 
 const generateGenres = (array) => {
@@ -119,7 +115,6 @@ export default class Popup extends SmartView {
   constructor(movie) {
     super();
     this._data = Popup.parseMovieToData(movie);
-    this._comments = this._data.comments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -134,19 +129,6 @@ export default class Popup extends SmartView {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      const commentsContainer = this._element.querySelector(`.film-details__comments-list`);
-      const commentsSection = this._element.querySelector(`.film-details__comments-wrap`);
-
-      this._comments.map((element) => {
-        const comment = new Comment(element, this._comments);
-
-        render(commentsContainer, comment, RenderPosition.BEFOREEND);
-        comment.setDeleteHandler();
-      });
-
-      const newComment = new AddComment();
-      render(commentsSection, newComment, RenderPosition.BEFOREEND);
-      newComment.setEmojiClickHandler();
     }
 
     return this._element;

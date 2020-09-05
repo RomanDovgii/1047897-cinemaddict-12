@@ -3,6 +3,9 @@ import {render, replace} from "../utils/render.js";
 import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
+import CommentView from "../view/comment.js";
+import AddCommentView from "../view/add-comment.js";
+import CommentsModel from "../model/comments.js";
 
 const templateForControls = (movie) => {
   const {isWatchlist, isWatched, isFavorite} = movie;
@@ -34,6 +37,8 @@ export default class Movie {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   init(movie, observerNotify) {
@@ -61,6 +66,9 @@ export default class Movie {
     replace(this._cardComponent, this._oldCardComponent);
     this._setHandlersForCard();
 
+    this.renderComments();
+    this.renderAddComment();
+
     this._oldCardComponent.removeElement();
   }
 
@@ -77,17 +85,44 @@ export default class Movie {
     this._oldControls.removeElement();
   }
 
+  renderComments() {
+    const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
+
+    this._commentsModel.getComments().map((element) => {
+      const comment = new CommentView(element, this._comments);
+
+      render(commentsContainer, comment, RenderPosition.BEFOREEND);
+      comment.setDeleteHandler();
+    });
+  }
+
+  renderAddComment() {
+    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
+
+    const newComment = new AddCommentView(this._handleViewAction);
+    render(commentsMainContainer, newComment, RenderPosition.BEFOREEND);
+    newComment.setEmojiClickHandler();
+    newComment.setSendMessageKeydownHandler();
+  }
+
   _showPopup() {
     this._popupOpen = true;
     if (this._popupOpen) {
       this._handlePopup();
     }
 
+    this._commentsModel = new CommentsModel();
+    this._commentsModel.setComments(this._comments);
+    this._commentsModel.addObserver(this._handleModelEvent);
+
     this._popupComponent = new PopupView(this._movie);
 
     const body = document.querySelector(`.body`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
+
+    this.renderComments();
+    this.renderAddComment();
 
     this._setHandlersForPopup();
   }
@@ -168,5 +203,35 @@ export default class Movie {
     this._popupComponent.setButtonsHandlers(this._handlePopupButtonClick);
     document.addEventListener(`click`, this._handleDocumentClick);
     document.addEventListener(`keydown`, this._handleEscKeyDown);
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.DELETE_COMMENT:
+        this._commentsModel.deleteComment(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, update);
+        break;
+    }
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._moviePresenters[data.id].rerenderCard(data);
+        break;
+      case UpdateType.MINOR:
+        this._moviePresenters[data.id].rerenderCard(data); // update this part
+        break;
+      case UpdateType.MAJOR:
+        const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
+        commentsContainer.innerHTML = ``;
+        this._commentsModel.getComments();
+        this.renderComments();
+        break;
+      default:
+        throw new Error(`There is a problem withing _handleModelEvent`);
+    }
   }
 }

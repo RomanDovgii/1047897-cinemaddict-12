@@ -30,7 +30,7 @@ export const FilterType = {
 
 export const UserAction = {
   ADD_COMMENT: `ADD_COMMENT`,
-  REMOVE_COMMENT: `REMOVE_COMMENT`,
+  DELETE_COMMENT: `DELETE_COMMENT`,
   UPDATE_MOVIE: `UPDATE_MOVIE`
 };
 
