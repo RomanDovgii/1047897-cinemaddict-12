@@ -227,9 +227,18 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
-        this._movie.comments = this._commentsModel.getComments();
-        console.log(this._movie.comments);
         this.renderComments();
+
+        this._changeData(
+            UserAction.UPDATE_MOVIE,
+            UpdateType.MAJOR,
+            Object.assign(
+                {},
+                this._movie,
+                {
+                  comments: this._commentsModel.getComments()
+                }
+            ), `control`);
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);
