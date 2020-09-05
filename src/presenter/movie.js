@@ -227,7 +227,8 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
-        this._commentsModel.getComments();
+        this._movie.comments = this._commentsModel.getComments();
+        console.log(this._movie.comments);
         this.renderComments();
         break;
       default:
