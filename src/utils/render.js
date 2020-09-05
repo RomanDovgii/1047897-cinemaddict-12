@@ -48,3 +48,16 @@ export const replace = (newChild, oldChild) => {
 
   parent.replaceChild(newChild, oldChild);
 };
+
+export const remove = (component) => {
+  if (!component) {
+    return;
+  }
+
+  if (!(component instanceof Abstract)) {
+    throw new Error(`${component} isn't a component`);
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};

@@ -21,10 +21,17 @@ export const ChangeType = {
   COMMENT: `comment`
 };
 
+export const FilterType = {
+  ALL: `ALL`,
+  WATCHLIST: `WATCHLIST`,
+  HISTORY: `HISTORY`,
+  FAVORITES: `FAVORITES`
+};
+
 export const UserAction = {
   ADD_COMMENT: `ADD_COMMENT`,
   REMOVE_COMMENT: `REMOVE_COMMENT`,
-  ADD_TO_LIST: `ADD_TO_LIST`
+  UPDATE_MOVIE: `UPDATE_MOVIE`
 };
 
 export const UpdateType = {

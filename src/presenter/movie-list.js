@@ -1,22 +1,24 @@
 import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType} from "../utils/const.js";
-import {render} from "../utils/render.js";
+import {render, remove, replace} from "../utils/render.js";
+import {filter} from "../utils/filter.js";
 import FilmsView from "../view/films-main.js";
-import NavigationView from "../view/menu.js";
 import SortView from "../view/sort-menu.js";
 import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 import MoviePresenter from "./movie.js";
+import FilterPresenter from "./filters.js";
 import moment from "moment";
 
 export default class MovieList {
-  constructor(mainContainer, movies) {
+  constructor(mainContainer, moviesModel, filterModel) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
     this._moviePresenter = {};
     this._moviePresenters = {};
-    this._moviesModel = movies;
+    this._moviesModel = moviesModel;
+    this._filterModel = filterModel;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -39,13 +41,16 @@ export default class MovieList {
     this._previousSortMethod = SortType.DEFAULT;
 
     this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterPresenter = new FilterPresenter(this._mainContainer, filterModel, moviesModel);
   }
 
   init() {
     this._currentSortMethod = `default`;
-    this._menuComponent = new NavigationView(this._getMovies());
 
-    this._renderMenu();
+    this._filterPresenter.init();
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderSort();
     this._renderFilmsContainer();
 
@@ -69,7 +74,15 @@ export default class MovieList {
         this._moviePresenters[data.id].rerenderCard(data); // update this part
         break;
       case UpdateType.MAJOR:
-        this._moviePresenters[data.id].rerenderCard(data); // update this part
+        this._filterPresenter.init();
+        this._renderFilms = CARD_COUNT_MAIN;
+        this._currentSortMethod = `default`;
+        this._previousSortMethod = `default`;
+        this._rerenderSort();
+        this._clearMainMoviesContainer();
+        this._renderMainFilmsCards();
+        remove(this._loadMoreButtonComponent);
+        this._renderMoreButton(); // update this part
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);
@@ -77,13 +90,19 @@ export default class MovieList {
   }
 
   _getMovies() {
+    const filterType = this._filterModel.getFilter();
+    const movies = this._moviesModel.getMovies();
+    const filteredMovies = filter[filterType](movies);
+
+    this._previousSortMethod = this._currentSortMethod;
+
     switch (this._currentSortMethod) {
       case SortType.RAITING:
-        return this._moviesModel.getMovies().slice().sort((a, b) => b.raiting - a.raiting);
+        return filteredMovies.slice().sort((a, b) => b.raiting - a.raiting);
       case SortType.DATE:
-        return this._moviesModel.getMovies().slice().sort((a, b) => moment(b.release).format(`YYYYMMDD`) - moment(a.release).format(`YYYYMMDD`));
+        return filteredMovies.slice().sort((a, b) => moment(b.release).format(`YYYYMMDD`) - moment(a.release).format(`YYYYMMDD`));
       default:
-        return this._moviesModel.getMovies();
+        return filteredMovies;
     }
   }
 
@@ -121,18 +140,24 @@ export default class MovieList {
     return fragment;
   }
 
-  _renderMenu() {
-    render(this._mainContainer, this._menuComponent, RenderPosition.BEFOREEND);
-  }
-
   _renderSort() {
     if (this._sortComponent) {
-      this._sortComponent = null;
+      this._newSort = new SortView();
+      replace(this._newSort, this._sortComponent);
+      this._sortComponent = this._newSort;
     }
 
     this._sortComponent = new SortView();
 
     render(this._mainContainer, this._sortComponent, RenderPosition.BEFOREEND);
+
+    this._sortComponent.setClickHandler(this._handleSortButtonClick);
+  }
+
+  _rerenderSort() {
+    this._newSort = new SortView();
+    replace(this._newSort, this._sortComponent);
+    this._sortComponent = this._newSort;
 
     this._sortComponent.setClickHandler(this._handleSortButtonClick);
   }
@@ -178,7 +203,7 @@ export default class MovieList {
   _renderMoreButton() {
     if (this._loadMoreButtonComponent) {
       this._loadMoreButtonComponent = null;
-      this._loadMoreButtonComponent.removeElement();
+      remove(this._loadMoreButtonComponent);
     }
 
 
@@ -204,6 +229,9 @@ export default class MovieList {
       this._renderMainFilmsCards();
       this._previousSortMethod = this._currentSortMethod;
     }
+
+    remove(this._loadMoreButtonComponent);
+    this._renderMoreButton();
   }
 
   _handleLoadMoreButtonClick() {
