@@ -119,8 +119,6 @@ export default class Movie {
     this._popupComponent = new PopupView(this._movie);
     this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
 
-    console.log(this._commentsCounterComponent.getElement());
-
     const body = document.querySelector(`.body`);
     const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
