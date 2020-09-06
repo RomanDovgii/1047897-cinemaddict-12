@@ -5,6 +5,7 @@ import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
 import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
+import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
 
 const templateForControls = (movie) => {
@@ -89,7 +90,7 @@ export default class Movie {
     const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     this._commentsModel.getComments().map((element) => {
-      const comment = new CommentView(element, this._comments);
+      const comment = new CommentView(element, this._commentsModel.getComments(), this._handleViewAction);
 
       render(commentsContainer, comment, RenderPosition.BEFOREEND);
       comment.setDeleteHandler();
@@ -116,15 +117,26 @@ export default class Movie {
     this._commentsModel.addObserver(this._handleModelEvent);
 
     this._popupComponent = new PopupView(this._movie);
+    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
+
+    console.log(this._commentsCounterComponent.getElement());
 
     const body = document.querySelector(`.body`);
+    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
-
+    render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
     this.renderComments();
     this.renderAddComment();
 
     this._setHandlersForPopup();
+  }
+
+  _updateCounter() {
+    this._oldCounter = this._commentsCounterComponent;
+    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
+
+    replace(this._commentsCounterComponent, this._oldCounter);
   }
 
   _removePopup() {
@@ -227,7 +239,6 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
-        this.renderComments();
 
         this._changeData(
             UserAction.UPDATE_MOVIE,
@@ -239,6 +250,8 @@ export default class Movie {
                   comments: this._commentsModel.getComments()
                 }
             ), `control`);
+        this.renderComments();
+        this._updateCounter();
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);

@@ -86,6 +86,13 @@ export default class AddComment extends SmartView {
       };
 
       this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
+
+      element.querySelector(`.film-details__comment-input`).value = ``;
+      element.querySelector(`.film-details__emoji-preview`).remove();
+      const inputs = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-item`));
+      inputs.map((input) => {
+        input.checked = false;
+      });
     }
   }
 
