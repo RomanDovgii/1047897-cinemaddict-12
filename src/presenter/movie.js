@@ -1,5 +1,5 @@
 import {RenderPosition, UserAction, UpdateType} from "../utils/const.js";
-import {render, replace} from "../utils/render.js";
+import {render, replace, remove} from "../utils/render.js";
 import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
@@ -36,6 +36,11 @@ export default class Movie {
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+
+    this._handleWatchlistPopupClick = this._handleWatchlistPopupClick.bind(this);
+    this._handleWatchedPopupClick = this._handleWatchedPopupClick.bind(this);
+    this._handleFavoritePopupClick = this._handleFavoritePopupClick.bind(this);
+
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -58,19 +63,23 @@ export default class Movie {
   }
 
   rerenderCard(updatedMovie) {
+    this._movie = updatedMovie;
+
     this._oldCardComponent = this._cardComponent;
 
-    this._cardComponent = new CardView(updatedMovie);
-
-    this._movie = updatedMovie;
+    this._cardComponent = new CardView(this._movie);
 
     replace(this._cardComponent, this._oldCardComponent);
     this._setHandlersForCard();
 
-    this.renderComments();
-    this.renderAddComment();
-
     this._oldCardComponent.removeElement();
+  }
+
+  rerenderPopup(updatedMovie) {
+    this._movie = updatedMovie;
+    this._comments = this._movie.comments;
+    this._removePopup();
+    this._showPopup();
   }
 
   rerenderControls(updatedMovie) {
@@ -86,11 +95,17 @@ export default class Movie {
     this._oldControls.removeElement();
   }
 
+  renderCounter() {
+    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
+    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
+    render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
+  }
+
   renderComments() {
     const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     this._commentsModel.getComments().map((element) => {
-      const comment = new CommentView(element, this._commentsModel.getComments(), this._handleViewAction);
+      const comment = new CommentView(element, this._handleViewAction);
 
       render(commentsContainer, comment, RenderPosition.BEFOREEND);
       comment.setDeleteHandler();
@@ -117,13 +132,12 @@ export default class Movie {
     this._commentsModel.addObserver(this._handleModelEvent);
 
     this._popupComponent = new PopupView(this._movie);
-    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
 
     const body = document.querySelector(`.body`);
-    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
-    render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
+
+    this.renderCounter();
     this.renderComments();
     this.renderAddComment();
 
@@ -146,41 +160,77 @@ export default class Movie {
 
   _handleWatchlistClick() {
     this._changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MAJOR,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._movie,
             {
               isWatchlist: !this._movie.isWatchlist
             }
-        ), `control`);
+        ));
   }
 
   _handleWatchedClick() {
     this._changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MAJOR,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._movie,
             {
               isWatched: !this._movie.isWatched
             }
-        ), `control`);
+        ));
   }
 
   _handleFavoriteClick() {
     this._changeData(
-        UserAction.UPDATE_MOVIE,
-        UpdateType.MAJOR,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._movie,
             {
               isFavorite: !this._movie.isFavorite
             }
-        ), `control`);
+        ));
+  }
+
+  _handleWatchlistPopupClick() {
+    this._removePopup();
+    this._changeData(
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isWatchlist: !this._movie.isWatchlist
+            }
+        ));
+  }
+
+  _handleWatchedPopupClick() {
+    this._removePopup();
+    this._changeData(
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isWatched: !this._movie.isWatched
+            }
+        ));
+  }
+
+  _handleFavoritePopupClick() {
+    this._removePopup();
+    this._changeData(
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._movie,
+            {
+              isFavorite: !this._movie.isFavorite
+            }
+        ));
   }
 
   _handleEscKeyDown(evt) {
@@ -210,7 +260,9 @@ export default class Movie {
 
   _setHandlersForPopup() {
     this._popupComponent.setCloseButtonClickHandler(this._removePopup);
-    this._popupComponent.setButtonsHandlers(this._handlePopupButtonClick);
+    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistPopupClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedPopupClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleFavoritePopupClick);
     document.addEventListener(`click`, this._handleDocumentClick);
     document.addEventListener(`keydown`, this._handleEscKeyDown);
   }
@@ -237,19 +289,18 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
+        remove(this._popupComponent);
 
         this._changeData(
-            UserAction.UPDATE_MOVIE,
-            UpdateType.MAJOR,
+            UpdateType.PATCH,
             Object.assign(
                 {},
                 this._movie,
                 {
                   comments: this._commentsModel.getComments()
                 }
-            ), `control`);
-        this.renderComments();
-        this._updateCounter();
+            ));
+
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);

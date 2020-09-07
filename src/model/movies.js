@@ -18,6 +18,8 @@ export default class Movies extends Observer {
   updateMovie(updateType, update) {
     const index = this._movies.findIndex((movie) => movie.id === update.id);
 
+    console.log(index);
+
     if (index === -1) {
       throw new Error(`Cannot update non-existent movie`);
     }

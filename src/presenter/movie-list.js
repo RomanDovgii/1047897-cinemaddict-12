@@ -40,7 +40,6 @@ export default class MovieList {
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
 
-    this._moviesModel.addObserver(this._handleModelEvent);
     this._filterPresenter = new FilterPresenter(this._mainContainer, filterModel, moviesModel);
   }
 
@@ -61,7 +60,7 @@ export default class MovieList {
     Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(updateType, update) {
     this._moviesModel.updateMovie(updateType, update);
   }
 
@@ -69,17 +68,28 @@ export default class MovieList {
     switch (updateType) {
       case UpdateType.PATCH:
         this._moviePresenters[data.id].rerenderCard(data);
+        this._moviePresenters[data.id].rerenderPopup(data);
         break;
       case UpdateType.MINOR:
-        this._moviePresenters[data.id].rerenderCard(data); // update this part
+        console.log(data);
+        this._moviePresenters[data.id].rerenderCard(data);
+        this._moviePresenters[data.id].rerenderPopup(data);
+
+        const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
+        cardsContainer.innerHTML = ``;
+
+        this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
+        this._filterPresenter.init();
         break;
       case UpdateType.MAJOR:
+        this._renderFilms = CARD_COUNT_MAIN;
         this._filterPresenter.init();
         this._renderFilms = CARD_COUNT_MAIN;
         this._currentSortMethod = `default`;
         this._previousSortMethod = `default`;
         this._rerenderSort();
         this._clearMainMoviesContainer();
+        this._moviesMainContainer.innerHTML = ``;
         this._renderMainFilmsCards();
         remove(this._loadMoreButtonComponent);
         this._renderMoreButton(); // update this part
@@ -167,7 +177,7 @@ export default class MovieList {
   }
 
   _renderMainFilmsCards() {
-    this._renderFilmsCards(0, CARD_COUNT_MAIN, MovieContainers.ALL, this._moviesMainContainer);
+    this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, this._moviesMainContainer);
     if (!this._loadMoreButtonComponent) {
       this._renderMoreButton();
     }
