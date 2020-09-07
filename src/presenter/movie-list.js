@@ -71,7 +71,6 @@ export default class MovieList {
         this._moviePresenters[data.id].rerenderPopup(data);
         break;
       case UpdateType.MINOR:
-        console.log(data);
         this._moviePresenters[data.id].rerenderCard(data);
         this._moviePresenters[data.id].rerenderPopup(data);
 
