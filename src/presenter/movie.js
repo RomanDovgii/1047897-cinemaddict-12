@@ -280,11 +280,8 @@ export default class Movie {
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateType.PATCH:
-        this._moviePresenters[data.id].rerenderCard(data);
-        break;
       case UpdateType.MINOR:
-        this._moviePresenters[data.id].rerenderCard(data); // update this part
+        this._moviePresenters[data.id].rerenderCard(data);
         break;
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);

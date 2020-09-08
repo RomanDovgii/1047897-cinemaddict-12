@@ -1,4 +1,3 @@
-// import {createFilters} from "../mocks/filter.js";
 import Abstract from "./abstract.js";
 
 const generateFilterMarkup = (filter, currentFilterType) => {
