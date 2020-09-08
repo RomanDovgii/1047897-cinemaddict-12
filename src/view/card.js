@@ -3,9 +3,9 @@ import Abstract from "./abstract.js";
 import moment from "moment";
 import {formateDuration} from "../utils/main.js";
 
-const createCardTemplate = (mock) => {
+const createCardTemplate = (movie) => {
 
-  const {name, release, runtime, genres, description, raiting, path, isWatchlist, isWatched, isFavorite, comments} = mock;
+  const {name, release, runtime, genres, description, raiting, path, isWatchlist, isWatched, isFavorite, comments} = movie;
 
   const commentNumber = comments.length === 1 ? `${comments.length} comment` : `${comments.length} comments`;
 

@@ -1,4 +1,4 @@
-import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, minutesInHour} from "./const.js";
+import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, MINUTES_IN_HOUR} from "./const.js";
 import moment from "moment";
 
 export const getRandomNumber = (firstNumber, secondNumber) => {
@@ -26,9 +26,9 @@ export const getRandomDate = () => {
 export const formateDuration = (duration) => {
   const time = moment.utc().startOf(`day`).add({minutes: duration});
   switch (true) {
-    case duration < minutesInHour:
+    case duration < MINUTES_IN_HOUR:
       return time.format(`m[m]`);
-    case duration > minutesInHour && duration % minutesInHour === 0:
+    case duration > MINUTES_IN_HOUR && duration % MINUTES_IN_HOUR === 0:
       return time.format(`H[h]`);
     default:
       return time.format(`H[h] M[m]`);

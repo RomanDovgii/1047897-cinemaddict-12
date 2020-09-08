@@ -1,9 +1,5 @@
 import SmartView from "./smart.js";
-import Comment from "./comment.js";
-import AddComment from "./add-comment.js";
 import {createElement, formateDuration} from "../utils/main.js";
-import {render} from "../utils/render.js";
-import {RenderPosition} from "../utils/const.js";
 import moment from "moment";
 
 const generateGenres = (array) => {
@@ -14,7 +10,7 @@ const generateGenres = (array) => {
 
 const createPopupTemplate = (movie) => {
 
-  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, raiting, path, isWatchlist, isWatched, isFavorite, comments} = movie;
+  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, raiting, path, isWatchlist, isWatched, isFavorite} = movie;
 
   const writersText = `${writers.join(`, `)}`;
   const actorsText = `${actors.join(`, `)}`;
@@ -104,7 +100,6 @@ const createPopupTemplate = (movie) => {
 
       <div class="form-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
           </ul>
@@ -119,7 +114,6 @@ export default class Popup extends SmartView {
   constructor(movie) {
     super();
     this._data = Popup.parseMovieToData(movie);
-    this._comments = this._data.comments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -134,34 +128,16 @@ export default class Popup extends SmartView {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      const commentsContainer = this._element.querySelector(`.film-details__comments-list`);
-      const commentsSection = this._element.querySelector(`.film-details__comments-wrap`);
-
-      this._comments.map((element) => {
-        const comment = new Comment(element, this._comments);
-
-        render(commentsContainer, comment, RenderPosition.BEFOREEND);
-        comment.setDeleteHandler();
-      });
-
-      const newComment = new AddComment();
-      render(commentsSection, newComment, RenderPosition.BEFOREEND);
-      newComment.setEmojiClickHandler();
     }
 
     return this._element;
   }
 
   restoreHandlers() {
-    this.setButtonsHandlers(this._callback.buttons);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setCloseButtonClickHandler(this._callback.closeClick);
-  }
-
-  setButtonsHandlers(callback) {
-    this._callback.buttons = callback;
-    this._setWatchlistClickHandler(callback);
-    this._setWatchedClickHandler(callback);
-    this._setFavoriteClickHandler(callback);
   }
 
   _closeButtonClickHandler(evt) {
@@ -204,17 +180,17 @@ export default class Popup extends SmartView {
     this._callback.favoriteClick(Popup.parseDataToMovie(this._data));
   }
 
-  _setWatchlistClickHandler(callback) {
+  setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);
   }
 
-  _setWatchedClickHandler(callback) {
+  setWatchedClickHandler(callback) {
     this._callback.watchedClick = callback;
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._watchedClickHandler);
   }
 
-  _setFavoriteClickHandler(callback) {
+  setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }
