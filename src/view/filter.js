@@ -1,4 +1,5 @@
-import SmartView from "./abstract.js";
+import Abstract from "./abstract.js";
+import {MenuItem} from "../utils/const.js";
 
 const generateFilterMarkup = (filter, currentFilterType) => {
   const {type, name, count} = filter;
@@ -26,14 +27,14 @@ const createFilterTemplate = (filters, currentFilter) => {
   `;
 };
 
-export default class Filter extends SmartView {
+export default class Filter extends Abstract {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
     this._filterType = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
-    this._handleStatsButtonClick = this._handleStatsButtonClick.bind(this);
+    this._statsClickHandler = this._statsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -44,6 +45,14 @@ export default class Filter extends SmartView {
     evt.preventDefault();
     const filterType = evt.target.closest(`.main-navigation__item`).dataset.type;
     this._callback.filterTypeChange(filterType);
+    if (this._callback.statsButtonClick) {
+      this._callback.statsButtonClick(MenuItem.CHANGE_FILTER);
+    }
+  }
+
+  _statsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.statsButtonClick(MenuItem.STATS);
   }
 
   setFilterTypeChangeHandler(callback) {
@@ -51,17 +60,8 @@ export default class Filter extends SmartView {
     this.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => element.addEventListener(`click`, this._filterTypeChangeHandler));
   }
 
-  _handleStatsButtonClick(evt) {
-    evt.preventDefault();
-    this._callback.statusClick();
-  }
-
-  setStatusButtonClick(callback) {
-    this._callback.statusClick = callback;
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatsButtonClick);
-  }
-
-  resetHandlers() {
-    this.setStatsButtonClick(this._callback.statusClick);
+  setStatsButtonClickHandler(callback) {
+    this._callback.statsButtonClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statsClickHandler);
   }
 }

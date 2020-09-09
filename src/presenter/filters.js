@@ -4,10 +4,11 @@ import {filter} from "../utils/filter.js";
 import {render, replace, remove} from "../utils/render.js";
 
 export default class Filters {
-  constructor(filterContainer, moviesModel, filterModel) {
+  constructor(filterContainer, moviesModel, filterModel, callbackForStats) {
     this._filterContainer = filterContainer;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._callbackForStats = callbackForStats;
 
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
   }
@@ -20,6 +21,7 @@ export default class Filters {
 
     this._filterComponent = new FilterView(filters, this._currentFilter);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setStatsButtonClickHandler(this._callbackForStats);
 
     if (!prevFilterComponent) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -28,10 +30,6 @@ export default class Filters {
 
     replace(this._filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
-  }
-
-  _handleModelEvent() {
-    this.init();
   }
 
   _handleFilterTypeChange(filterType) {

@@ -1,61 +1,61 @@
 import UserRank from "./view/user-rank.js";
 import Statistics from "./view/statistics.js";
-import {RenderPosition} from "./utils/const";
-import {render} from "./utils/render.js";
+import {RenderPosition, MenuItem} from "./utils/const.js";
+import {render, remove} from "./utils/render.js";
 import {mocks} from "./mocks/movie.js";
 import MovieList from "./presenter/movie-list.js";
 import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filters.js";
-import UserStatisticsPresenter from "./presenter/user-statistics.js";
+import StatisticsView from "./view/user-statistics.js";
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 
 let userStatisticsComponent = null;
+let filter = null;
+let content = null;
 
 const moviesModel = new MoviesModel();
 moviesModel.setMovies(mocks);
 
 const filterModel = new FilterModel();
 
-let userStatsOpen = false;
-let UserStatistics;
-let content;
+const handleStatsButtonClick = (menuItem) => {
+  console.log(`kk`);
 
-const handleStatsButtonClick = () => {
-  switch (userStatsOpen) {
-    case true:
-      UserStatistics.destroy();
-      UserStatistics = null;
-      content = new MovieList(main, moviesModel, filterModel, filter);
-      content.init();
-      userStatsOpen = false;
-      break;
-    case false:
-      UserStatistics = new UserStatisticsPresenter(main);
-      UserStatistics.init();
+  switch (menuItem) {
+    case MenuItem.CHANGE_FILTER:
       content.destroy();
-      content = null;
-      userStatsOpen = true;
+
+      content = new MovieList(main, moviesModel, filterModel, filter);
+
+      filter.init();
+      content.init();
+      remove(userStatisticsComponent);
       break;
-    default:
+    case MenuItem.STATS:
+      console.log(`stats`);
+      content.destroy();
+      filter.init();
+      userStatisticsComponent = new StatisticsView();
+      render(main, userStatisticsComponent, RenderPosition.BEFOREEND);
+      // content = null;
       break;
   }
 };
 
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
-
-const filter = new FilterPresenter(main, filterModel, moviesModel);
+filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
 content = new MovieList(main, moviesModel, filterModel, filter);
 
 filter.init();
 content.init();
 
-filter.setStatsButtonClick(handleStatsButtonClick);
-
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, new Statistics(mocks).getElement(), RenderPosition.BEFOREEND);
+
+
