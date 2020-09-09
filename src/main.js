@@ -17,13 +17,20 @@ let userStatisticsComponent = null;
 let filter = null;
 let content = null;
 
+let oldMenuItem = MenuItem.CHANGE_FILTER;
+let newMenuItem = MenuItem.CHANGE_FILTER;
+
 const moviesModel = new MoviesModel();
 moviesModel.setMovies(mocks);
 
 const filterModel = new FilterModel();
 
 const handleStatsButtonClick = (menuItem) => {
-  console.log(`kk`);
+  newMenuItem = menuItem;
+
+  if (oldMenuItem === newMenuItem) {
+    return;
+  }
 
   switch (menuItem) {
     case MenuItem.CHANGE_FILTER:
@@ -36,7 +43,6 @@ const handleStatsButtonClick = (menuItem) => {
       remove(userStatisticsComponent);
       break;
     case MenuItem.STATS:
-      console.log(`stats`);
       content.destroy();
       filter.init();
       userStatisticsComponent = new StatisticsView();
@@ -44,6 +50,8 @@ const handleStatsButtonClick = (menuItem) => {
       // content = null;
       break;
   }
+
+  oldMenuItem = newMenuItem;
 };
 
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
