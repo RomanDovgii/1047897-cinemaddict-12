@@ -10,6 +10,9 @@ import MoviePresenter from "./movie.js";
 <<<<<<< HEAD
 =======
 import FilterPresenter from "./filters.js";
+<<<<<<< HEAD
+>>>>>>> parent of 6adbca1... User statistics added
+=======
 >>>>>>> parent of 6adbca1... User statistics added
 import moment from "moment";
 
@@ -47,6 +50,9 @@ export default class MovieList {
     this._filterPresenter = filterPresenter;
 =======
     this._filterPresenter = new FilterPresenter(this._mainContainer, filterModel, moviesModel);
+<<<<<<< HEAD
+>>>>>>> parent of 6adbca1... User statistics added
+=======
 >>>>>>> parent of 6adbca1... User statistics added
   }
 
@@ -68,12 +74,15 @@ export default class MovieList {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   destroy() {
     this._mainContainer.querySelector(`.films`).remove();
     this._mainContainer.querySelector(`.sort`).remove();
     this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
+=======
+>>>>>>> parent of 6adbca1... User statistics added
 =======
 >>>>>>> parent of 6adbca1... User statistics added
   _handleViewAction(updateType, update) {
