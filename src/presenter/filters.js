@@ -69,4 +69,8 @@ export default class Filters {
       }
     ];
   }
+
+  setStatsButtonClick(callback) {
+    this._filterComponent.setStatusButtonClick(callback);
+  }
 }

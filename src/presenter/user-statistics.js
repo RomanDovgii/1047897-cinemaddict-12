@@ -13,10 +13,22 @@ export default class UserStatistics {
 
     if (!oldUserStatisticsComponent) {
       render(this._container, this._userStatisticsComponent.getElement(), RenderPosition.BEFOREEND);
+      this.setStatsButtonClickHandler();
       return;
     }
 
     replace(this._userStatisticsComponent, oldUserStatisticsComponent);
+    this.setStatsButtonClickHandler();
     remove(oldUserStatisticsComponent);
+  }
+
+  destroy() {
+    this._container.querySelector(`.statistic`).remove();
+  }
+
+  _handleStatsButtonClick() {
+  }
+
+  setStatsButtonClickHandler() {
   }
 }

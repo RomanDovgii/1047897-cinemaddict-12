@@ -6,6 +6,8 @@ import {mocks} from "./mocks/movie.js";
 import MovieList from "./presenter/movie-list.js";
 import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
+import FilterPresenter from "./presenter/filters.js";
+import UserStatisticsPresenter from "./presenter/user-statistics.js";
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -16,10 +18,45 @@ moviesModel.setMovies(mocks);
 
 const filterModel = new FilterModel();
 
+let userStatsOpen = false;
+let UserStatistics;
+let content;
+
+const test = () =>{
+  console.log(`test`);
+};
+
+const handleStatsButtonClick = () => {
+  switch (userStatsOpen) {
+    case true:
+      UserStatistics.destroy();
+      UserStatistics = null;
+      content = new MovieList(main, moviesModel, filterModel, filter);
+      content.init();
+      userStatsOpen = false;
+      break;
+    case false:
+      UserStatistics = new UserStatisticsPresenter(main);
+      UserStatistics.init();
+      content.destroy();
+      content = null;
+      userStatsOpen = true;
+      break;
+    default:
+      break;
+  }
+};
+
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
-const content = new MovieList(main, moviesModel, filterModel);
+
+const filter = new FilterPresenter(main, filterModel, moviesModel);
+content = new MovieList(main, moviesModel, filterModel, filter);
+
+filter.init();
 content.init();
+
+filter.setStatsButtonClick(handleStatsButtonClick);
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 

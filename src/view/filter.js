@@ -33,6 +33,7 @@ export default class Filter extends Abstract {
     this._filterType = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._handleStatsButtonClick = this._handleStatsButtonClick.bind(this);
   }
 
   getTemplate() {
@@ -48,5 +49,15 @@ export default class Filter extends Abstract {
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => element.addEventListener(`click`, this._filterTypeChangeHandler));
+  }
+
+  _handleStatsButtonClick(evt) {
+    evt.preventDefault();
+    this._callback.statusClick();
+  }
+
+  setStatusButtonClick(callback) {
+    this._callback.statusClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatsButtonClick);
   }
 }
