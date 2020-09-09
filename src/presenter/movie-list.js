@@ -7,13 +7,7 @@ import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 import MoviePresenter from "./movie.js";
-<<<<<<< HEAD
-=======
-import FilterPresenter from "./filters.js";
-<<<<<<< HEAD
->>>>>>> parent of 6adbca1... User statistics added
-=======
->>>>>>> parent of 6adbca1... User statistics added
+import UserStatisticsPresenter from "./user-statistics.js";
 import moment from "moment";
 
 export default class MovieList {
@@ -46,20 +40,14 @@ export default class MovieList {
     this._newPopup = null;
     this._previousSortMethod = SortType.DEFAULT;
 
-<<<<<<< HEAD
     this._filterPresenter = filterPresenter;
-=======
-    this._filterPresenter = new FilterPresenter(this._mainContainer, filterModel, moviesModel);
-<<<<<<< HEAD
->>>>>>> parent of 6adbca1... User statistics added
-=======
->>>>>>> parent of 6adbca1... User statistics added
+    this._userStatisticsPresenter = new UserStatisticsPresenter(this._mainContainer);
   }
 
   init() {
     this._currentSortMethod = `default`;
 
-    this._filterPresenter.init();
+    this._userStatisticsPresenter.init();
     this._moviesModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
@@ -73,18 +61,11 @@ export default class MovieList {
     Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   destroy() {
-    this._mainContainer.querySelector(`.films`).remove();
-    this._mainContainer.querySelector(`.sort`).remove();
+    remove(this._mainContainer);
     this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
-=======
->>>>>>> parent of 6adbca1... User statistics added
-=======
->>>>>>> parent of 6adbca1... User statistics added
   _handleViewAction(updateType, update) {
     this._moviesModel.updateMovie(updateType, update);
   }
@@ -102,6 +83,11 @@ export default class MovieList {
         cardsContainer.innerHTML = ``;
 
         this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
+
+        if (this._getMovies().length <= CARD_COUNT_MAIN) {
+          remove(this._loadMoreButtonComponent);
+        }
+
         this._filterPresenter.init();
         break;
       case UpdateType.MAJOR:

@@ -289,7 +289,7 @@ export default class Movie {
         remove(this._popupComponent);
 
         this._changeData(
-            UpdateType.PATCH,
+            UpdateType.MINOR,
             Object.assign(
                 {},
                 this._movie,

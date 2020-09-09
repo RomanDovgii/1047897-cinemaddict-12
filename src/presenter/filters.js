@@ -4,7 +4,7 @@ import {filter} from "../utils/filter.js";
 import {render, replace, remove} from "../utils/render.js";
 
 export default class Filters {
-  constructor(filterContainer, filterModel, moviesModel) {
+  constructor(filterContainer, moviesModel, filterModel) {
     this._filterContainer = filterContainer;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;

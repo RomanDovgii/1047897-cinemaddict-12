@@ -13,6 +13,8 @@ const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 
+let userStatisticsComponent = null;
+
 const moviesModel = new MoviesModel();
 moviesModel.setMovies(mocks);
 
@@ -57,5 +59,3 @@ filter.setStatsButtonClick(handleStatsButtonClick);
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, new Statistics(mocks).getElement(), RenderPosition.BEFOREEND);
-
-
