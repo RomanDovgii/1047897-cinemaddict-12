@@ -19,7 +19,6 @@ const filterModel = new FilterModel();
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
 const content = new MovieList(main, moviesModel, filterModel);
-
 content.init();
 
 const footerStats = footer.querySelector(`.footer__statistics`);

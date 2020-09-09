@@ -8,6 +8,7 @@ import NoFilmsView from "../view/no-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 import MoviePresenter from "./movie.js";
 import FilterPresenter from "./filters.js";
+import UserStatisticsPresenter from "./user-statistics.js";
 import moment from "moment";
 
 export default class MovieList {
@@ -41,12 +42,14 @@ export default class MovieList {
     this._previousSortMethod = SortType.DEFAULT;
 
     this._filterPresenter = new FilterPresenter(this._mainContainer, filterModel, moviesModel);
+    this._userStatisticsPresenter = new UserStatisticsPresenter(this._mainContainer);
   }
 
   init() {
     this._currentSortMethod = `default`;
 
     this._filterPresenter.init();
+    this._userStatisticsPresenter.init();
     this._moviesModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
@@ -58,6 +61,11 @@ export default class MovieList {
 
   _handlePopups() {
     Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
+  }
+
+  destroy() {
+    remove(this._mainContainer);
+    this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
   _handleViewAction(updateType, update) {
