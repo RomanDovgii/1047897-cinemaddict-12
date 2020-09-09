@@ -1,4 +1,4 @@
-import Abstract from "./abstract.js";
+import SmartView from "./abstract.js";
 
 const generateFilterMarkup = (filter, currentFilterType) => {
   const {type, name, count} = filter;
@@ -26,7 +26,7 @@ const createFilterTemplate = (filters, currentFilter) => {
   `;
 };
 
-export default class Filter extends Abstract {
+export default class Filter extends SmartView {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
@@ -59,5 +59,9 @@ export default class Filter extends Abstract {
   setStatusButtonClick(callback) {
     this._callback.statusClick = callback;
     this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._handleStatsButtonClick);
+  }
+
+  resetHandlers() {
+    this.setStatsButtonClick(this._callback.statusClick);
   }
 }

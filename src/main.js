@@ -49,11 +49,16 @@ const handleStatsButtonClick = () => {
 
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
+<<<<<<< HEAD
 
 const filter = new FilterPresenter(main, filterModel, moviesModel);
 content = new MovieList(main, moviesModel, filterModel, filter);
 
 filter.init();
+=======
+const content = new MovieList(main, moviesModel, filterModel);
+
+>>>>>>> parent of 6adbca1... User statistics added
 content.init();
 
 filter.setStatsButtonClick(handleStatsButtonClick);
