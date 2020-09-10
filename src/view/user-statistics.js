@@ -67,7 +67,7 @@ import moment from "moment";
 //   }
 // });
 
-const createUserStatisticsTemplate = (totalMovies, totalDuration) => {
+const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
   const time = moment.utc().startOf(`day`).add({minutes: totalDuration});
 
   return `
@@ -108,7 +108,7 @@ const createUserStatisticsTemplate = (totalMovies, totalDuration) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${topGenre}</p>
       </li>
     </ul>
 
@@ -126,7 +126,7 @@ export default class UserStatistics extends Abstract {
   }
   getTemplate() {
     this.filterMovies();
-    return createUserStatisticsTemplate(this._moviesWatched, this._duration);
+    return createUserStatisticsTemplate(this._moviesWatched, this._duration, this._topGenre);
   }
 
   getElement() {
@@ -141,5 +141,34 @@ export default class UserStatistics extends Abstract {
     this._movies = this._movies.filter((movie) => movie.isWatched);
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
+
+    this._genresAll = [];
+    this._genresAndCount = [];
+
+    this._movies.map((element) => {
+      element.genres.map(
+          (genre) => {
+            this._genresAll.push(genre);
+          }
+      );
+    });
+
+    this._genresAll.forEach(
+        (element) => {
+          if (this._genresAll.includes(element)) {
+            const elementObject = {
+              name: element,
+              count: this._genresAll.slice().filter((genre) => genre === element).length
+            };
+
+            this._genresAndCount.push(elementObject);
+
+            this._genresAll = this._genresAll.filter((genre) => genre !== element);
+          }
+        }
+    );
+
+    this._genresAndCount.sort((a, b) => b.count - a.count);
+    this._topGenre = this._genresAndCount[0].name;
   }
 }
