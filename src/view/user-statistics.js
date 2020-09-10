@@ -3,7 +3,7 @@ import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {createElement} from "../utils/main.js";
 import moment from "moment";
-import { replace } from "../utils/render.js";
+import {replace} from "../utils/render.js";
 
 const createCharts = (genresAndCount) => {
   const BAR_HEIGHT = 50;
@@ -214,26 +214,21 @@ export default class UserStatistics extends Abstract {
     const month = now.clone().subtract(1, `months`).startOf(`day`);
     const year = now.clone().subtract(1, `years`).startOf(`day`);
 
-    console.log(now);
-    console.log(week);
-    console.log(month);
-    console.log(year);
-
     Array.from(this.getElement().querySelectorAll(`.statistic__filters-input`)).forEach(
         (element) => {
           if (element.checked) {
             switch (element.id) {
               case `statistic-today`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).sort((movie) => moment(movie.watchedDate).isAfter(now, `day`));
+                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(now, `day`));
                 break;
               case `statistic-week`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).sort((movie) => moment(movie.watchedDate).isAfter(week, `week`));
+                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(week, `week`));
                 break;
               case `statistic-month`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).sort((movie) => moment(movie.watchedDate).isAfter(month, `month`));
+                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(month, `month`));
                 break;
               case `statistic-year`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).sort((movie) => moment(movie.watchedDate).isAfter(year, `year`));
+                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(year, `year`));
                 break;
               case `statistic-all-time`:
                 this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
