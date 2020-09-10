@@ -3,7 +3,17 @@ import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {createElement} from "../utils/main.js";
 import moment from "moment";
+import momentDurationFormatSetup from "moment-duration-format";
 import {replace} from "../utils/render.js";
+
+momentDurationFormatSetup(moment);
+
+moment.updateLocale(`en`, {
+  durationLabelTypes: [
+    {type: `standard`, string: `__..`},
+    {type: `short`, string: `_.`}
+  ]
+});
 
 const createCharts = (genresAndCount) => {
   const BAR_HEIGHT = 50;
@@ -102,7 +112,9 @@ const createUserFormTemplate = () => {
 };
 
 const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
-  const time = moment.utc().add({minutes: totalDuration});
+  const hoursString = `<span class="statistic__item-description">h</span>`;
+  const minutesString = `<span class="statistic__item-description">m</span>`;
+  const time = moment.duration(totalDuration, `minutes`).format(`h [${hoursString}] mm [${minutesString}]`);
 
   return `
   <ul class="statistic__text-list">
@@ -112,7 +124,7 @@ const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${time.format(`h[<span class="statistic__item-description">h</span>] mm[<span class="statistic__item-description">m</span>]`)}</p>
+        <p class="statistic__item-text">${time}</p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
