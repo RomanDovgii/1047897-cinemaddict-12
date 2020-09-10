@@ -48,6 +48,7 @@ const handleStatsButtonClick = (menuItem) => {
       userStatisticsComponent = new StatisticsView(moviesModel);
       render(main, userStatisticsComponent, RenderPosition.BEFOREEND);
       userStatisticsComponent.getChart();
+      userStatisticsComponent.setFormChange();
       // content = null;
       break;
   }
