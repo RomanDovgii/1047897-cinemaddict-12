@@ -45,7 +45,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.STATS:
       content.destroy();
       filter.init();
-      userStatisticsComponent = new StatisticsView();
+      userStatisticsComponent = new StatisticsView(moviesModel);
       render(main, userStatisticsComponent, RenderPosition.BEFOREEND);
       // content = null;
       break;

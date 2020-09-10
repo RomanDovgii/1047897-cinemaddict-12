@@ -88,7 +88,7 @@ export default class MovieList {
 
         this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
 
-        if (this._getMovies().length <= CARD_COUNT_MAIN) {
+        if (this._getMovies().length <= this._renderFilms) {
           remove(this._loadMoreButtonComponent);
         }
 
@@ -230,7 +230,7 @@ export default class MovieList {
     }
 
 
-    if (this._getMovies().length > CARD_COUNT_MAIN) {
+    if (this._getMovies().length > this._renderFilms) {
       this._loadMoreButtonComponent = new LoadMoreButtonView();
 
       render(this._filmsAllComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
