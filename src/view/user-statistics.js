@@ -1,74 +1,85 @@
 import Abstract from "./abstract.js";
-// import Chart from "chart.js";
-// import ChartDataLabels from "chartjs-plugin-datalabels";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {createElement} from "../utils/main.js";
 import moment from "moment";
 
-// const BAR_HEIGHT = 50;
-// const statisticCtx = document.querySelector(`.statistic__chart`);
+const createCharts = (genresAndCount) => {
+  const BAR_HEIGHT = 50;
+  const statisticCtx = document.querySelector(`.statistic__chart`);
 
-// Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-// statisticCtx.height = BAR_HEIGHT * 5;
+  const genres = [];
+  const count = [];
 
-// const myChart = new Chart(statisticCtx, {
-//   plugins: [ChartDataLabels],
-//   type: `horizontalBar`,
-//   data: {
-//     labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`],
-//     datasets: [{
-//       data: [11, 8, 7, 4, 3],
-//       backgroundColor: `#ffe800`,
-//       hoverBackgroundColor: `#ffe800`,
-//       anchor: `start`
-//     }]
-//   },
-//   options: {
-//     plugins: {
-//       datalabels: {
-//         font: {
-//           size: 20
-//         },
-//         color: `#ffffff`,
-//         anchor: `start`,
-//         align: `start`,
-//         offset: 40,
-//       }
-//     },
-//     scales: {
-//       yAxes: [{
-//         ticks: {
-//           fontColor: `#ffffff`,
-//           padding: 100,
-//           fontSize: 20
-//         },
-//         gridLines: {
-//           display: false,
-//           drawBorder: false
-//         },
-//         barThickness: 24
-//       }],
-//       xAxes: [{
-//         ticks: {
-//           display: false,
-//           beginAtZero: true
-//         },
-//         gridLines: {
-//           display: false,
-//           drawBorder: false
-//         },
-//       }],
-//     },
-//     legend: {
-//       display: false
-//     },
-//     tooltips: {
-//       enabled: false
-//     }
-//   }
-// });
+  genresAndCount.forEach(
+      (element) => {
+        genres.push(element.name);
+        count.push(element.count);
+      }
+  );
+
+  statisticCtx.height = BAR_HEIGHT * genresAndCount.length;
+
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: [...genres],
+      datasets: [{
+        data: [...count],
+        backgroundColor: `#ffe800`,
+        hoverBackgroundColor: `#ffe800`,
+        anchor: `start`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20
+          },
+          color: `#ffffff`,
+          anchor: `start`,
+          align: `start`,
+          offset: 40,
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#ffffff`,
+            padding: 100,
+            fontSize: 20
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 24
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false
+      }
+    }
+  });
+};
 
 const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
-  const time = moment.utc().startOf(`day`).add({minutes: totalDuration});
+  const time = moment.utc().add({minutes: totalDuration});
 
   return `
   <section class="statistic">
@@ -104,7 +115,7 @@ const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${time.format(`H[<span class="statistic__item-description">h</span>] M[<span class="statistic__item-description">m</span>]`)}</p>
+        <p class="statistic__item-text">${time.format(`h[<span class="statistic__item-description">h</span>] mm[<span class="statistic__item-description">m</span>]`)}</p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -137,10 +148,17 @@ export default class UserStatistics extends Abstract {
     return this._element;
   }
 
+  getChart() {
+    createCharts(this._genresAndCount);
+  }
+
   filterMovies() {
     this._movies = this._movies.filter((movie) => movie.isWatched);
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
+
+    // console.log(this._duration);
+    // problem with moment
 
     this._genresAll = [];
     this._genresAndCount = [];

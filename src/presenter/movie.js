@@ -7,6 +7,7 @@ import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
 import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
+import moment from "moment";
 
 const templateForControls = (movie) => {
   const {isWatchlist, isWatched, isFavorite} = movie;
@@ -177,7 +178,8 @@ export default class Movie {
             {},
             this._movie,
             {
-              isWatched: !this._movie.isWatched
+              isWatched: !this._movie.isWatched,
+              watchedDate: !this._movie.isWatched ? moment().format() : null
             }
         ));
   }
@@ -215,7 +217,8 @@ export default class Movie {
             {},
             this._movie,
             {
-              isWatched: !this._movie.isWatched
+              isWatched: !this._movie.isWatched,
+              watchedDate: !this._movie.isWatched ? moment().format() : null
             }
         ));
   }

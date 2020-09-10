@@ -65,7 +65,7 @@ const getPath = () => {
 };
 
 export const createMovie = () => {
-  return {
+  const movie = {
     name: getMovieName(),
     originalName: getMovieName(),
     director: getRandomElementFromArray(USER_NAMES),
@@ -85,6 +85,13 @@ export const createMovie = () => {
     comments: generateComments(),
     id: getRandomNumber(0, 1000000)
   };
+
+  if (movie.isWatched) {
+    movie.watchedDate = generateDateString(2019);
+  } else {
+    movie.watchedDate = null;
+  }
+  return movie;
 };
 
 for (let i = 0; i < MOCKS_COUNT; i++) {
