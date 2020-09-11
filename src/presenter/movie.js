@@ -73,7 +73,7 @@ export default class Movie {
     replace(this._cardComponent, this._oldCardComponent);
     this._setHandlersForCard();
 
-    this._oldCardComponent.removeElement();
+    remove(this._oldCardComponent);
   }
 
   rerenderPopup(updatedMovie) {
@@ -93,7 +93,7 @@ export default class Movie {
     replace(this._newControls, this._oldControls);
     this._setHandlersForCard();
 
-    this._oldControls.removeElement();
+    remove(this._oldControls);
   }
 
   renderCounter() {
@@ -153,7 +153,7 @@ export default class Movie {
   }
 
   _removePopup() {
-    this._popupComponent.removeElement();
+    remove(this._popupComponent);
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
     this._popupOpen = false;

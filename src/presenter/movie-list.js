@@ -266,7 +266,7 @@ export default class MovieList {
     this._renderFilms = renderedFilmCount;
 
     if (this._renderFilms >= this._getMovies().length) {
-      this._loadMoreButtonComponent.removeElement();
+      remove(this._loadMoreButtonComponent);
     }
   }
 

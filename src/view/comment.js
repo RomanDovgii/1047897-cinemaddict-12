@@ -2,6 +2,7 @@ import SmartView from "./smart.js";
 import moment from "moment";
 import he from "he";
 import {UserAction, UpdateType} from "../utils/const.js";
+import {remove} from "../utils/render.js";
 
 const createCommentTemplate = (comment) => {
   const date = moment(comment.date).format(`YYYY/MM/DD HH:MM`);
@@ -38,7 +39,7 @@ export default class Comment extends SmartView {
   _handleDeleteClick(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    this.removeElement();
+    remove(this);
     this._action(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
   }
 
