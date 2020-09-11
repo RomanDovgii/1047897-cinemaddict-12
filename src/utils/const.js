@@ -21,6 +21,11 @@ export const ChangeType = {
   COMMENT: `comment`
 };
 
+export const MenuItem = {
+  CHANGE_FILTER: `CHANGE_FILTER`,
+  STATS: `STATS`
+};
+
 export const FilterType = {
   ALL: `ALL`,
   WATCHLIST: `WATCHLIST`,

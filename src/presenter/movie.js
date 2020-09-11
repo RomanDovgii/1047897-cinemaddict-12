@@ -7,6 +7,7 @@ import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
 import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
+import moment from "moment";
 
 const templateForControls = (movie) => {
   const {isWatchlist, isWatched, isFavorite} = movie;
@@ -72,7 +73,7 @@ export default class Movie {
     replace(this._cardComponent, this._oldCardComponent);
     this._setHandlersForCard();
 
-    this._oldCardComponent.removeElement();
+    remove(this._oldCardComponent);
   }
 
   rerenderPopup(updatedMovie) {
@@ -92,7 +93,7 @@ export default class Movie {
     replace(this._newControls, this._oldControls);
     this._setHandlersForCard();
 
-    this._oldControls.removeElement();
+    remove(this._oldControls);
   }
 
   renderCounter() {
@@ -152,7 +153,7 @@ export default class Movie {
   }
 
   _removePopup() {
-    this._popupComponent.removeElement();
+    remove(this._popupComponent);
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
     this._popupOpen = false;
@@ -177,7 +178,8 @@ export default class Movie {
             {},
             this._movie,
             {
-              isWatched: !this._movie.isWatched
+              isWatched: !this._movie.isWatched,
+              watchedDate: !this._movie.isWatched ? moment().format() : null
             }
         ));
   }
@@ -215,7 +217,8 @@ export default class Movie {
             {},
             this._movie,
             {
-              isWatched: !this._movie.isWatched
+              isWatched: !this._movie.isWatched,
+              watchedDate: !this._movie.isWatched ? moment().format() : null
             }
         ));
   }
@@ -289,7 +292,7 @@ export default class Movie {
         remove(this._popupComponent);
 
         this._changeData(
-            UpdateType.PATCH,
+            UpdateType.MINOR,
             Object.assign(
                 {},
                 this._movie,
