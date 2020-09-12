@@ -187,8 +187,6 @@ export default class UserStatistics extends Abstract {
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
 
-    // console.log(this._duration);
-    // problem with moment
 
     this._genresAll = [];
     this._genresAndCount = [];
@@ -217,7 +215,7 @@ export default class UserStatistics extends Abstract {
     );
 
     this._genresAndCount.sort((a, b) => b.count - a.count);
-    this._topGenre = this._genresAndCount[0].name;
+    this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : `None`;
   }
 
   _handleFormChange() {
@@ -228,22 +226,23 @@ export default class UserStatistics extends Abstract {
 
     Array.from(this.getElement().querySelectorAll(`.statistic__filters-input`)).forEach(
         (element) => {
+          const preparedMovies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
           if (element.checked) {
             switch (element.id) {
               case `statistic-today`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(now, `day`));
+                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(now, `day`));
                 break;
               case `statistic-week`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(week, `week`));
+                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(week, `week`));
                 break;
               case `statistic-month`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(month, `month`));
+                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(month, `month`));
                 break;
               case `statistic-year`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched).filter((movie) => moment(movie.watchedDate).isAfter(year, `year`));
+                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(year, `year`));
                 break;
               case `statistic-all-time`:
-                this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
+                this._movies = preparedMovies;
                 break;
               default:
                 throw new Error(`Unknown filter type`);

@@ -16,6 +16,18 @@ export const JPG_EXTENSION = `.jpg`;
 export const PNG_EXTENSION = `.png`;
 export const POPEY_MEETS_SINDBAD_NAME = `popeye-meets-sinbad`;
 
+export const Method = {
+  GET: `GET`,
+  PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
+};
+
+export const SuccessHTTPStatusRange = {
+  MIN: 200,
+  MAX: 299
+};
+
 export const ChangeType = {
   CONTROL: `control`,
   COMMENT: `comment`

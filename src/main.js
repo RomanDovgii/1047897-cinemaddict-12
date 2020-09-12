@@ -8,6 +8,10 @@ import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filters.js";
 import StatisticsView from "./view/user-statistics.js";
+import Api from "./api.js";
+
+const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
+const AUTHORIZATION = `Basic eogwas90dk19883a`;
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -19,6 +23,18 @@ let content = null;
 
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+console.log();
+
+api.getMovies()
+  .then((movies) => {
+    console.log(movies);
+  })
+  .catch(() => {
+    console.log(`recieved nothing`);
+  });
 
 const moviesModel = new MoviesModel();
 moviesModel.setMovies(mocks);
@@ -49,7 +65,6 @@ const handleStatsButtonClick = (menuItem) => {
       render(main, userStatisticsComponent, RenderPosition.BEFOREEND);
       userStatisticsComponent.getChart();
       userStatisticsComponent.setFormChange();
-      // content = null;
       break;
   }
 
