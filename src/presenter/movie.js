@@ -129,12 +129,9 @@ export default class Movie {
       this._handlePopup();
     }
 
-    console.log(END_POINT);
-
     const api = new Api(END_POINT, AUTHORIZATION);
 
     api.getComments(this._movie.id).then((comments) => {
-      console.log(comments);
       this._movie.comments = comments;
       this._comments = this._movie.comments;
       this._commentsModel = new CommentsModel();

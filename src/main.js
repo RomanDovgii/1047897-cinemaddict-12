@@ -37,17 +37,10 @@ api.getMovies()
 
     filter.init();
     content.init();
-  })
-  .catch(() => {
-    console.log(`recieved nothing`);
-  });
 
-api.getComments()
-  .then((comments) => {
-    console.log(comments);
+    movies.map((movie) => MoviesModel.adaptToServer(movie));
   })
   .catch(() => {
-    console.log(`recieved no comments`)
   });
 
 const filterModel = new FilterModel();
@@ -85,5 +78,3 @@ const handleStatsButtonClick = (menuItem) => {
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, new Statistics(mocks).getElement(), RenderPosition.BEFOREEND);
-
-

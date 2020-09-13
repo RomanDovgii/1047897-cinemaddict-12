@@ -40,18 +40,39 @@ export default class Comments extends Observer {
   }
 
   static adaptToClient(comment) {
-    const adaptedMovie = Object.assign(
+    const adaptedComment = Object.assign(
         {},
         comment,
         {
-          author: comment.author,
           text: comment.comment,
           emoji: comment.emotion,
-          date: comment.date,
-          id: comment.id
         }
     );
 
-    return adaptedMovie;
+    delete adaptedComment.emotion;
+    delete adaptedComment.comment;
+
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+
+
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          "author": comment.author,
+          "comment": comment.text,
+          "emotion": comment.emoji,
+          "date": comment.date,
+          "id": comment.id,
+        }
+    );
+
+    delete adaptedComment.emoji;
+    delete adaptedComment.text;
+
+    return adaptedComment;
   }
 }

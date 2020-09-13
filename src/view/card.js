@@ -7,8 +7,6 @@ const createCardTemplate = (movie) => {
 
   const {name, release, runtime, genres, description, movieRating, path, isWatchlist, isWatched, isFavorite, comments} = movie;
 
-  console.log(movieRating);
-
   const commentNumber = comments.length === 1 ? `${comments.length} comment` : `${comments.length} comments`;
 
   const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
