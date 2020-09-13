@@ -10,7 +10,7 @@ const generateGenres = (array) => {
 
 const createPopupTemplate = (movie) => {
 
-  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, movieRaiting, movieRating, path, isWatchlist, isWatched, isFavorite} = movie;
+  const {name, originalName, director, writers, actors, release, runtime, country, genres, description, rating, movieRating, path, isWatchlist, isWatched, isFavorite} = movie;
 
   const writersText = `${writers.join(`, `)}`;
   const actorsText = `${actors.join(`, `)}`;
@@ -33,7 +33,7 @@ const createPopupTemplate = (movie) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${path}" alt="">
 
-            <p class="film-details__age">${movieRaiting}</p>
+            <p class="film-details__age">${rating}+</p>
           </div>
 
           <div class="film-details__info">

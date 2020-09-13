@@ -1,4 +1,5 @@
 import Observer from "../utils/observer.js";
+import moment from "moment";
 
 export default class Movies extends Observer {
   constructor() {
@@ -43,7 +44,8 @@ export default class Movies extends Observer {
           director: movie.film_info.director,
           genres: movie.film_info.genre,
           path: movie.film_info.poster,
-          release: movie.film_info.release,
+          release: movie.film_info.release.date,
+          country: movie.film_info.release.release_country,
           runtime: movie.film_info.runtime,
           name: movie.film_info.title,
           movieRating: movie.film_info.total_rating,
@@ -71,11 +73,15 @@ export default class Movies extends Observer {
             "director": movie.director,
             "genre": movie.genres,
             "poster": movie.path,
-            "release": movie.release,
+            "release": moment(movie.release),
             "runtime": movie.runtime,
             "title": movie.name,
             "total_rating": movie.movieRating,
             "writers": movie.writers,
+            "relesase": {
+              "date": movie.release,
+              "release_country": movie.country
+            }
           },
           "user_details": {
             "already_watched": movie.isWatched,
@@ -104,6 +110,8 @@ export default class Movies extends Observer {
     delete adaptedMovie.isFavorite;
     delete adaptedMovie.isWatchlist;
     delete adaptedMovie.watchedDate;
+    delete adaptedMovie.release;
+    delete adaptedMovie.country;
 
     return adaptedMovie;
   }

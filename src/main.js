@@ -8,10 +8,6 @@ import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filters.js";
 import StatisticsView from "./view/user-statistics.js";
-import Api from "./api.js";
-
-const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
-const AUTHORIZATION = `Basic eogwas90dk19883a`;
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -24,26 +20,10 @@ let content = null;
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
 
-const api = new Api(END_POINT, AUTHORIZATION);
 const moviesModel = new MoviesModel();
+const filterModel = new FilterModel();
 
 render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
-
-api.getMovies()
-  .then((movies) => {
-    moviesModel.setMovies(movies);
-    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter);
-
-    filter.init();
-    content.init();
-
-    movies.map((movie) => MoviesModel.adaptToServer(movie));
-  })
-  .catch(() => {
-  });
-
-const filterModel = new FilterModel();
 
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
@@ -74,6 +54,12 @@ const handleStatsButtonClick = (menuItem) => {
 
   oldMenuItem = newMenuItem;
 };
+
+filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+content = new MovieList(main, moviesModel, filterModel, filter);
+
+filter.init();
+content.init();
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 

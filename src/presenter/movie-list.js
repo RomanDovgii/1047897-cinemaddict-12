@@ -1,13 +1,15 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, END_POINT, AUTHORIZATION} from "../utils/const.js";
 import {render, remove, replace} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import FilmsView from "../view/films-main.js";
 import SortView from "../view/sort-menu.js";
 import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
+import LoadingFilmsView from "../view/loading-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
 import MoviePresenter from "./movie.js";
 import moment from "moment";
+import Api from "../api.js";
 
 export default class MovieList {
   constructor(mainContainer, moviesModel, filterModel, filterPresenter) {
@@ -28,6 +30,7 @@ export default class MovieList {
     this._filmsRatedComponent = new FilmsContainerView(MovieContainers.TOP);
     this._filmsCommentedComponent = new FilmsContainerView(MovieContainers.COMMENTED);
     this._noFilmsComponent = new NoFilmsView();
+    this._loadingFilmsComponent = new LoadingFilmsView();
 
     this._moviesMainContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
 
@@ -47,11 +50,24 @@ export default class MovieList {
 
     this._moviesModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-
     this._renderSort();
-    this._renderFilmsContainer();
 
-    this._renderMain();
+    const api = new Api(END_POINT, AUTHORIZATION);
+    this._renderFilmsContainer();
+    this._renderLoading();
+
+    api.getMovies()
+      .then((movies) => {
+        remove(this._loadingFilmsComponent);
+        this._moviesModel.setMovies(movies);
+        this._filterPresenter.init();
+        this._renderMain();
+      })
+      .catch(() => {
+        remove(this._loadingFilmsComponent);
+        this._moviesModel.setMovies([]);
+        this._renderNoFilms();
+      });
   }
 
   _handlePopups() {
@@ -100,7 +116,7 @@ export default class MovieList {
         this._renderFilms = CARD_COUNT_MAIN;
         this._currentSortMethod = `default`;
         this._previousSortMethod = `default`;
-        this._rerenderSort();
+        this._renderSort();
         this._clearMainMoviesContainer();
         this._moviesMainContainer.innerHTML = ``;
         this._renderMainFilmsCards();
@@ -121,7 +137,7 @@ export default class MovieList {
 
     switch (this._currentSortMethod) {
       case SortType.RAITING:
-        return filteredMovies.slice().sort((a, b) => b.raiting - a.raiting);
+        return filteredMovies.slice().sort((a, b) => b.movieRating - a.movieRating);
       case SortType.DATE:
         return filteredMovies.slice().sort((a, b) => moment(b.release).format(`YYYYMMDD`) - moment(a.release).format(`YYYYMMDD`));
       default:
@@ -136,7 +152,7 @@ export default class MovieList {
 
     switch (type) {
       case MovieContainers.TOP:
-        preparedMovies = this._getMovies().slice().sort((a, b) => b.raiting - a.raiting);
+        preparedMovies = this._getMovies().slice().sort((a, b) => b.movieRating - a.movieRating);
         break;
       case MovieContainers.COMMENTED:
         preparedMovies = this._getMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
@@ -168,6 +184,8 @@ export default class MovieList {
       this._newSort = new SortView();
       replace(this._newSort, this._sortComponent);
       this._sortComponent = this._newSort;
+      this._sortComponent.setClickHandler(this._handleSortButtonClick);
+      return;
     }
 
     this._sortComponent = new SortView();
@@ -177,12 +195,8 @@ export default class MovieList {
     this._sortComponent.setClickHandler(this._handleSortButtonClick);
   }
 
-  _rerenderSort() {
-    this._newSort = new SortView();
-    replace(this._newSort, this._sortComponent);
-    this._sortComponent = this._newSort;
-
-    this._sortComponent.setClickHandler(this._handleSortButtonClick);
+  _renderLoading() {
+    render(this._mainContainer, this._loadingFilmsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsContainer() {
