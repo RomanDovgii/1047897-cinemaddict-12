@@ -132,8 +132,7 @@ export default class Movie {
     const api = new Api(END_POINT, AUTHORIZATION);
 
     api.getComments(this._movie.id).then((comments) => {
-      this._movie.comments = comments;
-      this._comments = this._movie.comments;
+      this._comments = comments;
       this._commentsModel = new CommentsModel();
       this._commentsModel.setComments(this._comments);
       this._commentsModel.addObserver(this._handleModelEvent);

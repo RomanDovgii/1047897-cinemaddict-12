@@ -52,11 +52,11 @@ export default class MovieList {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderSort();
 
-    const api = new Api(END_POINT, AUTHORIZATION);
+    this._api = new Api(END_POINT, AUTHORIZATION);
     this._renderFilmsContainer();
     this._renderLoading();
 
-    api.getMovies()
+    this._api.getMovies()
       .then((movies) => {
         remove(this._loadingFilmsComponent);
         this._moviesModel.setMovies(movies);
@@ -87,7 +87,7 @@ export default class MovieList {
   }
 
   _handleViewAction(updateType, update) {
-    this._moviesModel.updateMovie(updateType, update);
+    this._api.updateMovies(update).then((response) => this._moviesModel.updateMovie(updateType, response)).catch(() => console.log(`problem`));
   }
 
   _handleModelEvent(updateType, data) {

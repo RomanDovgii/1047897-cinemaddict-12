@@ -33,6 +33,7 @@ export default class Movies extends Observer {
   }
 
   static adaptToClient(movie) {
+    console.log(movie);
     const adaptedMovie = Object.assign(
         {},
         movie,
@@ -73,12 +74,11 @@ export default class Movies extends Observer {
             "director": movie.director,
             "genre": movie.genres,
             "poster": movie.path,
-            "release": moment(movie.release),
             "runtime": movie.runtime,
             "title": movie.name,
             "total_rating": movie.movieRating,
             "writers": movie.writers,
-            "relesase": {
+            "release": {
               "date": movie.release,
               "release_country": movie.country
             }
@@ -90,7 +90,10 @@ export default class Movies extends Observer {
             "watching_date": movie.watchedDate,
           },
           "id": movie.id,
-          "comments": movie.comments.reduce((accumulator, element) => accumulator.push(element.id), []),
+          "comments": movie.comments.reduce((accumulator, element) => {
+            accumulator.push(element);
+            return accumulator;
+          }, []),
         }
     );
 
@@ -112,6 +115,8 @@ export default class Movies extends Observer {
     delete adaptedMovie.watchedDate;
     delete adaptedMovie.release;
     delete adaptedMovie.country;
+
+    console.log(adaptedMovie);
 
     return adaptedMovie;
   }
