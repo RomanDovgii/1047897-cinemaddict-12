@@ -25,19 +25,30 @@ let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const moviesModel = new MoviesModel();
 
-console.log();
+render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
 api.getMovies()
   .then((movies) => {
-    console.log(movies);
+    moviesModel.setMovies(movies);
+    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+    content = new MovieList(main, moviesModel, filterModel, filter);
+
+    filter.init();
+    content.init();
   })
   .catch(() => {
     console.log(`recieved nothing`);
   });
 
-const moviesModel = new MoviesModel();
-moviesModel.setMovies(mocks);
+api.getComments()
+  .then((comments) => {
+    console.log(comments);
+  })
+  .catch(() => {
+    console.log(`recieved no comments`)
+  });
 
 const filterModel = new FilterModel();
 
@@ -70,14 +81,6 @@ const handleStatsButtonClick = (menuItem) => {
 
   oldMenuItem = newMenuItem;
 };
-
-render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
-
-filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-content = new MovieList(main, moviesModel, filterModel, filter);
-
-filter.init();
-content.init();
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 

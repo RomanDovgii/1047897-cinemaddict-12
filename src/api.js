@@ -1,4 +1,5 @@
 import MoviesModel from "./model/movies.js";
+import CommentsModel from "./model/comments.js";
 import {Method, SuccessHTTPStatusRange} from "./utils/const.js";
 
 export default class Api {
@@ -9,8 +10,14 @@ export default class Api {
 
   getMovies() {
     return this._load({url: `movies`})
-      .then(Api.toJSON);
-      // .then((movies) => movies.map(MoviesModel.adaptToClient));
+      .then(Api.toJSON)
+      .then((movies) => movies.map(MoviesModel.adaptToClient));
+  }
+
+  getComments(movieId) {
+    return this._load({url: `comments/${movieId}`})
+      .then(Api.toJSON)
+      .then((comments) => comments.map(CommentsModel.adaptToClient));
   }
 
   updateMovies(movie) {
@@ -24,7 +31,7 @@ export default class Api {
 
   deleteComment(comment) {
     return this._load({
-      url: `movies/${comment.id}`, // need some verification here
+      url: `comments/${comment.id}`, // need some verification here
       method: Method.DELETE
     });
   }

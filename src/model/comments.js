@@ -38,4 +38,20 @@ export default class Comments extends Observer {
 
     this._notify(updateType, update);
   }
+
+  static adaptToClient(comment) {
+    const adaptedMovie = Object.assign(
+        {},
+        comment,
+        {
+          author: comment.author,
+          text: comment.comment,
+          emoji: comment.emotion,
+          date: comment.date,
+          id: comment.id
+        }
+    );
+
+    return adaptedMovie;
+  }
 }

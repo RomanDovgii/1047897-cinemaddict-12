@@ -15,6 +15,8 @@ export const MAIN_IMAGES_PATH = `./images`;
 export const JPG_EXTENSION = `.jpg`;
 export const PNG_EXTENSION = `.png`;
 export const POPEY_MEETS_SINDBAD_NAME = `popeye-meets-sinbad`;
+export const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
+export const AUTHORIZATION = `Basic eogwas90dk19883a`;
 
 export const Method = {
   GET: `GET`,

@@ -1,4 +1,4 @@
-import {RenderPosition, UserAction, UpdateType} from "../utils/const.js";
+import {RenderPosition, UserAction, UpdateType, END_POINT, AUTHORIZATION} from "../utils/const.js";
 import {render, replace, remove} from "../utils/render.js";
 import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
@@ -7,6 +7,7 @@ import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
 import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
+import Api from "../api.js";
 import moment from "moment";
 
 const templateForControls = (movie) => {
@@ -128,19 +129,27 @@ export default class Movie {
       this._handlePopup();
     }
 
-    this._commentsModel = new CommentsModel();
-    this._commentsModel.setComments(this._comments);
-    this._commentsModel.addObserver(this._handleModelEvent);
+    console.log(END_POINT);
+
+    const api = new Api(END_POINT, AUTHORIZATION);
+
+    api.getComments(this._movie.id).then((comments) => {
+      console.log(comments);
+      this._movie.comments = comments;
+      this._comments = this._movie.comments;
+      this._commentsModel = new CommentsModel();
+      this._commentsModel.setComments(this._comments);
+      this._commentsModel.addObserver(this._handleModelEvent);
+      this.renderCounter();
+      this.renderComments();
+      this.renderAddComment();
+    });
 
     this._popupComponent = new PopupView(this._movie);
 
     const body = document.querySelector(`.body`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
-
-    this.renderCounter();
-    this.renderComments();
-    this.renderAddComment();
 
     this._setHandlersForPopup();
   }
