@@ -87,7 +87,7 @@ export default class MovieList {
   }
 
   _handleViewAction(updateType, update) {
-    this._api.updateMovies(update).then((response) => this._moviesModel.updateMovie(updateType, response)).catch(() => console.log(`problem`));
+    this._api.updateMovies(update).then((response) => this._moviesModel.updateMovie(updateType, response));
   }
 
   _handleModelEvent(updateType, data) {

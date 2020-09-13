@@ -1,5 +1,4 @@
 import Observer from "../utils/observer.js";
-import moment from "moment";
 
 export default class Movies extends Observer {
   constructor() {
@@ -33,7 +32,6 @@ export default class Movies extends Observer {
   }
 
   static adaptToClient(movie) {
-    console.log(movie);
     const adaptedMovie = Object.assign(
         {},
         movie,
@@ -115,8 +113,6 @@ export default class Movies extends Observer {
     delete adaptedMovie.watchedDate;
     delete adaptedMovie.release;
     delete adaptedMovie.country;
-
-    console.log(adaptedMovie);
 
     return adaptedMovie;
   }
