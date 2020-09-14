@@ -1,6 +1,5 @@
 import {RenderPosition, UserAction, UpdateType} from "../utils/const.js";
 import {render, replace, remove} from "../utils/render.js";
-import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
 import CommentView from "../view/comment.js";
@@ -9,31 +8,17 @@ import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
 import moment from "moment";
 
-const templateForControls = (movie) => {
-  const {isWatchlist, isWatched, isFavorite} = movie;
-
-  const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
-  const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
-  const favoriteControl = isFavorite ? `film-card__controls-item--active` : ``;
-
-  return `
-  <form class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${wathcedControl}">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteControl}">Mark as favorite</button>
-  </form>
-  `;
-};
-
 export default class Movie {
-  constructor(changeData, handlePopup) {
+  constructor(changeData, handlePopup, api) { // change data is handle view action
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._popupOpen = false;
 
+    this._api = api;
+
     this._showPopup = this._showPopup.bind(this);
     this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
-    this._removePopup = this._removePopup.bind(this);
+    this.removePopup = this.removePopup.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -79,25 +64,12 @@ export default class Movie {
   rerenderPopup(updatedMovie) {
     this._movie = updatedMovie;
     this._comments = this._movie.comments;
-    this._removePopup();
+    this.removePopup();
     this._showPopup();
   }
 
-  rerenderControls(updatedMovie) {
-    this._oldControls = this._cardComponent.getElement().querySelector(`.film-card__controls`);
-
-    this._newControls = createElement(templateForControls(updatedMovie));
-
-    this._movie = updatedMovie;
-
-    replace(this._newControls, this._oldControls);
-    this._setHandlersForCard();
-
-    remove(this._oldControls);
-  }
-
   renderCounter() {
-    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
+    this._commentsCounterComponent = new CommentsCounterView(this._movie.comments.length);
     const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
     render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
   }
@@ -123,14 +95,11 @@ export default class Movie {
   }
 
   _showPopup() {
-    this._popupOpen = true;
     if (this._popupOpen) {
-      this._handlePopup();
+      return;
     }
 
-    this._commentsModel = new CommentsModel();
-    this._commentsModel.setComments(this._comments);
-    this._commentsModel.addObserver(this._handleModelEvent);
+    this._handlePopup();
 
     this._popupComponent = new PopupView(this._movie);
 
@@ -139,10 +108,18 @@ export default class Movie {
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
 
     this.renderCounter();
-    this.renderComments();
-    this.renderAddComment();
+
+    this._api.getComments(this._movie.id).then((comments) => {
+      this._comments = comments;
+      this._commentsModel = new CommentsModel();
+      this._commentsModel.setComments(this._comments);
+      this._commentsModel.addObserver(this._handleModelEvent);
+      this.renderComments();
+      this.renderAddComment();
+    });
 
     this._setHandlersForPopup();
+    this._popupOpen = true;
   }
 
   _updateCounter() {
@@ -152,7 +129,7 @@ export default class Movie {
     replace(this._commentsCounterComponent, this._oldCounter);
   }
 
-  _removePopup() {
+  removePopup() {
     remove(this._popupComponent);
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
@@ -161,6 +138,7 @@ export default class Movie {
 
   _handleWatchlistClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -173,6 +151,7 @@ export default class Movie {
 
   _handleWatchedClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -186,6 +165,7 @@ export default class Movie {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -197,8 +177,8 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
-    this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -206,12 +186,13 @@ export default class Movie {
             {
               isWatchlist: !this._movie.isWatchlist
             }
-        ));
+        )
+    );
   }
 
   _handleWatchedPopupClick() {
-    this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -220,12 +201,13 @@ export default class Movie {
               isWatched: !this._movie.isWatched,
               watchedDate: !this._movie.isWatched ? moment().format() : null
             }
-        ));
+        )
+    );
   }
 
   _handleFavoritePopupClick() {
-    this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -233,12 +215,13 @@ export default class Movie {
             {
               isFavorite: !this._movie.isFavorite
             }
-        ));
+        )
+    );
   }
 
   _handleEscKeyDown(evt) {
     if (evt.keyCode === 27) {
-      this._removePopup();
+      this.removePopup();
     }
   }
 
@@ -250,7 +233,7 @@ export default class Movie {
 
     const eventTarget = evt.target;
     if ((!eventTarget.closest(`.film-details`))) {
-      this._removePopup();
+      this.removePopup();
     }
   }
 
@@ -262,7 +245,7 @@ export default class Movie {
   }
 
   _setHandlersForPopup() {
-    this._popupComponent.setCloseButtonClickHandler(this._removePopup);
+    this._popupComponent.setCloseButtonClickHandler(this.removePopup);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistPopupClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedPopupClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoritePopupClick);
@@ -289,15 +272,17 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
-        remove(this._popupComponent);
-
         this._changeData(
+            UserAction.CARD_CHANGE,
             UpdateType.MINOR,
             Object.assign(
                 {},
                 this._movie,
                 {
-                  comments: this._commentsModel.getComments()
+                  comments: this._commentsModel.getComments().reduce((accumulator, comment) => {
+                    accumulator.push(comment.id);
+                    return accumulator;
+                  }, [])
                 }
             ));
 

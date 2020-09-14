@@ -21,9 +21,9 @@ let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const moviesModel = new MoviesModel();
-moviesModel.setMovies(mocks);
-
 const filterModel = new FilterModel();
+
+render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
@@ -49,14 +49,11 @@ const handleStatsButtonClick = (menuItem) => {
       render(main, userStatisticsComponent, RenderPosition.BEFOREEND);
       userStatisticsComponent.getChart();
       userStatisticsComponent.setFormChange();
-      // content = null;
       break;
   }
 
   oldMenuItem = newMenuItem;
 };
-
-render(header, new UserRank().getElement(), RenderPosition.BEFOREEND);
 
 filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
 content = new MovieList(main, moviesModel, filterModel, filter);
@@ -67,5 +64,3 @@ content.init();
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 render(footerStats, new Statistics(mocks).getElement(), RenderPosition.BEFOREEND);
-
-
