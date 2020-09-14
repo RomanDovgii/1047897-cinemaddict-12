@@ -32,8 +32,7 @@ export default class Movies extends Observer {
   }
 
   static adaptToClient(movie) {
-    const filmInfo = movie.film_info;
-    const userDetails = movie.user_details;
+    const {film_info: filmInfo, user_details: userDetails} = movie;
 
     const adaptedMovie = Object.assign(
         {},
