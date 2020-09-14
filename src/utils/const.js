@@ -50,7 +50,9 @@ export const FilterType = {
 export const UserAction = {
   ADD_COMMENT: `ADD_COMMENT`,
   DELETE_COMMENT: `DELETE_COMMENT`,
-  UPDATE_MOVIE: `UPDATE_MOVIE`
+  UPDATE_MOVIE: `UPDATE_MOVIE`,
+  POPUP_CHANGE: `POPUP_CHANGE`,
+  CARD_CHANGE: `CARD_CHANGE`
 };
 
 export const UpdateType = {

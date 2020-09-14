@@ -27,7 +27,7 @@ const templateForControls = (movie) => {
 };
 
 export default class Movie {
-  constructor(changeData, handlePopup) {
+  constructor(changeData, handlePopup) { // change data is handle view action
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._popupOpen = false;
@@ -166,6 +166,7 @@ export default class Movie {
 
   _handleWatchlistClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -178,6 +179,7 @@ export default class Movie {
 
   _handleWatchedClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -191,6 +193,7 @@ export default class Movie {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -204,6 +207,7 @@ export default class Movie {
   _handleWatchlistPopupClick() {
     this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -217,6 +221,7 @@ export default class Movie {
   _handleWatchedPopupClick() {
     this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -231,6 +236,7 @@ export default class Movie {
   _handleFavoritePopupClick() {
     this._removePopup();
     this._changeData(
+        UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -297,6 +303,7 @@ export default class Movie {
         remove(this._popupComponent);
 
         this._changeData(
+            UserAction.CARD_CHANGE,
             UpdateType.MINOR,
             Object.assign(
                 {},

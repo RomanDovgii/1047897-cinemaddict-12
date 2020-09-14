@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, END_POINT, AUTHORIZATION} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, END_POINT, AUTHORIZATION, UserAction} from "../utils/const.js";
 import {render, remove, replace} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import FilmsView from "../view/films-main.js";
@@ -86,19 +86,28 @@ export default class MovieList {
     this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
-  _handleViewAction(updateType, update) {
-    this._api.updateMovies(update).then((response) => this._moviesModel.updateMovie(updateType, response));
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.POPUP_CHANGE:
+        this._api.updateMovies(update).then((response) => {
+          this._moviesModel.updateMovie(updateType, response);
+          this._moviePresenters[response.id].rerenderPopup(response);
+        });
+        break;
+      case UserAction.CARD_CHANGE:
+        this._api.updateMovies(update).then((response) => {
+          this._moviesModel.updateMovie(updateType, response);
+        });
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
         this._moviePresenters[data.id].rerenderCard(data);
-        this._moviePresenters[data.id].rerenderPopup(data);
         break;
       case UpdateType.MINOR:
-        this._moviePresenters[data.id].rerenderPopup(data);
-
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
 
