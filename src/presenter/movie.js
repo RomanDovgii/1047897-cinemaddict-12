@@ -177,7 +177,7 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
-    this._removePopup();
+    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -192,7 +192,7 @@ export default class Movie {
   }
 
   _handleWatchedPopupClick() {
-    this._removePopup();
+    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -208,7 +208,7 @@ export default class Movie {
   }
 
   _handleFavoritePopupClick() {
-    this._removePopup();
+    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,

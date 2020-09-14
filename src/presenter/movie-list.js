@@ -94,8 +94,9 @@ export default class MovieList {
     switch (actionType) {
       case UserAction.POPUP_CHANGE:
         this._api.updateMovies(update).then((response) => {
+          this._moviePresenters[response.id]._removePopup();
           this._moviesModel.updateMovie(updateType, response);
-          this._moviePresenters[response.id].rerenderPopup(response);
+          this._moviePresenters[response.id]._showPopup(response);
         });
         break;
       case UserAction.CARD_CHANGE:
