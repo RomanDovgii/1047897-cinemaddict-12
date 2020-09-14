@@ -18,6 +18,8 @@ export default class MovieList {
     this._renderFilms = CARD_COUNT_MAIN;
     this._moviePresenter = {};
     this._moviePresenters = {};
+    this._moviePresentersTop = {};
+    this._moviePresentersCommented = {};
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
 
@@ -72,6 +74,8 @@ export default class MovieList {
 
   _handlePopups() {
     Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
+    Object.values(this._moviePresentersTop).forEach((presenter) => presenter._removePopup());
+    Object.values(this._moviePresentersCommented).forEach((presenter) => presenter._removePopup());
   }
 
   destroy() {
@@ -86,7 +90,7 @@ export default class MovieList {
     this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update, callback) {
     switch (actionType) {
       case UserAction.POPUP_CHANGE:
         this._api.updateMovies(update).then((response) => {
@@ -97,6 +101,9 @@ export default class MovieList {
       case UserAction.CARD_CHANGE:
         this._api.updateMovies(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
+          if (callback) {
+            callback();
+          }
         });
         break;
     }
@@ -108,10 +115,14 @@ export default class MovieList {
         this._moviePresenters[data.id].rerenderCard(data);
         break;
       case UpdateType.MINOR:
+        console.log(`minor`);
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
 
         this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
+
+        this._renderFilmsContainerRated();
+        this._renderFilmsContainerCommented();
 
         if (this._getMovies().length <= this._renderFilms) {
           remove(this._loadMoreButtonComponent);
@@ -179,9 +190,15 @@ export default class MovieList {
       const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups);
       const card = moviePresenter.init(movie);
       fragment.append(card);
-      this._moviePresenters[movie.id] = moviePresenter;
       if (type === MovieContainers.ALL) {
         this._moviePresenters[movie.id] = moviePresenter;
+      }
+      if (type === MovieContainers.TOP) {
+        this._moviePresentersTop[movie.id] = moviePresenter;
+      }
+
+      if (type === MovieContainers.COMMENTED) {
+        this._moviePresentersCommented[movie.id] = moviePresenter;
       }
     });
 
@@ -228,12 +245,14 @@ export default class MovieList {
   _renderFilmsContainerRated() {
     render(this._filmsComponent, this._filmsRatedComponent, RenderPosition.BEFOREEND);
     const cardsContainer = this._filmsRatedComponent.getElement().querySelector(`.films-list__container`);
+    cardsContainer.innerHTML = ``;
     this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP, cardsContainer);
   }
 
   _renderFilmsContainerCommented() {
     render(this._filmsComponent, this._filmsCommentedComponent, RenderPosition.BEFOREEND);
     const cardsContainer = this._filmsCommentedComponent.getElement().querySelector(`.films-list__container`);
+    cardsContainer.innerHTML = ``;
     this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED, cardsContainer);
   }
 
@@ -299,8 +318,14 @@ export default class MovieList {
       return;
     }
 
+    const zeroRaitingCount = this._getMovies().slice().filter((movie) => movie.movieRating === 0).length;
+
     this._renderFilmsContainerAll();
-    this._renderFilmsContainerRated();
+
+    if (zeroRaitingCount === 0) {
+      this._renderFilmsContainerRated();
+    }
+
     this._renderFilmsContainerCommented();
   }
 }

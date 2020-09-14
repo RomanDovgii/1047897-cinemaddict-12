@@ -78,23 +78,11 @@ export default class Movie {
   }
 
   rerenderPopup(updatedMovie) {
+    console.log(this._popupComponent.getElement());
     this._movie = updatedMovie;
     this._comments = this._movie.comments;
     this._removePopup();
     this._showPopup();
-  }
-
-  rerenderControls(updatedMovie) {
-    this._oldControls = this._cardComponent.getElement().querySelector(`.film-card__controls`);
-
-    this._newControls = createElement(templateForControls(updatedMovie));
-
-    this._movie = updatedMovie;
-
-    replace(this._newControls, this._oldControls);
-    this._setHandlersForCard();
-
-    remove(this._oldControls);
   }
 
   renderCounter() {
@@ -124,10 +112,11 @@ export default class Movie {
   }
 
   _showPopup() {
-    this._popupOpen = true;
     if (this._popupOpen) {
-      this._handlePopup();
+      return;
     }
+
+    this._handlePopup();
 
     const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -148,6 +137,7 @@ export default class Movie {
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
 
     this._setHandlersForPopup();
+    this._popupOpen = true;
   }
 
   _updateCounter() {
@@ -205,7 +195,6 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
-    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -215,11 +204,11 @@ export default class Movie {
             {
               isWatchlist: !this._movie.isWatchlist
             }
-        ));
+        )
+    );
   }
 
   _handleWatchedPopupClick() {
-    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -230,11 +219,11 @@ export default class Movie {
               isWatched: !this._movie.isWatched,
               watchedDate: !this._movie.isWatched ? moment().format() : null
             }
-        ));
+        )
+    );
   }
 
   _handleFavoritePopupClick() {
-    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -244,7 +233,8 @@ export default class Movie {
             {
               isFavorite: !this._movie.isFavorite
             }
-        ));
+        )
+    );
   }
 
   _handleEscKeyDown(evt) {
