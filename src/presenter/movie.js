@@ -272,8 +272,6 @@ export default class Movie {
       case UpdateType.MAJOR:
         const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
         commentsContainer.innerHTML = ``;
-        remove(this._popupComponent);
-
         this._changeData(
             UserAction.CARD_CHANGE,
             UpdateType.MINOR,
@@ -281,7 +279,10 @@ export default class Movie {
                 {},
                 this._movie,
                 {
-                  comments: this._commentsModel.getComments()
+                  comments: this._commentsModel.getComments().reduce((accumulator, comment) => {
+                    accumulator.push(comment.id);
+                    return accumulator;
+                  }, [])
                 }
             ));
 

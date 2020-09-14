@@ -32,29 +32,35 @@ export default class Movies extends Observer {
   }
 
   static adaptToClient(movie) {
+    const filmInfo = movie.film_info;
+    const userDetails = movie.user_details;
+
     const adaptedMovie = Object.assign(
         {},
         movie,
         {
-          actors: movie.film_info.actors,
-          rating: movie.film_info.age_rating,
-          originalName: movie.film_info.alternative_title,
-          description: movie.film_info.description,
-          director: movie.film_info.director,
-          genres: movie.film_info.genre,
-          path: movie.film_info.poster,
-          release: movie.film_info.release.date,
-          country: movie.film_info.release.release_country,
-          runtime: movie.film_info.runtime,
-          name: movie.film_info.title,
-          movieRating: movie.film_info.total_rating,
-          writers: movie.film_info.writers,
-          isWatched: movie.user_details.already_watched,
-          isFavorite: movie.user_details.favorite,
-          isWatchlist: movie.user_details.watchlist,
-          watchedDate: movie.user_details.watching_date,
+          actors: filmInfo.actors,
+          rating: filmInfo.age_rating,
+          originalName: filmInfo.alternative_title,
+          description: filmInfo.description,
+          director: filmInfo.director,
+          genres: filmInfo.genre,
+          path: filmInfo.poster,
+          release: filmInfo.release.date,
+          country: filmInfo.release.release_country,
+          runtime: filmInfo.runtime,
+          name: filmInfo.title,
+          movieRating: filmInfo.total_rating,
+          writers: filmInfo.writers,
+          isWatched: userDetails.already_watched,
+          isFavorite: userDetails.favorite,
+          isWatchlist: userDetails.watchlist,
+          watchedDate: userDetails.watching_date,
         }
     );
+
+    delete adaptedMovie.film_info;
+    delete adaptedMovie.user_details;
 
     return adaptedMovie;
   }
