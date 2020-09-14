@@ -73,9 +73,9 @@ export default class MovieList {
   }
 
   _handlePopups() {
-    Object.values(this._moviePresenters).forEach((presenter) => presenter._removePopup());
-    Object.values(this._moviePresentersTop).forEach((presenter) => presenter._removePopup());
-    Object.values(this._moviePresentersCommented).forEach((presenter) => presenter._removePopup());
+    Object.values(this._moviePresenters).forEach((presenter) => presenter.removePopup());
+    Object.values(this._moviePresentersTop).forEach((presenter) => presenter.removePopup());
+    Object.values(this._moviePresentersCommented).forEach((presenter) => presenter.removePopup());
   }
 
   destroy() {
@@ -94,7 +94,7 @@ export default class MovieList {
     switch (actionType) {
       case UserAction.POPUP_CHANGE:
         this._api.updateMovies(update).then((response) => {
-          this._moviePresenters[response.id]._removePopup();
+          this._moviePresenters[response.id].removePopup();
           this._moviesModel.updateMovie(updateType, response);
           this._moviePresenters[response.id]._showPopup(response);
         });
@@ -187,7 +187,7 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups);
+      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._api);
       const card = moviePresenter.init(movie);
       fragment.append(card);
       if (type === MovieContainers.ALL) {

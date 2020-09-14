@@ -1,4 +1,4 @@
-import {RenderPosition, UserAction, UpdateType, END_POINT, AUTHORIZATION} from "../utils/const.js";
+import {RenderPosition, UserAction, UpdateType} from "../utils/const.js";
 import {render, replace, remove} from "../utils/render.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
@@ -6,18 +6,19 @@ import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
 import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
-import Api from "../api.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeData, handlePopup) { // change data is handle view action
+  constructor(changeData, handlePopup, api) { // change data is handle view action
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._popupOpen = false;
 
+    this._api = api;
+
     this._showPopup = this._showPopup.bind(this);
     this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
-    this._removePopup = this._removePopup.bind(this);
+    this.removePopup = this.removePopup.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -63,12 +64,12 @@ export default class Movie {
   rerenderPopup(updatedMovie) {
     this._movie = updatedMovie;
     this._comments = this._movie.comments;
-    this._removePopup();
+    this.removePopup();
     this._showPopup();
   }
 
   renderCounter() {
-    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
+    this._commentsCounterComponent = new CommentsCounterView(this._movie.comments.length);
     const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
     render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
   }
@@ -100,23 +101,22 @@ export default class Movie {
 
     this._handlePopup();
 
-    const api = new Api(END_POINT, AUTHORIZATION);
-
-    api.getComments(this._movie.id).then((comments) => {
-      this._comments = comments;
-      this._commentsModel = new CommentsModel();
-      this._commentsModel.setComments(this._comments);
-      this._commentsModel.addObserver(this._handleModelEvent);
-      this.renderCounter();
-      this.renderComments();
-      this.renderAddComment();
-    });
-
     this._popupComponent = new PopupView(this._movie);
 
     const body = document.querySelector(`.body`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
+
+    this.renderCounter();
+
+    this._api.getComments(this._movie.id).then((comments) => {
+      this._comments = comments;
+      this._commentsModel = new CommentsModel();
+      this._commentsModel.setComments(this._comments);
+      this._commentsModel.addObserver(this._handleModelEvent);
+      this.renderComments();
+      this.renderAddComment();
+    });
 
     this._setHandlersForPopup();
     this._popupOpen = true;
@@ -129,7 +129,7 @@ export default class Movie {
     replace(this._commentsCounterComponent, this._oldCounter);
   }
 
-  _removePopup() {
+  removePopup() {
     remove(this._popupComponent);
     document.removeEventListener(`keydown`, this._handleEscKeyDown);
     document.removeEventListener(`click`, this._handleDocumentClick);
@@ -177,7 +177,6 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
-    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -192,7 +191,6 @@ export default class Movie {
   }
 
   _handleWatchedPopupClick() {
-    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -208,7 +206,6 @@ export default class Movie {
   }
 
   _handleFavoritePopupClick() {
-    // this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -224,7 +221,7 @@ export default class Movie {
 
   _handleEscKeyDown(evt) {
     if (evt.keyCode === 27) {
-      this._removePopup();
+      this.removePopup();
     }
   }
 
@@ -236,7 +233,7 @@ export default class Movie {
 
     const eventTarget = evt.target;
     if ((!eventTarget.closest(`.film-details`))) {
-      this._removePopup();
+      this.removePopup();
     }
   }
 
@@ -248,7 +245,7 @@ export default class Movie {
   }
 
   _setHandlersForPopup() {
-    this._popupComponent.setCloseButtonClickHandler(this._removePopup);
+    this._popupComponent.setCloseButtonClickHandler(this.removePopup);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistPopupClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedPopupClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoritePopupClick);
