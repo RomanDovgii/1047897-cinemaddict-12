@@ -1,6 +1,5 @@
 import {RenderPosition, UserAction, UpdateType, END_POINT, AUTHORIZATION} from "../utils/const.js";
 import {render, replace, remove} from "../utils/render.js";
-import {createElement} from "../utils/main.js";
 import CardView from "../view/card.js";
 import PopupView from "../view/popup.js";
 import CommentView from "../view/comment.js";
@@ -9,22 +8,6 @@ import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
 import Api from "../api.js";
 import moment from "moment";
-
-const templateForControls = (movie) => {
-  const {isWatchlist, isWatched, isFavorite} = movie;
-
-  const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
-  const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
-  const favoriteControl = isFavorite ? `film-card__controls-item--active` : ``;
-
-  return `
-  <form class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${wathcedControl}">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteControl}">Mark as favorite</button>
-  </form>
-  `;
-};
 
 export default class Movie {
   constructor(changeData, handlePopup) { // change data is handle view action
@@ -78,7 +61,6 @@ export default class Movie {
   }
 
   rerenderPopup(updatedMovie) {
-    console.log(this._popupComponent.getElement());
     this._movie = updatedMovie;
     this._comments = this._movie.comments;
     this._removePopup();
@@ -195,6 +177,7 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
+    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -209,6 +192,7 @@ export default class Movie {
   }
 
   _handleWatchedPopupClick() {
+    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -224,6 +208,7 @@ export default class Movie {
   }
 
   _handleFavoritePopupClick() {
+    this._removePopup();
     this._changeData(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,

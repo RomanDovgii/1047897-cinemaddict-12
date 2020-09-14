@@ -115,7 +115,6 @@ export default class MovieList {
         this._moviePresenters[data.id].rerenderCard(data);
         break;
       case UpdateType.MINOR:
-        console.log(`minor`);
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
 
