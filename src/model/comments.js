@@ -26,8 +26,6 @@ export default class Comments extends Observer {
       ...this._comments.slice(0, index),
       ...this._comments.slice(index + 1)
     ];
-
-    this._notify(updateType, update);
   }
 
   addComment(updateType, update) {
@@ -35,8 +33,6 @@ export default class Comments extends Observer {
       ...this._comments,
       update
     ];
-
-    this._notify(updateType, update);
   }
 
   static adaptToClient(comment) {
@@ -62,14 +58,13 @@ export default class Comments extends Observer {
         {},
         comment,
         {
-          "author": comment.author,
           "comment": comment.text,
-          "emotion": comment.emoji,
+          "emotion": comment.emoji.split(`-`).pop(),
           "date": comment.date,
-          "id": comment.id,
         }
     );
 
+    delete adaptedComment.author;
     delete adaptedComment.emoji;
     delete adaptedComment.text;
 

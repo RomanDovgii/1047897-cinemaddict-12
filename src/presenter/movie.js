@@ -14,6 +14,8 @@ export default class Movie {
     this._handlePopup = handlePopup;
     this._popupOpen = false;
 
+    this._commentsViews = {};
+
     this._api = api;
 
     this._showPopup = this._showPopup.bind(this);
@@ -30,7 +32,7 @@ export default class Movie {
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
-    this._handleModelEvent = this._handleModelEvent.bind(this);
+    // this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   init(movie, observerNotify) {
@@ -82,16 +84,18 @@ export default class Movie {
 
       render(commentsContainer, comment, RenderPosition.BEFOREEND);
       comment.setDeleteHandler(this._handleViewAction);
+
+      this._commentsViews[element.id] = comment;
     });
   }
 
   renderAddComment() {
     const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
-    const newComment = new AddCommentView(this._handleViewAction);
-    render(commentsMainContainer, newComment, RenderPosition.BEFOREEND);
-    newComment.setEmojiClickHandler();
-    newComment.setSendMessageKeydownHandler();
+    this._newComment = new AddCommentView(this._handleViewAction);
+    render(commentsMainContainer, this._newComment, RenderPosition.BEFOREEND);
+    this._newComment.setEmojiClickHandler();
+    this._newComment.setSendMessageKeydownHandler();
   }
 
   _showPopup() {
@@ -113,7 +117,6 @@ export default class Movie {
       this._comments = comments;
       this._commentsModel = new CommentsModel();
       this._commentsModel.setComments(this._comments);
-      this._commentsModel.addObserver(this._handleModelEvent);
       this.renderComments();
       this.renderAddComment();
     });
@@ -256,25 +259,8 @@ export default class Movie {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
-        break;
-      case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
-        break;
-    }
-  }
 
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.MINOR:
-        this._moviePresenters[data.id].rerenderCard(data);
-        break;
-      case UpdateType.MAJOR:
-        console.log(`comment major`);
-
-        console.log(data);
-
-        this._api.deleteComment(data).then(() => {
+        this._api.deleteComment(update).then(() => {
           this._changeData(
               UserAction.POPUP_CHANGE,
               UpdateType.MINOR,
@@ -282,18 +268,41 @@ export default class Movie {
                   {},
                   this._movie,
                   {
-                    comments: this._commentsModel.getComments().filter((element) => element.id !== data.id).reduce((accumulator, element) => {
+                    comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
+                      accumulator.push(element.id);
+                      return accumulator;
+                    }, []),
+                  }
+              ));
+
+          this._commentsModel.deleteComment(updateType, update);
+        }
+        ).catch(() => {
+          this._commentsViews[update.id].showProblem();
+        }
+        );
+        break;
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update, this._movie.id).then(() => {
+          this._changeData(
+              UserAction.POPUP_CHANGE,
+              UpdateType.MINOR,
+              Object.assign(
+                  {},
+                  this._movie,
+                  {
+                    comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
                       accumulator.push(element.id);
                       return accumulator;
                     }, []),
                   }
               ));
         }
+        ).catch(() => {
+          this._newComment.showProblem();
+        }
         );
-
         break;
-      default:
-        throw new Error(`There is a problem withing _handleModelEvent`);
     }
   }
 }

@@ -93,20 +93,28 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.POPUP_CHANGE:
-        console.log(`popup changed`);
-        console.log(update);
         this._api.updateMovies(update).then((response) => {
-          this._moviePresenters[response.id].removePopup();
+          this._handlePopups();
           this._moviesModel.updateMovie(updateType, response);
-          this._moviePresenters[response.id]._showPopup(response);
+          if (this._moviePresenters[response.id]) {
+            this._moviePresenters[response.id]._showPopup(response);
+            return;
+          }
+          if (this._moviePresentersTop[response.id]) {
+            this._moviePresentersTop[response.id]._showPopup(response);
+            return;
+          }
+          if (this._moviePresentersCommented[response.id]) {
+            this._moviePresentersCommented[response.id]._showPopup(response);
+            return;
+          }
+
         });
         break;
       case UserAction.CARD_CHANGE:
         this._api.updateMovies(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
         });
-        break;
-      case UserAction.COMMENT_DELETE:
         break;
     }
   }

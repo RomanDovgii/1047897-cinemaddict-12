@@ -37,11 +37,27 @@ export default class Comment extends SmartView {
   _handleDeleteClick(evt) {
     evt.preventDefault();
     evt.stopPropagation();
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
     const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
     deleteButton.disabled = true;
     deleteButton.textContent = `Deleting…`;
-    // remove(this);
     this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
+  }
+
+  showProblem() {
+    const element = this.getElement();
+    const deleteButton = element.querySelector(`.film-details__comment-delete`);
+
+
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
+    element.classList.add(`shake`);
+
+    setTimeout(() => {
+      element.classList.remove(`shake`);
+      deleteButton.disabled = false;
+      this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
+      deleteButton.textContent = `Delete`;
+    }, 700);
   }
 
   setDeleteHandler(callback) {
