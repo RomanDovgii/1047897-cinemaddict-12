@@ -78,10 +78,10 @@ export default class Movie {
     const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     this._commentsModel.getComments().map((element) => {
-      const comment = new CommentView(element, this._handleViewAction);
+      const comment = new CommentView(element);
 
       render(commentsContainer, comment, RenderPosition.BEFOREEND);
-      comment.setDeleteHandler();
+      comment.setDeleteHandler(this._handleViewAction);
     });
   }
 
@@ -270,21 +270,26 @@ export default class Movie {
         this._moviePresenters[data.id].rerenderCard(data);
         break;
       case UpdateType.MAJOR:
-        const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
-        commentsContainer.innerHTML = ``;
-        this._changeData(
-            UserAction.CARD_CHANGE,
-            UpdateType.MINOR,
-            Object.assign(
-                {},
-                this._movie,
-                {
-                  comments: this._commentsModel.getComments().reduce((accumulator, comment) => {
-                    accumulator.push(comment.id);
-                    return accumulator;
-                  }, [])
-                }
-            ));
+        console.log(`comment major`);
+
+        console.log(data);
+
+        this._api.deleteComment(data).then(() => {
+          this._changeData(
+              UserAction.POPUP_CHANGE,
+              UpdateType.MINOR,
+              Object.assign(
+                  {},
+                  this._movie,
+                  {
+                    comments: this._commentsModel.getComments().filter((element) => element.id !== data.id).reduce((accumulator, element) => {
+                      accumulator.push(element.id);
+                      return accumulator;
+                    }, []),
+                  }
+              ));
+        }
+        );
 
         break;
       default:

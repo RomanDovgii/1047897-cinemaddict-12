@@ -2,7 +2,6 @@ import SmartView from "./smart.js";
 import moment from "moment";
 import he from "he";
 import {UserAction, UpdateType} from "../utils/const.js";
-import {remove} from "../utils/render.js";
 
 const createCommentTemplate = (comment) => {
   const date = moment(comment.date).format(`YYYY/MM/DD HH:MM`);
@@ -25,9 +24,8 @@ const createCommentTemplate = (comment) => {
 };
 
 export default class Comment extends SmartView {
-  constructor(comment, action) {
+  constructor(comment) {
     super();
-    this._action = action;
     this._comment = comment;
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
@@ -39,11 +37,15 @@ export default class Comment extends SmartView {
   _handleDeleteClick(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    remove(this);
-    this._action(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
+    const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
+    deleteButton.disabled = true;
+    deleteButton.textContent = `Deleting…`;
+    // remove(this);
+    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
   }
 
-  setDeleteHandler() {
+  setDeleteHandler(callback) {
+    this._callback.deleteClick = callback;
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
   }
 }

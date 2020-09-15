@@ -90,9 +90,11 @@ export default class MovieList {
     this._moviesModel.removeObserver(this._handleModelEvent);
   }
 
-  _handleViewAction(actionType, updateType, update, callback) {
+  _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.POPUP_CHANGE:
+        console.log(`popup changed`);
+        console.log(update);
         this._api.updateMovies(update).then((response) => {
           this._moviePresenters[response.id].removePopup();
           this._moviesModel.updateMovie(updateType, response);
@@ -102,10 +104,9 @@ export default class MovieList {
       case UserAction.CARD_CHANGE:
         this._api.updateMovies(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
-          if (callback) {
-            callback();
-          }
         });
+        break;
+      case UserAction.COMMENT_DELETE:
         break;
     }
   }
