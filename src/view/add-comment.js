@@ -1,7 +1,7 @@
 import SmartView from "./smart.js";
 import {render} from "../utils/render.js";
-import {RenderPosition, USER_NAMES, UpdateType, UserAction} from "../utils/const.js";
-import {getPath, createElement, getRandomNumber} from "../utils/main.js";
+import {RenderPosition, UpdateType, UserAction} from "../utils/const.js";
+import {getPath, createElement} from "../utils/main.js";
 import moment from "moment";
 
 const createNewCommentTemplate = () => {
@@ -71,28 +71,39 @@ export default class AddComment extends SmartView {
     }
   }
 
+  showProblem() {
+    const element = this.getElement();
+    element.classList.add(`shake`);
+    this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+    setTimeout(() => {
+      element.classList.remove(`shake`);
+      this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+    }, 700);
+  }
+
   _handleSendMessageKeydown(evt) {
     if (evt.ctrlKey && evt.keyCode === 13) {
       const element = this.getElement();
+
+
+      if (!element.querySelector(`.film-details__comment-input`).value || !element.querySelector(`.film-details__emoji-preview`)) {
+        this.showProblem();
+        return;
+      }
+
       const textLocal = element.querySelector(`.film-details__comment-input`).value;
 
       const emojiLocal = element.querySelector(`.film-details__emoji-preview`).alt;
 
       const comment = {
-        author: USER_NAMES[getRandomNumber(0, USER_NAMES.length - 1)],
         text: textLocal,
         emoji: emojiLocal,
-        date: moment()
+        date: moment().toISOString()
       };
 
-      this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
+      this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
 
-      element.querySelector(`.film-details__comment-input`).value = ``;
-      element.querySelector(`.film-details__emoji-preview`).remove();
-      const inputs = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-item`));
-      inputs.map((input) => {
-        input.checked = false;
-      });
+      this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
     }
   }
 
@@ -101,7 +112,8 @@ export default class AddComment extends SmartView {
     labels.map((element) => element.addEventListener(`click`, this._handleEmojiClick));
   }
 
-  setSendMessageKeydownHandler() {
+  setSendMessageKeydownHandler(callback) {
+    this._callback.addCommentKeydown = callback;
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
   }
 }

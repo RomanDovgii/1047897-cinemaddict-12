@@ -31,9 +31,22 @@ export default class Api {
 
   deleteComment(comment) {
     return this._load({
-      url: `comments/${comment.id}`, // need some verification here
+      url: `comments/${comment.id}`,
       method: Method.DELETE
     });
+  }
+
+  addComment(comment, movieId) {
+    return this._load({
+      url: `comments/${movieId}`,
+      method: Method.POST,
+      body: JSON.stringify(CommentsModel.adaptToServer(comment)),
+      headers: new Headers({
+        "Content-Type": `application/json`
+      })
+    })
+      .then(Api.toJSON)
+      .then(CommentsModel.adaptToClient);
   }
 
   _load({

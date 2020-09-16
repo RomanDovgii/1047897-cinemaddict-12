@@ -2,7 +2,6 @@ import SmartView from "./smart.js";
 import moment from "moment";
 import he from "he";
 import {UserAction, UpdateType} from "../utils/const.js";
-import {remove} from "../utils/render.js";
 
 const createCommentTemplate = (comment) => {
   const date = moment(comment.date).format(`YYYY/MM/DD HH:MM`);
@@ -25,9 +24,8 @@ const createCommentTemplate = (comment) => {
 };
 
 export default class Comment extends SmartView {
-  constructor(comment, action) {
+  constructor(comment) {
     super();
-    this._action = action;
     this._comment = comment;
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
@@ -39,11 +37,31 @@ export default class Comment extends SmartView {
   _handleDeleteClick(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    remove(this);
-    this._action(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
+    const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
+    deleteButton.disabled = true;
+    deleteButton.textContent = `Deleting…`;
+    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
   }
 
-  setDeleteHandler() {
+  showProblem() {
+    const element = this.getElement();
+    const deleteButton = element.querySelector(`.film-details__comment-delete`);
+
+
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
+    element.classList.add(`shake`);
+
+    setTimeout(() => {
+      element.classList.remove(`shake`);
+      deleteButton.disabled = false;
+      this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
+      deleteButton.textContent = `Delete`;
+    }, 700);
+  }
+
+  setDeleteHandler(callback) {
+    this._callback.deleteClick = callback;
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
   }
 }
