@@ -137,6 +137,9 @@ export default class MovieList {
           remove(this._loadMoreButtonComponent);
         }
 
+        this._moviesMainContainer.innerHTML = ``;
+        this._renderMainFilmsCards();
+
         this.rerenderUserRank(this._moviesModel.getMovies());
 
         this._filterPresenter.init();
