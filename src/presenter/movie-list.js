@@ -60,6 +60,7 @@ export default class MovieList {
 
     this._api.getMovies()
       .then((movies) => {
+        console.log(movies);
         remove(this._loadingFilmsComponent);
         this._moviesModel.setMovies(movies);
         this._filterPresenter.init();
