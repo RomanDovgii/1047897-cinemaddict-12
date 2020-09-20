@@ -60,7 +60,6 @@ export default class MovieList {
 
     this._api.getMovies()
       .then((movies) => {
-        console.log(movies);
         remove(this._loadingFilmsComponent);
         this._moviesModel.setMovies(movies);
         this._filterPresenter.init();
@@ -143,6 +142,8 @@ export default class MovieList {
 
         this.rerenderUserRank(this._moviesModel.getMovies());
 
+        console.log(`minor`);
+
         this._filterPresenter.init();
         break;
       case UpdateType.MAJOR:
@@ -159,6 +160,14 @@ export default class MovieList {
 
         this.rerenderUserRank(this._moviesModel.getMovies());
         this._renderMoreButton();
+
+        if (this._filterModel.getFilter() !== `ALL`) {
+          remove(this._filmsRatedComponent);
+          remove(this._filmsCommentedComponent);
+        } else {
+          this._renderFilmsContainerRated();
+          this._renderFilmsContainerCommented();
+        }
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);
@@ -258,10 +267,7 @@ export default class MovieList {
   }
 
   _renderMainFilmsCards() {
-    if (this._filmsComponent.getElement().querySelector(`.films-list__title--no-movies`)) {
-      this._filmsComponent.getElement().querySelector(`.films-list__title--no-movies`).remove();
-    }
-
+    console.log(this._filterModel.getFilter());
     this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, this._moviesMainContainer);
     if (!this._loadMoreButtonComponent && this._getMovies().length > 0) {
       this._renderMoreButton();
@@ -364,9 +370,10 @@ export default class MovieList {
       return;
     }
 
-    const zeroRaitingCount = this._getMovies().slice().filter((movie) => movie.movieRating === 0).length;
+    const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
 
-    if (zeroRaitingCount === 0) {
+    if (nonZeroRatingCount !== 0 && this._filterModel.getFilter() === `ALL`) {
+      console.log(`test`);
       this._renderFilmsContainerRated();
     }
 
