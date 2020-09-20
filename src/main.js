@@ -68,16 +68,13 @@ const handleStatsButtonClick = (menuItem) => {
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
-apiWithProvider.getMovies().then((movies) => {
-  render(footerStats, new Statistics(movies).getElement(), RenderPosition.BEFOREEND);
-});
-
 apiWithProvider.getMovies()
   .then((movies) => {
     moviesModel.setMovies(movies);
 
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
     content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+    render(footerStats, new Statistics(movies).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
     content.init();
@@ -86,6 +83,7 @@ apiWithProvider.getMovies()
     moviesModel.setMovies([]);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
     content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+    render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
     content.init();
@@ -94,9 +92,8 @@ apiWithProvider.getMovies()
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`./sw.js`)
     .then(() => {
-      console.log(`ServiceWorker available`);
     }).catch(() => {
-      console.error(`ServiceWorker isn't available`);
+      throw new Error(`service worker doesn't work`);
     });
 });
 
