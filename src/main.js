@@ -7,7 +7,9 @@ import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filters.js";
 import StatisticsView from "./view/user-statistics.js";
-import Api from "./api.js";
+import Api from "./api/index.js";
+import Store from "./api/store.js";
+import Provider from "./api/provider.js";
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -20,7 +22,13 @@ let content = null;
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
 
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VERSION = `v12`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
+
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
@@ -28,7 +36,6 @@ const filterModel = new FilterModel();
 const userRank = new UserRank();
 
 render(header, userRank.getElement(), RenderPosition.BEFOREEND);
-
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
 
@@ -59,16 +66,45 @@ const handleStatsButtonClick = (menuItem) => {
   oldMenuItem = newMenuItem;
 };
 
-filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-content = new MovieList(main, moviesModel, filterModel, filter, api);
-
-filter.init();
-content.init();
-
 const footerStats = footer.querySelector(`.footer__statistics`);
 
-api.getMovies().then((movies) => {
+apiWithProvider.getMovies().then((movies) => {
   render(footerStats, new Statistics(movies).getElement(), RenderPosition.BEFOREEND);
 });
 
+apiWithProvider.getMovies()
+  .then((movies) => {
+    moviesModel.setMovies(movies);
 
+    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+
+    filter.init();
+    content.init();
+  })
+  .catch(() => {
+    moviesModel.setMovies([]);
+    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+
+    filter.init();
+    content.init();
+  });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`./sw.js`)
+    .then(() => {
+      console.log(`ServiceWorker available`);
+    }).catch(() => {
+      console.error(`ServiceWorker isn't available`);
+    });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

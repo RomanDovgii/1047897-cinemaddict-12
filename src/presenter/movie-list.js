@@ -58,19 +58,10 @@ export default class MovieList {
     this._renderFilmsContainer();
     this._renderLoading();
 
-    this._api.getMovies()
-      .then((movies) => {
-        remove(this._loadingFilmsComponent);
-        this._moviesModel.setMovies(movies);
-        this._filterPresenter.init();
-        this._renderMain();
-        this.rerenderUserRank(movies);
-      })
-      .catch(() => {
-        remove(this._loadingFilmsComponent);
-        this._moviesModel.setMovies([]);
-        this._renderNoFilms();
-      });
+    remove(this._loadingFilmsComponent);
+    this._filterPresenter.init();
+    this._renderMain();
+    this.rerenderUserRank(this._moviesModel.getMovies());
   }
 
   _handlePopups() {
@@ -141,8 +132,6 @@ export default class MovieList {
         this._renderMainFilmsCards();
 
         this.rerenderUserRank(this._moviesModel.getMovies());
-
-        console.log(`minor`);
 
         this._filterPresenter.init();
         break;
@@ -267,7 +256,6 @@ export default class MovieList {
   }
 
   _renderMainFilmsCards() {
-    console.log(this._filterModel.getFilter());
     this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, this._moviesMainContainer);
     if (!this._loadMoreButtonComponent && this._getMovies().length > 0) {
       this._renderMoreButton();
@@ -373,7 +361,6 @@ export default class MovieList {
     const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
 
     if (nonZeroRatingCount !== 0 && this._filterModel.getFilter() === `ALL`) {
-      console.log(`test`);
       this._renderFilmsContainerRated();
     }
 
