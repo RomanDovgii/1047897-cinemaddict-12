@@ -43,6 +43,7 @@ export default class Filter extends Abstract {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
+    console.log(`filter changed`);
     const filterType = evt.target.closest(`.main-navigation__item`).dataset.type;
     this._callback.filterTypeChange(filterType);
     if (this._callback.statsButtonClick) {

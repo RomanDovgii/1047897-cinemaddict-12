@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, END_POINT, AUTHORIZATION, UserAction} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, UserAction} from "../utils/const.js";
 import {render, remove, replace} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import FilmsView from "../view/films-main.js";
@@ -7,12 +7,12 @@ import FilmsContainerView from "../view/films-container.js";
 import NoFilmsView from "../view/no-films.js";
 import LoadingFilmsView from "../view/loading-films.js";
 import LoadMoreButtonView from "../view/more-button.js";
+import UserRankView from "../view/user-rank.js";
 import MoviePresenter from "./movie.js";
 import moment from "moment";
-import Api from "../api.js";
 
 export default class MovieList {
-  constructor(mainContainer, moviesModel, filterModel, filterPresenter) {
+  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
@@ -22,6 +22,7 @@ export default class MovieList {
     this._moviePresentersCommented = {};
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -54,7 +55,6 @@ export default class MovieList {
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderSort();
 
-    this._api = new Api(END_POINT, AUTHORIZATION);
     this._renderFilmsContainer();
     this._renderLoading();
 
@@ -64,6 +64,7 @@ export default class MovieList {
         this._moviesModel.setMovies(movies);
         this._filterPresenter.init();
         this._renderMain();
+        this.rerenderUserRank(movies);
       })
       .catch(() => {
         remove(this._loadingFilmsComponent);
@@ -127,7 +128,6 @@ export default class MovieList {
       case UpdateType.MINOR:
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
-
         this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
 
         this._renderFilmsContainerRated();
@@ -136,6 +136,8 @@ export default class MovieList {
         if (this._getMovies().length <= this._renderFilms) {
           remove(this._loadMoreButtonComponent);
         }
+
+        this.rerenderUserRank(this._moviesModel.getMovies());
 
         this._filterPresenter.init();
         break;
@@ -150,7 +152,9 @@ export default class MovieList {
         this._moviesMainContainer.innerHTML = ``;
         this._renderMainFilmsCards();
         remove(this._loadMoreButtonComponent);
-        this._renderMoreButton(); // update this part
+
+        this.rerenderUserRank(this._moviesModel.getMovies());
+        this._renderMoreButton();
         break;
       default:
         throw new Error(`There is a problem withing _handleModelEvent`);
@@ -181,10 +185,10 @@ export default class MovieList {
 
     switch (type) {
       case MovieContainers.TOP:
-        preparedMovies = this._getMovies().slice().sort((a, b) => b.movieRating - a.movieRating);
+        preparedMovies = this._moviesModel.getMovies().slice().sort((a, b) => b.movieRating - a.movieRating);
         break;
       case MovieContainers.COMMENTED:
-        preparedMovies = this._getMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
+        preparedMovies = this._moviesModel.getMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
         break;
       default:
         preparedMovies = this._getMovies().slice();
@@ -199,9 +203,11 @@ export default class MovieList {
       const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._api);
       const card = moviePresenter.init(movie);
       fragment.append(card);
+
       if (type === MovieContainers.ALL) {
         this._moviePresenters[movie.id] = moviePresenter;
       }
+
       if (type === MovieContainers.TOP) {
         this._moviePresentersTop[movie.id] = moviePresenter;
       }
@@ -212,6 +218,15 @@ export default class MovieList {
     });
 
     return fragment;
+  }
+
+  rerenderUserRank(movies) {
+    const header = document.querySelector(`.header`);
+    const oldUserRank = document.querySelector(`.header__profile`);
+    oldUserRank.remove();
+
+    const newUserRank = new UserRankView(movies);
+    render(header, newUserRank.getElement(), RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
@@ -239,10 +254,26 @@ export default class MovieList {
   }
 
   _renderMainFilmsCards() {
+    if (this._filmsComponent.getElement().querySelector(`.films-list__title--no-movies`)) {
+      this._filmsComponent.getElement().querySelector(`.films-list__title--no-movies`).remove();
+    }
+
     this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, this._moviesMainContainer);
-    if (!this._loadMoreButtonComponent) {
+    if (!this._loadMoreButtonComponent && this._getMovies().length > 0) {
       this._renderMoreButton();
     }
+
+    if (this._isNoMoviesShown) {
+      replace(this._filmsAllComponent, this._noFilmsComponent);
+      this._isNoMoviesShown = false;
+    }
+
+    if (this._moviesMainContainer.childNodes.length === 0) {
+      replace(this._noFilmsComponent, this._filmsAllComponent);
+      this._isNoMoviesShown = true;
+    }
+
+
   }
 
   _renderFilmsContainerAll() {
@@ -266,7 +297,7 @@ export default class MovieList {
   }
 
   _renderNoFilms() {
-    render(this._filmsComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
+    render(this._filmsComponent, this._noFilmsComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilmsCards(min, max, type, place) {
@@ -322,14 +353,14 @@ export default class MovieList {
   }
 
   _renderMain() {
+    this._renderFilmsContainerAll();
+
     if (!this._getMovies().length) {
       this._renderNoFilms();
       return;
     }
 
     const zeroRaitingCount = this._getMovies().slice().filter((movie) => movie.movieRating === 0).length;
-
-    this._renderFilmsContainerAll();
 
     if (zeroRaitingCount === 0) {
       this._renderFilmsContainerRated();
