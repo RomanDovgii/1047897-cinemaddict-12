@@ -23,12 +23,15 @@ let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_COMMENTS_PREFIX = `cinemaddict-localstorage-comments`;
 const STORE_VERSION = `v12`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
+const STORE_NAME_COMMENTS = `${STORE_COMMENTS_PREFIX}-${STORE_VERSION}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
 const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
+const commentsStore = new Store(STORE_NAME_COMMENTS, window.localStorage);
+const apiWithProvider = new Provider(api, store, commentsStore);
 
 const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
@@ -77,12 +80,27 @@ apiWithProvider.getMovies()
     return movies;
   })
   .then(() => {
-    moviesLocal.map((movie) => {
+    const commentsLocal = [];
+
+    const moviesLocalForStore = moviesLocal.slice().map(MoviesModel.adaptToServer);
+
+    moviesLocalForStore.map((movie) => {
       api.getComments(movie.id).then((comments) => {
-        movie.fullComments = comments;
+
+        const commentObj = {
+          id: movie.id,
+          commentsStored: comments
+        };
+
+        commentsLocal.push(commentObj);
+
+        return commentsLocal;
+      }).then((comments) => {
+        commentsStore.setItems(comments);
       });
     });
 
+    store.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
     content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);

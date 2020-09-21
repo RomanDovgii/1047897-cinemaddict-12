@@ -1,5 +1,4 @@
 import MoviesModel from "../model/movies.js";
-import CommentsModel from "../model/comments.js";
 
 const createStoreStructure = (items) => {
   return items.reduce((acc, item) => {
@@ -10,9 +9,10 @@ const createStoreStructure = (items) => {
 };
 
 export default class Provider {
-  constructor(api, store) {
+  constructor(api, store, commentsStore) {
     this._api = api;
     this._store = store;
+    this._commentsStore = commentsStore;
   }
 
   getMovies() {
@@ -34,15 +34,20 @@ export default class Provider {
     if (Provider.isOnline()) {
       return this._api.getComments(movieId)
         .then((comments) => {
-          const items = createStoreStructure(comments.map(CommentsModel.adaptToServer));
-          this._store.setItems(items);
           return comments;
         });
     }
 
-    const storeComments = Object.values(this._store.getItems());
+    const storeComments = this._commentsStore.getItems();
+    let rightComments = [];
 
-    return Promise.resolve(storeComments.map(MoviesModel.adaptToClient));
+    storeComments.forEach((object) => {
+      if (object.id === movieId) {
+        rightComments = [...object.commentsStored];
+      }
+    });
+
+    return Promise.resolve(rightComments);
   }
 
   addComment(comment, movieId) {

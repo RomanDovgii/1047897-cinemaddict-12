@@ -372,11 +372,14 @@ export default class MovieList {
     }
 
     const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
+    const nonZeroCommentsCount = this._getMovies().slice().filter((movie) => movie.comments.length > 0).length;
 
     if (nonZeroRatingCount !== 0 && this._filterModel.getFilter() === `ALL`) {
       this._renderFilmsContainerRated();
     }
 
-    this._renderFilmsContainerCommented();
+    if (nonZeroCommentsCount !== 0 && this._filterModel.getFilter() === `ALL`) {
+      this._renderFilmsContainerCommented();
+    }
   }
 }

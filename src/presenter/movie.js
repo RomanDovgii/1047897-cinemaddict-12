@@ -120,14 +120,6 @@ export default class Movie {
       this._commentsModel.setComments(this._comments);
       this.renderComments();
       this.renderAddComment();
-    })
-    .catch(() => {
-      const movies = this._moviesModel.getMovies();
-      this._comments = movies[this._movie.id].fullComments;
-      this._commentsModel = new CommentsModel();
-      this._commentsModel.setComments(this._comments);
-      this.renderComments();
-      this.renderAddComment();
     });
 
     this._setHandlersForPopup();
