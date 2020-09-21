@@ -78,6 +78,8 @@ apiWithProvider.getMovies()
 
     filter.init();
     content.init();
+
+    return movies;
   })
   .catch(() => {
     moviesModel.setMovies([]);
