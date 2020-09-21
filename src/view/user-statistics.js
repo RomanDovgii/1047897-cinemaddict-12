@@ -230,7 +230,7 @@ export default class UserStatistics extends Abstract {
           if (element.checked) {
             switch (element.id) {
               case `statistic-today`:
-                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(now, `day`));
+                this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isSame(moment(), `day`));
                 break;
               case `statistic-week`:
                 this._movies = preparedMovies.filter((movie) => moment(movie.watchedDate).isAfter(week, `week`));

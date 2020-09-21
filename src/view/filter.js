@@ -8,7 +8,7 @@ const generateFilterMarkup = (filter, currentFilterType) => {
   const notAll = filter.count >= 0 && name !== `All movies`;
   const counter = notAll ? `<span class="main-navigation__item-count">${count}</span></a>` : ``;
 
-  return `<a href="#${name}" class="main-navigation__item ${checked}" data-type="${type}">${name} ${counter}</a>`;
+  return `<a href="#${name}" class="main-navigation__item ${checked}" data-type="${type}">${name} ${count > 5 ? `` : counter}</a>`;
 };
 
 const generateFilterBlock = (filters, currentFilter) => {

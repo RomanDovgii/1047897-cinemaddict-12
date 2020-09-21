@@ -1,8 +1,7 @@
 import Abstract from "./abstract.js";
-import {mocks} from "../mocks/movie.js";
 
-const getRank = () => {
-  const moviesWatched = mocks.slice().filter((mock) => mock.isWatched).length;
+const getRank = (movies = []) => {
+  const moviesWatched = movies.slice().filter((movie) => movie.isWatched).length;
 
   switch (true) {
     case (moviesWatched <= 10) && (moviesWatched > 0):
@@ -26,9 +25,9 @@ const createRankTemplate = (rank) => {
 };
 
 export default class UserRank extends Abstract {
-  constructor() {
+  constructor(movies) {
     super();
-    this._rank = getRank();
+    this._rank = getRank(movies);
   }
 
   getTemplate() {

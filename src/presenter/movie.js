@@ -9,9 +9,10 @@ import CommentsModel from "../model/comments.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeData, handlePopup, api) { // change data is handle view action
+  constructor(changeData, handlePopup, moviesModel, api) { // change data is handle view action
     this._changeData = changeData;
     this._handlePopup = handlePopup;
+    this._moviesModel = moviesModel;
     this._popupOpen = false;
 
     this._commentsViews = {};

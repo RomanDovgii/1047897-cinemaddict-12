@@ -33,7 +33,6 @@ export default class Movies extends Observer {
 
   static adaptToClient(movie) {
     const {film_info: filmInfo, user_details: userDetails} = movie;
-
     const adaptedMovie = Object.assign(
         {},
         movie,
@@ -118,6 +117,7 @@ export default class Movies extends Observer {
     delete adaptedMovie.watchedDate;
     delete adaptedMovie.release;
     delete adaptedMovie.country;
+    delete adaptedMovie.fullComments;
 
     return adaptedMovie;
   }

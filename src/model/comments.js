@@ -19,7 +19,7 @@ export default class Comments extends Observer {
     const index = this._comments.findIndex((comment) => comment === update);
 
     if (index === -1) {
-      throw new Error(`Cannot update non-existent movie`);
+      throw new Error(`Cannot update non-existent comment`);
     }
 
     this._comments = [
