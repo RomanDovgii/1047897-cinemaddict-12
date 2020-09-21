@@ -119,6 +119,9 @@ export default class Movie {
       this._commentsModel.setComments(this._comments);
       this.renderComments();
       this.renderAddComment();
+    })
+    .catch(() => {
+      throw new Error();
     });
 
     this._setHandlersForPopup();
