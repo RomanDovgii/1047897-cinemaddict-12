@@ -117,6 +117,7 @@ export default class Movies extends Observer {
     delete adaptedMovie.watchedDate;
     delete adaptedMovie.release;
     delete adaptedMovie.country;
+    delete adaptedMovie.fullComments;
 
     return adaptedMovie;
   }

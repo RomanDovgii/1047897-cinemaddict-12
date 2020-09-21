@@ -215,7 +215,7 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._api);
+      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._moviesModel, this._api);
       const card = moviePresenter.init(movie);
       fragment.append(card);
 

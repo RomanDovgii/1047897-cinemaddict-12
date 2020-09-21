@@ -68,18 +68,28 @@ const handleStatsButtonClick = (menuItem) => {
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
+let moviesLocal = [];
+
 apiWithProvider.getMovies()
   .then((movies) => {
-    moviesModel.setMovies(movies);
+    moviesLocal = movies;
 
+    return movies;
+  })
+  .then(() => {
+    moviesLocal.map((movie) => {
+      api.getComments(movie.id).then((comments) => {
+        movie.fullComments = comments;
+      });
+    });
+
+    moviesModel.setMovies(moviesLocal);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
     content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
-    render(footerStats, new Statistics(movies).getElement(), RenderPosition.BEFOREEND);
+    render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
     content.init();
-
-    return movies;
   })
   .catch(() => {
     moviesModel.setMovies([]);
