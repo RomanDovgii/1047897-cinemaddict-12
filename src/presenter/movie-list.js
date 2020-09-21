@@ -100,7 +100,20 @@ export default class MovieList {
             this._moviePresentersCommented[response.id]._showPopup(response);
             return;
           }
-
+        })
+        .catch(() => {
+          if (this._moviePresenters[update.id]) {
+            this._moviePresenters[update.id]._showPopup(update);
+            return;
+          }
+          if (this._moviePresentersTop[update.id]) {
+            this._moviePresentersTop[update.id]._showPopup(update);
+            return;
+          }
+          if (this._moviePresentersCommented[update.id]) {
+            this._moviePresentersCommented[update.id]._showPopup(update);
+            return;
+          }
         });
         break;
       case UserAction.CARD_CHANGE:
