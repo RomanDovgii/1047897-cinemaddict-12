@@ -50,7 +50,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.CHANGE_FILTER:
       content.destroy();
 
-      content = new MovieList(main, moviesModel, filterModel, filter, api);
+      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
 
       filter.init();
       content.init();
@@ -80,20 +80,13 @@ apiWithProvider.getMovies()
     return movies;
   })
   .then(() => {
-    const commentsLocal = [];
+    const commentsLocal = {};
 
     const moviesLocalForStore = moviesLocal.slice().map(MoviesModel.adaptToServer);
 
     moviesLocalForStore.map((movie) => {
       api.getComments(movie.id).then((comments) => {
-
-        const commentObj = {
-          id: movie.id,
-          commentsStored: comments
-        };
-
-        commentsLocal.push(commentObj);
-
+        commentsLocal[movie.id] = comments;
         return commentsLocal;
       }).then((comments) => {
         commentsStore.setItems(comments);
@@ -103,7 +96,7 @@ apiWithProvider.getMovies()
     store.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
     render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
@@ -112,7 +105,7 @@ apiWithProvider.getMovies()
   .catch(() => {
     moviesModel.setMovies([]);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
     render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();

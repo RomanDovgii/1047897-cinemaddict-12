@@ -39,13 +39,8 @@ export default class Provider {
     }
 
     const storeComments = this._commentsStore.getItems();
-    let rightComments = [];
 
-    storeComments.forEach((object) => {
-      if (object.id === movieId) {
-        rightComments = [...object.commentsStored];
-      }
-    });
+    let rightComments = storeComments[movieId];
 
     return Promise.resolve(rightComments);
   }

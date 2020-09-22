@@ -12,7 +12,7 @@ import MoviePresenter from "./movie.js";
 import moment from "moment";
 
 export default class MovieList {
-  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api) {
+  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, commentsStore) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
@@ -23,6 +23,7 @@ export default class MovieList {
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
     this._api = api;
+    this._commentsStore = commentsStore;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -215,7 +216,7 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._moviesModel, this._api);
+      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._moviesModel, this._api, this._commentsStore);
       const card = moviePresenter.init(movie);
       fragment.append(card);
 

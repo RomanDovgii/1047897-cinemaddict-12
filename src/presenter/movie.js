@@ -9,10 +9,11 @@ import CommentsModel from "../model/comments.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeData, handlePopup, moviesModel, api) { // change data is handle view action
+  constructor(changeData, handlePopup, moviesModel, api, commentsStore) { // change data is handle view action
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._moviesModel = moviesModel;
+    this._commentsStore = commentsStore;
     this._popupOpen = false;
 
     this._commentsViews = {};
@@ -88,6 +89,8 @@ export default class Movie {
 
       this._commentsViews[element.id] = comment;
     });
+
+    this._commentsStore.setItem(this._movie.id, this._commentsModel.getComments());
   }
 
   renderAddComment() {
@@ -277,6 +280,7 @@ export default class Movie {
               ));
 
           this._commentsModel.deleteComment(updateType, update);
+          this._commentsStore.setItem(this._movie.id, this._commentsModel.getComments());
         }
         ).catch(() => {
           this._commentsViews[update.id].showProblem();
@@ -299,7 +303,8 @@ export default class Movie {
                   }
               ));
         }
-        ).catch(() => {
+        )
+        .catch(() => {
           this._newComment.showProblem();
         }
         );
