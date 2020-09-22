@@ -6,6 +6,7 @@ import CommentView from "../view/comment.js";
 import AddCommentView from "../view/add-comment.js";
 import CommentsCounterView from "../view/comments-counter.js";
 import CommentsModel from "../model/comments.js";
+import Provider from "../api/provider.js";
 import moment from "moment";
 
 export default class Movie {
@@ -265,22 +266,26 @@ export default class Movie {
       case UserAction.DELETE_COMMENT:
 
         this._api.deleteComment(update).then(() => {
-          this._changeData(
-              UserAction.POPUP_CHANGE,
-              UpdateType.MINOR,
-              Object.assign(
-                  {},
-                  this._movie,
-                  {
-                    comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
-                      accumulator.push(element.id);
-                      return accumulator;
-                    }, []),
-                  }
-              ));
+          if (Provider.isOnline()) {
+            this._changeData(
+                UserAction.POPUP_CHANGE,
+                UpdateType.MINOR,
+                Object.assign(
+                    {},
+                    this._movie,
+                    {
+                      comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
+                        accumulator.push(element.id);
+                        return accumulator;
+                      }, []),
+                    }
+                ));
 
-          this._commentsModel.deleteComment(updateType, update);
-          this._commentsStore.setItem(this._movie.id, this._commentsModel.getComments());
+            this._commentsModel.deleteComment(updateType, update);
+            this._commentsStore.setItem(this._movie.id, this._commentsModel.getComments());
+          } else {
+            this._commentsViews[update.id].showProblem();
+          }
         }
         ).catch(() => {
           this._commentsViews[update.id].showProblem();
@@ -289,19 +294,24 @@ export default class Movie {
         break;
       case UserAction.ADD_COMMENT:
         this._api.addComment(update, this._movie.id).then(() => {
-          this._changeData(
-              UserAction.POPUP_CHANGE,
-              UpdateType.MINOR,
-              Object.assign(
-                  {},
-                  this._movie,
-                  {
-                    comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
-                      accumulator.push(element.id);
-                      return accumulator;
-                    }, []),
-                  }
-              ));
+          if (Provider.isOnline()) {
+            this._changeData(
+                UserAction.POPUP_CHANGE,
+                UpdateType.MINOR,
+                Object.assign(
+                    {},
+                    this._movie,
+                    {
+                      comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
+                        accumulator.push(element.id);
+                        return accumulator;
+                      }, []),
+                    }
+                ));
+          } else {
+            this._newComment.showProblem();
+          }
+
         }
         )
         .catch(() => {
