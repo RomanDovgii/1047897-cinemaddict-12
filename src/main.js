@@ -29,9 +29,9 @@ const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
 const STORE_NAME_COMMENTS = `${STORE_COMMENTS_PREFIX}-${STORE_VERSION}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
+const moviesStore = new Store(STORE_NAME, window.localStorage);
 const commentsStore = new Store(STORE_NAME_COMMENTS, window.localStorage);
-const apiWithProvider = new Provider(api, store, commentsStore);
+const apiWithProvider = new Provider(api, moviesStore, commentsStore);
 
 const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
@@ -50,7 +50,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.CHANGE_FILTER:
       content.destroy();
 
-      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
+      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
 
       filter.init();
       content.init();
@@ -93,10 +93,10 @@ apiWithProvider.getMovies()
       });
     });
 
-    store.setItems(moviesLocalForStore);
+    moviesStore.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
     render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
@@ -105,7 +105,7 @@ apiWithProvider.getMovies()
   .catch(() => {
     moviesModel.setMovies([]);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
     render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
