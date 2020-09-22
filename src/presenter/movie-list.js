@@ -10,9 +10,10 @@ import LoadMoreButtonView from "../view/more-button.js";
 import UserRankView from "../view/user-rank.js";
 import MoviePresenter from "./movie.js";
 import moment from "moment";
+import MoviesModel from "../model/movies.js";
 
 export default class MovieList {
-  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, commentsStore) {
+  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, moviesStore, commentsStore) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
@@ -24,6 +25,7 @@ export default class MovieList {
     this._filterModel = filterModel;
     this._api = api;
     this._commentsStore = commentsStore;
+    this._moviesStore = moviesStore;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -89,6 +91,10 @@ export default class MovieList {
         this._api.updateMovies(update).then((response) => {
           this._handlePopups();
           this._moviesModel.updateMovie(updateType, response);
+
+          this._moviesStore.setItems(this._moviesModel.getMovies().slice().map(MoviesModel.adaptToServer));
+
+
           if (this._moviePresenters[response.id]) {
             this._moviePresenters[response.id]._showPopup(response);
             return;
@@ -120,6 +126,8 @@ export default class MovieList {
       case UserAction.CARD_CHANGE:
         this._api.updateMovies(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
+
+          this._moviesStore.setItems(this._moviesModel.getMovies().slice().map(MoviesModel.adaptToServer));
         });
         break;
     }

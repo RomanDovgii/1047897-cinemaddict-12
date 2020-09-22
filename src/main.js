@@ -50,7 +50,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.CHANGE_FILTER:
       content.destroy();
 
-      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
+      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
 
       filter.init();
       content.init();
@@ -96,7 +96,7 @@ apiWithProvider.getMovies()
     store.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
     render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
@@ -105,7 +105,7 @@ apiWithProvider.getMovies()
   .catch(() => {
     moviesModel.setMovies([]);
     filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, commentsStore);
+    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, store, commentsStore);
     render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
