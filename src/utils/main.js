@@ -90,3 +90,16 @@ export const generateDateString = (minimumYear) => {
   const second = getRandomNumber(0, 59);
   return `${year}-${formatDigitsProperly(month)}-${formatDigitsProperly(day)}T${formatDigitsProperly(hour)}:${formatDigitsProperly(minute)}:${formatDigitsProperly(second)}`;
 };
+
+export const getRank = (moviesTotal) => {
+  switch (true) {
+    case (moviesTotal <= 10) && (moviesTotal > 0):
+      return `novice`;
+    case (moviesTotal <= 20) && (moviesTotal > 10):
+      return `fan`;
+    case (moviesTotal > 20):
+      return `movie buff`;
+    default:
+      return ``;
+  }
+};

@@ -1,19 +1,5 @@
 import Abstract from "./abstract.js";
-
-const getRank = (movies = []) => {
-  const moviesWatched = movies.slice().filter((movie) => movie.isWatched).length;
-
-  switch (true) {
-    case (moviesWatched <= 10) && (moviesWatched > 0):
-      return `novice`;
-    case (moviesWatched <= 20) && (moviesWatched > 10):
-      return `fan`;
-    case (moviesWatched > 20):
-      return `movie buff`;
-    default:
-      return ``;
-  }
-};
+import {getRank} from "../utils/main.js";
 
 const createRankTemplate = (rank) => {
   return `
@@ -25,9 +11,10 @@ const createRankTemplate = (rank) => {
 };
 
 export default class UserRank extends Abstract {
-  constructor(movies) {
+  constructor(movies = []) {
     super();
-    this._rank = getRank(movies);
+    this._moviesTotal = movies.filter((movie) => movie.isWatched);
+    this._rank = getRank(this._moviesTotal.length);
   }
 
   getTemplate() {

@@ -1,7 +1,7 @@
 import Abstract from "./abstract.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import {createElement} from "../utils/main.js";
+import {createElement, getRank} from "../utils/main.js";
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import {replace} from "../utils/render.js";
@@ -143,14 +143,16 @@ const createUserChartTemplate = () => {
 };
 
 const createUserStatisticsPageTemplate = (totalMovies, totalDuration, topGenre) => {
+  const rank = getRank(totalMovies);
+
   return `
   <section class="statistic">
-    <p class="statistic__rank">
-      Your rank
-      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Sci-Fighter</span>
+    ${rank !== `` ? `<p class="statistic__rank">
+    Your rank
+    <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+    <span class="statistic__rank-label">${rank}</span>
     </p>
-
+    ` : ``}
     ${createUserFormTemplate()}
     ${createUserStatisticsTemplate(totalMovies, totalDuration, topGenre)}
     ${createUserChartTemplate()}
@@ -215,7 +217,7 @@ export default class UserStatistics extends Abstract {
     );
 
     this._genresAndCount.sort((a, b) => b.count - a.count);
-    this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : `None`;
+    this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : ``;
   }
 
   _handleFormChange() {
