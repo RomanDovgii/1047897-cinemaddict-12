@@ -9,20 +9,20 @@ const createMoreButtonTemplate = () => {
 export default class MoreButton extends Abstract {
   constructor() {
     super();
-    this._clickHandler = this._clickHandler.bind(this);
+    this._moreButtonClickHandler = this._moreButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createMoreButtonTemplate();
   }
 
-  _clickHandler(evt) {
+  _moreButtonClickHandler(evt) {
     evt.preventDefault();
     this._callback.click();
   }
 
   setClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().addEventListener(`click`, this._clickHandler);
+    this.getElement().addEventListener(`click`, this._moreButtonClickHandler);
   }
 }

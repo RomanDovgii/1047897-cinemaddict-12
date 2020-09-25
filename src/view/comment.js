@@ -27,17 +27,17 @@ export default class Comment extends SmartView {
   constructor(comment) {
     super();
     this._comment = comment;
-    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createCommentTemplate(this._comment);
   }
 
-  _handleDeleteClick(evt) {
+  _deleteClickHandler(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._deleteClickHandler);
     const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
     deleteButton.disabled = true;
     deleteButton.textContent = `Deleting…`;
@@ -49,19 +49,19 @@ export default class Comment extends SmartView {
     const deleteButton = element.querySelector(`.film-details__comment-delete`);
 
 
-    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._handleDeleteClick);
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._deleteClickHandler);
     element.classList.add(`shake`);
 
     setTimeout(() => {
       element.classList.remove(`shake`);
       deleteButton.disabled = false;
-      this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
+      this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteClickHandler);
       deleteButton.textContent = `Delete`;
     }, 700);
   }
 
   setDeleteHandler(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._handleDeleteClick);
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteClickHandler);
   }
 }

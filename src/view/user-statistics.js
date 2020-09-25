@@ -165,7 +165,7 @@ export default class UserStatistics extends Abstract {
     super();
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
-    this._handleFormChange = this._handleFormChange.bind(this);
+    this._formChangeHandler = this._formChangeHandler.bind(this);
   }
 
   getTemplate() {
@@ -220,7 +220,7 @@ export default class UserStatistics extends Abstract {
     this._topGenre = this._genresAndCounts.length > 0 ? this._genresAndCounts[0].name : ``;
   }
 
-  _handleFormChange() {
+  _formChangeHandler() {
     const now = moment().startOf(`day`);
     const week = now.clone().subtract(7, `days`).startOf(`day`);
     const month = now.clone().subtract(1, `months`).startOf(`day`);
@@ -268,6 +268,6 @@ export default class UserStatistics extends Abstract {
 
   setFormChange(callback) {
     this._callback.statusButtonClick = callback;
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._handleFormChange);
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._formChangeHandler);
   }
 }

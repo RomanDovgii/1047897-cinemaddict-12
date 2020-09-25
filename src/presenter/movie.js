@@ -22,7 +22,7 @@ export default class Movie {
     this._api = api;
 
     this._showPopup = this._showPopup.bind(this);
-    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this.removePopup = this.removePopup.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
@@ -32,7 +32,7 @@ export default class Movie {
     this._handleWatchedPopupClick = this._handleWatchedPopupClick.bind(this);
     this._handleFavoritePopupClick = this._handleFavoritePopupClick.bind(this);
 
-    this._handleDocumentClick = this._handleDocumentClick.bind(this);
+    this._documentClickHandler = this._documentClickHandler.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
   }
@@ -144,8 +144,8 @@ export default class Movie {
 
   removePopup() {
     remove(this._popupComponent);
-    document.removeEventListener(`keydown`, this._handleEscKeyDown);
-    document.removeEventListener(`click`, this._handleDocumentClick);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`click`, this._documentClickHandler);
     this._popupOpen = false;
   }
 
@@ -232,7 +232,7 @@ export default class Movie {
     );
   }
 
-  _handleEscKeyDown(evt) {
+  _escKeyDownHandler(evt) {
     if (evt.keyCode === 27) {
       this.removePopup();
     }
@@ -242,7 +242,7 @@ export default class Movie {
     this.rerenderCard(updatedMovie);
   }
 
-  _handleDocumentClick(evt) {
+  _documentClickHandler(evt) {
 
     const eventTarget = evt.target;
     if ((!eventTarget.closest(`.film-details`))) {
@@ -262,8 +262,8 @@ export default class Movie {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistPopupClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedPopupClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoritePopupClick);
-    document.addEventListener(`click`, this._handleDocumentClick);
-    document.addEventListener(`keydown`, this._handleEscKeyDown);
+    document.addEventListener(`click`, this._documentClickHandler);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleViewAction(actionType, updateType, update) {

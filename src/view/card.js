@@ -40,7 +40,7 @@ export default class Card extends Abstract {
   constructor(movie) {
     super();
     this._movie = movie;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._cardClickHandler = this._cardClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -50,7 +50,7 @@ export default class Card extends Abstract {
     return createCardTemplate(this._movie);
   }
 
-  _clickHandler(evt) {
+  _cardClickHandler(evt) {
     evt.preventDefault();
     evt.stopPropagation();
 
@@ -75,9 +75,9 @@ export default class Card extends Abstract {
   setClickHandler(callback) {
     this._callback.click = callback;
 
-    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._clickHandler);
-    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, this._clickHandler);
-    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._cardClickHandler);
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, this._cardClickHandler);
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, this._cardClickHandler);
   }
 
   setWatchlistClickHandler(callback) {

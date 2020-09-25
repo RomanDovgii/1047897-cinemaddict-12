@@ -49,15 +49,15 @@ export default class AddComment extends SmartView {
     super();
     this._action = action;
     this._comment = {};
-    this._handleEmojiClick = this._handleEmojiClick.bind(this);
-    this._handleSendMessageKeydown = this._handleSendMessageKeydown.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._sendMessageKeydownHandler = this._sendMessageKeydownHandler.bind(this);
   }
 
   getTemplate() {
     return createNewCommentTemplate(this._comment);
   }
 
-  _handleEmojiClick(evt) {
+  _emojiClickHandler(evt) {
     const emoji = evt.target.closest(`.film-details__emoji-label`).getAttribute(`for`);
     const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
     const imagePreviewElement = createElement(emojiPreviewTemplate(emoji));
@@ -74,14 +74,14 @@ export default class AddComment extends SmartView {
   showProblem() {
     const element = this.getElement();
     element.classList.add(`shake`);
-    this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+    this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._sendMessageKeydownHandler);
     setTimeout(() => {
       element.classList.remove(`shake`);
-      this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+      this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
     }, 700);
   }
 
-  _handleSendMessageKeydown(evt) {
+  _sendMessageKeydownHandler(evt) {
     if (evt.ctrlKey && evt.keyCode === 13) {
       const element = this.getElement();
 
@@ -101,7 +101,7 @@ export default class AddComment extends SmartView {
         date: moment().toISOString()
       };
 
-      element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+      element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._sendMessageKeydownHandler);
       element.querySelector(`.film-details__comment-input`).disabled = true;
 
 
@@ -111,12 +111,12 @@ export default class AddComment extends SmartView {
 
   setEmojiClickHandler() {
     const labels = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
-    labels.map((element) => element.addEventListener(`click`, this._handleEmojiClick));
+    labels.map((element) => element.addEventListener(`click`, this._emojiClickHandler));
   }
 
   setSendMessageKeydownHandler(callback) {
     this._callback.addCommentKeydown = callback;
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
   }
 
   lock() {

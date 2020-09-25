@@ -17,7 +17,7 @@ const createSortMenuTemplate = (array) => {
 export default class SortMenu extends Abstract {
   constructor() {
     super();
-    this._clickHandler = this._clickHandler.bind(this);
+    this._sortMenuClickHandler = this._sortMenuClickHandler.bind(this);
     this._sortTypes = convertEnumToArray(SortType);
   }
 
@@ -25,7 +25,7 @@ export default class SortMenu extends Abstract {
     return createSortMenuTemplate(this._sortTypes);
   }
 
-  _clickHandler(evt) {
+  _sortMenuClickHandler(evt) {
     evt.preventDefault();
 
     evt.target.classList.add(`sort__button--active`);
@@ -48,7 +48,7 @@ export default class SortMenu extends Abstract {
     }
 
     this._sortTypes.forEach((element) => {
-      this.getElement().querySelector(`[data-type = "${element}"]`).addEventListener(`click`, this._clickHandler);
+      this.getElement().querySelector(`[data-type = "${element}"]`).addEventListener(`click`, this._sortMenuClickHandler);
     });
   }
 }
