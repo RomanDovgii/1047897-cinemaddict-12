@@ -35,7 +35,6 @@ export default class Movie {
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
-    // this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   init(movie, observerNotify) {
