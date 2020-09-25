@@ -9,11 +9,17 @@ import CommentsModel from "../model/comments.js";
 import moment from "moment";
 
 export default class Movie {
+<<<<<<< Updated upstream
   constructor(changeData, handlePopup, moviesModel, api) { // change data is handle view action
+=======
+  constructor(changeData, handlePopup, moviesModel, api, commentsStore) {
+>>>>>>> Stashed changes
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._moviesModel = moviesModel;
     this._popupOpen = false;
+
+    this._wasOffline = false;
 
     this._commentsViews = {};
 
@@ -33,7 +39,6 @@ export default class Movie {
     this._handleDocumentClick = this._handleDocumentClick.bind(this);
     this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
-    // this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   init(movie, observerNotify) {
@@ -285,6 +290,7 @@ export default class Movie {
         break;
       case UserAction.ADD_COMMENT:
         this._api.addComment(update, this._movie.id).then(() => {
+<<<<<<< Updated upstream
           this._changeData(
               UserAction.POPUP_CHANGE,
               UpdateType.MINOR,
@@ -298,6 +304,32 @@ export default class Movie {
                     }, []),
                   }
               ));
+=======
+          if (Provider.isOnline()) {
+            if (this._wasOffline) {
+              this._newComment.switchToOnline();
+            }
+
+            this._changeData(
+                UserAction.POPUP_CHANGE,
+                UpdateType.MINOR,
+                Object.assign(
+                    {},
+                    this._movie,
+                    {
+                      comments: this._commentsModel.getComments().filter((element) => element.id !== update.id).reduce((accumulator, element) => {
+                        accumulator.push(element.id);
+                        return accumulator;
+                      }, []),
+                    }
+                ));
+          } else {
+            this._newComment.switchToOffline();
+            this._wasOffline = true;
+            this._newComment.showProblem();
+          }
+
+>>>>>>> Stashed changes
         }
         ).catch(() => {
           this._newComment.showProblem();

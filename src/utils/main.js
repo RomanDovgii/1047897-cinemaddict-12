@@ -1,4 +1,4 @@
-import {MAIN_IMAGES_PATH, ImageTypes, FISH_TEXT, MINUTES_IN_HOUR} from "./const.js";
+import {MAIN_IMAGES_PATH, ImageType, FISH_TEXT, MINUTES_IN_HOUR} from "./const.js";
 import moment from "moment";
 
 export const getRandomNumber = (firstNumber, secondNumber) => {
@@ -42,9 +42,9 @@ export const getRandomElementFromArray = (array) => {
 export const getPath = (type, imageName) => {
   switch (type) {
     case `icons`:
-      return `${MAIN_IMAGES_PATH}/${ImageTypes.ICON}/${imageName}.svg`;
+      return `${MAIN_IMAGES_PATH}/${ImageType.ICON}/${imageName}.svg`;
     case `emoji`:
-      return `${MAIN_IMAGES_PATH}/${ImageTypes.EMOJI}/${imageName.replace(`emoji-`, ``)}.png`;
+      return `${MAIN_IMAGES_PATH}/${ImageType.EMOJI}/${imageName.replace(`emoji-`, ``)}.png`;
     default:
       return MAIN_IMAGES_PATH;
   }

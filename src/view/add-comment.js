@@ -71,13 +71,35 @@ export default class AddComment extends SmartView {
     }
   }
 
+  switchToOffline() {
+    const element = this.getElement();
+    element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+    element.querySelector(`.film-details__comment-input`).disabled = true;
+    const emojiSelectors = element.querySelectorAll(`.film-details__emoji-item`);
+    emojiSelectors.map((emojiSelector) => {
+      emojiSelector.disabled = true;
+    });
+  }
+
+  switchToOnline() {
+    const element = this.getElement();
+    element.querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+    element.querySelector(`.film-details__comment-input`).disabled = false;
+    const emojiSelectors = element.querySelectorAll(`.film-details__emoji-item`);
+    emojiSelectors.map((emojiSelector) => {
+      emojiSelector.disabled = false;
+    });
+  }
+
   showProblem() {
     const element = this.getElement();
     element.classList.add(`shake`);
-    this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+    element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+    element.querySelector(`.film-details__comment-input`).disabled = true;
     setTimeout(() => {
       element.classList.remove(`shake`);
-      this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+      element.querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
+      element.querySelector(`.film-details__comment-input`).disabled = false;
     }, 700);
   }
 
@@ -102,6 +124,7 @@ export default class AddComment extends SmartView {
       };
 
       this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+      this.getElement().querySelector(`.film-details__comment-input`).disabled = true;
 
       this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
     }

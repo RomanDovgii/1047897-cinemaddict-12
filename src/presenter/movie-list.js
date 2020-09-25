@@ -1,4 +1,4 @@
-import {CARD_COUNT_MAIN, RenderPosition, MovieContainers, SortType, CARD_COUNT_EXTRA, UpdateType, UserAction} from "../utils/const.js";
+import {CARD_COUNT_MAIN, RenderPosition, MovieContainer, SortType, CARD_COUNT_EXTRA, UpdateType, UserAction} from "../utils/const.js";
 import {render, remove, replace} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import FilmsView from "../view/films-main.js";
@@ -29,9 +29,9 @@ export default class MovieList {
 
     this._filmsComponent = new FilmsView();
 
-    this._filmsAllComponent = new FilmsContainerView(MovieContainers.ALL);
-    this._filmsRatedComponent = new FilmsContainerView(MovieContainers.TOP);
-    this._filmsCommentedComponent = new FilmsContainerView(MovieContainers.COMMENTED);
+    this._filmsAllComponent = new FilmsContainerView(MovieContainer.ALL);
+    this._filmsRatedComponent = new FilmsContainerView(MovieContainer.TOP);
+    this._filmsCommentedComponent = new FilmsContainerView(MovieContainer.COMMENTED);
     this._noFilmsComponent = new NoFilmsView();
     this._loadingFilmsComponent = new LoadingFilmsView();
 
@@ -132,7 +132,7 @@ export default class MovieList {
       case UpdateType.MINOR:
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
-        this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, cardsContainer);
+        this._renderFilmsCards(0, this._renderFilms, MovieContainer.ALL, cardsContainer);
 
         this._renderFilmsContainerRated();
         this._renderFilmsContainerCommented();
@@ -199,10 +199,10 @@ export default class MovieList {
     let preparedMovies;
 
     switch (type) {
-      case MovieContainers.TOP:
+      case MovieContainer.TOP:
         preparedMovies = this._moviesModel.getMovies().slice().sort((a, b) => b.movieRating - a.movieRating);
         break;
-      case MovieContainers.COMMENTED:
+      case MovieContainer.COMMENTED:
         preparedMovies = this._moviesModel.getMovies().slice().sort((a, b) => b.comments.length - a.comments.length);
         break;
       default:
@@ -219,15 +219,15 @@ export default class MovieList {
       const card = moviePresenter.init(movie);
       fragment.append(card);
 
-      if (type === MovieContainers.ALL) {
+      if (type === MovieContainer.ALL) {
         this._moviePresenters[movie.id] = moviePresenter;
       }
 
-      if (type === MovieContainers.TOP) {
+      if (type === MovieContainer.TOP) {
         this._moviePresentersTop[movie.id] = moviePresenter;
       }
 
-      if (type === MovieContainers.COMMENTED) {
+      if (type === MovieContainer.COMMENTED) {
         this._moviePresentersCommented[movie.id] = moviePresenter;
       }
     });
@@ -269,7 +269,7 @@ export default class MovieList {
   }
 
   _renderMainFilmsCards() {
-    this._renderFilmsCards(0, this._renderFilms, MovieContainers.ALL, this._moviesMainContainer);
+    this._renderFilmsCards(0, this._renderFilms, MovieContainer.ALL, this._moviesMainContainer);
     if (!this._loadMoreButtonComponent && this._getMovies().length > 0) {
       this._renderMoreButton();
     }
@@ -297,14 +297,14 @@ export default class MovieList {
     render(this._filmsComponent, this._filmsRatedComponent, RenderPosition.BEFOREEND);
     const cardsContainer = this._filmsRatedComponent.getElement().querySelector(`.films-list__container`);
     cardsContainer.innerHTML = ``;
-    this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainers.TOP, cardsContainer);
+    this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainer.TOP, cardsContainer);
   }
 
   _renderFilmsContainerCommented() {
     render(this._filmsComponent, this._filmsCommentedComponent, RenderPosition.BEFOREEND);
     const cardsContainer = this._filmsCommentedComponent.getElement().querySelector(`.films-list__container`);
     cardsContainer.innerHTML = ``;
-    this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainers.COMMENTED, cardsContainer);
+    this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainer.COMMENTED, cardsContainer);
   }
 
   _renderNoFilms() {
@@ -354,7 +354,7 @@ export default class MovieList {
     const filmCount = this._getMovies().length;
     const renderedFilmCount = Math.min(filmCount, this._renderFilms + CARD_COUNT_MAIN);
 
-    this._renderFilmsCards(this._renderFilms, renderedFilmCount, MovieContainers.ALL, this._moviesMainContainer);
+    this._renderFilmsCards(this._renderFilms, renderedFilmCount, MovieContainer.ALL, this._moviesMainContainer);
 
     this._renderFilms = renderedFilmCount;
 

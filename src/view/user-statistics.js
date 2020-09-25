@@ -20,12 +20,12 @@ const createCharts = (genresAndCount) => {
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
   const genres = [];
-  const count = [];
+  const counts = [];
 
   genresAndCount.forEach(
       (element) => {
         genres.push(element.name);
-        count.push(element.count);
+        counts.push(element.counts);
       }
   );
 
@@ -37,7 +37,7 @@ const createCharts = (genresAndCount) => {
     data: {
       labels: [...genres],
       datasets: [{
-        data: [...count],
+        data: [...counts],
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`
@@ -180,7 +180,7 @@ export default class UserStatistics extends Abstract {
   }
 
   getChart() {
-    createCharts(this._genresAndCount);
+    createCharts(this._genresAndCounts);
   }
 
   filterMovies() {
@@ -189,7 +189,7 @@ export default class UserStatistics extends Abstract {
 
 
     this._genresAll = [];
-    this._genresAndCount = [];
+    this._genresAndCounts = [];
 
     this._movies.map((element) => {
       element.genres.map(
@@ -207,15 +207,20 @@ export default class UserStatistics extends Abstract {
               count: this._genresAll.slice().filter((genre) => genre === element).length
             };
 
-            this._genresAndCount.push(elementObject);
+            this._genresAndCounts.push(elementObject);
 
             this._genresAll = this._genresAll.filter((genre) => genre !== element);
           }
         }
     );
 
+<<<<<<< Updated upstream
     this._genresAndCount.sort((a, b) => b.count - a.count);
     this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : `None`;
+=======
+    this._genresAndCounts.sort((a, b) => b.count - a.count);
+    this._topGenre = this._genresAndCounts.length > 0 ? this._genresAndCounts[0].name : ``;
+>>>>>>> Stashed changes
   }
 
   _handleFormChange() {

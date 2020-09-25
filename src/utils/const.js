@@ -61,7 +61,7 @@ export const UpdateType = {
   MAJOR: `MAJOR`
 };
 
-export const ImageTypes = {
+export const ImageType = {
   POSTER: `posters`,
   ICON: `icons`,
   EMOJI: `emoji`
@@ -74,7 +74,7 @@ export const RenderPosition = {
   AFTEREND: `afterend`
 };
 
-export const MovieContainers = {
+export const MovieContainer = {
   ALL: {
     elementClass: `films-list`,
     heading: `All movies. Upcoming`,
@@ -153,14 +153,6 @@ export const USER_NAMES = [
   `Evgenii Batkovich`
 ];
 
-export const CONTENT_RAITING = [
-  `0+`,
-  `6+`,
-  `12+`,
-  `16+`,
-  `18+`
-];
-
 export const COUNTRIES = [
   `USA`,
   `Canada`,
@@ -175,7 +167,7 @@ export const COUNTRIES = [
   `Columbia`
 ];
 
-export const EMOJI_DESCRIPTION = [
+export const EMOJI_DESCRIPTIONS = [
   `emoji-smile`,
   `emoji-sleeping`,
   `emoji-puke`,

@@ -12,15 +12,16 @@ const createCardTemplate = (movie) => {
   const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
   const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
   const favoriteControl = isFavorite ? `film-card__controls-item--active` : ``;
+  const genre = genres[0] ? `${genres[0]}` : ``;
 
   return `
   <article class="film-card">
-    <h3 class="film-card__title">${name}</h3>
+    <h class="film-card__title">${name}</h 3>
     <p class="film-card__rating">${movieRating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${moment(release).format(`YYYY`)}</span>
       <span class="film-card__duration">${formateDuration(runtime)}</span>
-      <span class="film-card__genre">${genres[0]}</span>
+      <span class="film-card__genre">${genre}</span>
     </p>
     <img src="${path}" alt="" class="film-card__poster">
     <p class="film-card__description">${description.length > 140 ? `${description.slice(0, MAX_STRING_LENGTH)}…` : `${description}`}</p>
