@@ -118,4 +118,26 @@ export default class AddComment extends SmartView {
     this._callback.addCommentKeydown = callback;
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._handleSendMessageKeydown);
   }
+
+  lock() {
+    const element = this.getElement();
+    const textarea = element.querySelector(`.film-details__comment-input`);
+    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
+
+    textarea.disabled = true;
+    emojiInputs.map((input) => {
+      input.disabled = true;
+    });
+  }
+
+  unlock() {
+    const element = this.getElement();
+    const textarea = element.querySelector(`.film-details__comment-input`);
+    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
+
+    textarea.disabled = false;
+    Array.from(emojiInputs).map((input) => {
+      input.disabled = false;
+    });
+  }
 }

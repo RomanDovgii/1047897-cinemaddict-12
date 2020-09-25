@@ -98,8 +98,14 @@ export default class Movie {
 
     this._newComment = new AddCommentView(this._handleViewAction);
     render(commentsMainContainer, this._newComment, RenderPosition.BEFOREEND);
-    this._newComment.setEmojiClickHandler();
-    this._newComment.setSendMessageKeydownHandler();
+
+    if (Provider.isOnline()) {
+      this._newComment.unlock();
+      this._newComment.setEmojiClickHandler();
+      this._newComment.setSendMessageKeydownHandler();
+    } else {
+      this._newComment.lock();
+    }
   }
 
   _showPopup() {
