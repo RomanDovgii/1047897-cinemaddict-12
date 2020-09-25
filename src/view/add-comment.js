@@ -101,7 +101,9 @@ export default class AddComment extends SmartView {
         date: moment().toISOString()
       };
 
-      this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+      element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._handleSendMessageKeydown);
+      element.querySelector(`.film-details__comment-input`).disabled = true;
+
 
       this._action(UserAction.ADD_COMMENT, UpdateType.MAJOR, comment);
     }
