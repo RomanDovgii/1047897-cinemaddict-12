@@ -57,18 +57,14 @@ export default class AddComment extends SmartView {
     return createNewCommentTemplate(this._comment);
   }
 
-  _emojiClickHandler(evt) {
-    const emoji = evt.target.closest(`.film-details__emoji-label`).getAttribute(`for`);
-    const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    const imagePreviewElement = createElement(emojiPreviewTemplate(emoji));
-    const existingImagePreviewElement = this.getElement().querySelector(`.film-details__emoji-preview`);
+  setEmojiClickHandler() {
+    const labels = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
+    labels.map((element) => element.addEventListener(`click`, this._emojiClickHandler));
+  }
 
-    if (!existingImagePreviewElement) {
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
-    } else {
-      existingImagePreviewElement.remove();
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
-    }
+  setSendMessageKeydownHandler(callback) {
+    this._callback.addCommentKeydown = callback;
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
   }
 
   showProblem() {
@@ -79,6 +75,28 @@ export default class AddComment extends SmartView {
       element.classList.remove(`shake`);
       this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
     }, 700);
+  }
+
+  lock() {
+    const element = this.getElement();
+    const textarea = element.querySelector(`.film-details__comment-input`);
+    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
+
+    textarea.disabled = true;
+    emojiInputs.map((input) => {
+      input.disabled = true;
+    });
+  }
+
+  unlock() {
+    const element = this.getElement();
+    const textarea = element.querySelector(`.film-details__comment-input`);
+    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
+
+    textarea.disabled = false;
+    Array.from(emojiInputs).map((input) => {
+      input.disabled = false;
+    });
   }
 
   _sendMessageKeydownHandler(evt) {
@@ -109,35 +127,18 @@ export default class AddComment extends SmartView {
     }
   }
 
-  setEmojiClickHandler() {
-    const labels = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
-    labels.map((element) => element.addEventListener(`click`, this._emojiClickHandler));
+  _emojiClickHandler(evt) {
+    const emoji = evt.target.closest(`.film-details__emoji-label`).getAttribute(`for`);
+    const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    const imagePreviewElement = createElement(emojiPreviewTemplate(emoji));
+    const existingImagePreviewElement = this.getElement().querySelector(`.film-details__emoji-preview`);
+
+    if (!existingImagePreviewElement) {
+      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
+    } else {
+      existingImagePreviewElement.remove();
+      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
+    }
   }
 
-  setSendMessageKeydownHandler(callback) {
-    this._callback.addCommentKeydown = callback;
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
-  }
-
-  lock() {
-    const element = this.getElement();
-    const textarea = element.querySelector(`.film-details__comment-input`);
-    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
-
-    textarea.disabled = true;
-    emojiInputs.map((input) => {
-      input.disabled = true;
-    });
-  }
-
-  unlock() {
-    const element = this.getElement();
-    const textarea = element.querySelector(`.film-details__comment-input`);
-    const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
-
-    textarea.disabled = false;
-    Array.from(emojiInputs).map((input) => {
-      input.disabled = false;
-    });
-  }
 }

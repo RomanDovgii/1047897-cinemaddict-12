@@ -13,6 +13,7 @@ export default class Abstract {
   getTemplate() {
     throw new Error(`Abstract method not implemented: getTemplate`);
   }
+
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
@@ -20,6 +21,7 @@ export default class Abstract {
 
     return this._element;
   }
+
   removeElement() {
     this._element = null;
   }

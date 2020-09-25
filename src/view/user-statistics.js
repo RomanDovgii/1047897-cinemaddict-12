@@ -185,6 +185,11 @@ export default class UserStatistics extends Abstract {
     createCharts(this._genresAndCounts);
   }
 
+  setFormChange(callback) {
+    this._callback.statusButtonClick = callback;
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._formChangeHandler);
+  }
+
   filterMovies() {
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
@@ -264,10 +269,5 @@ export default class UserStatistics extends Abstract {
     replace(newStats, oldStats);
     replace(newChart, oldChart);
     this.getChart();
-  }
-
-  setFormChange(callback) {
-    this._callback.statusButtonClick = callback;
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._formChangeHandler);
   }
 }

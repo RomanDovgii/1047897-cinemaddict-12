@@ -41,6 +41,16 @@ export default class Filter extends Abstract {
     return createFilterTemplate(this._filters, this._filterType);
   }
 
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => element.addEventListener(`click`, this._filterTypeChangeHandler));
+  }
+
+  setStatsButtonClickHandler(callback) {
+    this._callback.statsButtonClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statsClickHandler);
+  }
+
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
     const filterType = evt.target.closest(`.main-navigation__item`).dataset.type;
@@ -53,15 +63,5 @@ export default class Filter extends Abstract {
   _statsClickHandler(evt) {
     evt.preventDefault();
     this._callback.statsButtonClick(MenuItem.STATS);
-  }
-
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => element.addEventListener(`click`, this._filterTypeChangeHandler));
-  }
-
-  setStatsButtonClickHandler(callback) {
-    this._callback.statsButtonClick = callback;
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statsClickHandler);
   }
 }

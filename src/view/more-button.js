@@ -16,13 +16,13 @@ export default class MoreButton extends Abstract {
     return createMoreButtonTemplate();
   }
 
-  _moreButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
   setClickHandler(callback) {
     this._callback.click = callback;
     this.getElement().addEventListener(`click`, this._moreButtonClickHandler);
+  }
+
+  _moreButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 }

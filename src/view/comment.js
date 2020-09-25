@@ -34,14 +34,9 @@ export default class Comment extends SmartView {
     return createCommentTemplate(this._comment);
   }
 
-  _deleteClickHandler(evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._deleteClickHandler);
-    const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
-    deleteButton.disabled = true;
-    deleteButton.textContent = `Deleting…`;
-    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
+  setDeleteHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteClickHandler);
   }
 
   showProblem() {
@@ -60,8 +55,13 @@ export default class Comment extends SmartView {
     }, 700);
   }
 
-  setDeleteHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteClickHandler);
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.getElement().querySelector(`.film-details__comment-delete`).removeEventListener(`click`, this._deleteClickHandler);
+    const deleteButton = this.getElement().querySelector(`.film-details__comment-delete`);
+    deleteButton.disabled = true;
+    deleteButton.textContent = `Deleting…`;
+    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MAJOR, this._comment);
   }
 }

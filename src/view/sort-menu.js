@@ -25,6 +25,18 @@ export default class SortMenu extends Abstract {
     return createSortMenuTemplate(this._sortTypes);
   }
 
+  setClickHandler(callback) {
+    this._callback.click = callback;
+
+    if (!this.getElement().querySelector(`.sort__button--active`)) {
+      this.getElement().querySelector(`[data-type = "default"]`).classList.add(`sort__button--active`);
+    }
+
+    this._sortTypes.forEach((element) => {
+      this.getElement().querySelector(`[data-type = "${element}"]`).addEventListener(`click`, this._sortMenuClickHandler);
+    });
+  }
+
   _sortMenuClickHandler(evt) {
     evt.preventDefault();
 
@@ -38,17 +50,5 @@ export default class SortMenu extends Abstract {
     });
 
     this._callback.click(evt.target.dataset.type);
-  }
-
-  setClickHandler(callback) {
-    this._callback.click = callback;
-
-    if (!this.getElement().querySelector(`.sort__button--active`)) {
-      this.getElement().querySelector(`[data-type = "default"]`).classList.add(`sort__button--active`);
-    }
-
-    this._sortTypes.forEach((element) => {
-      this.getElement().querySelector(`[data-type = "${element}"]`).addEventListener(`click`, this._sortMenuClickHandler);
-    });
   }
 }

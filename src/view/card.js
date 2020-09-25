@@ -50,28 +50,6 @@ export default class Card extends Abstract {
     return createCardTemplate(this._movie);
   }
 
-  _cardClickHandler(evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
-
-    this._callback.click();
-  }
-
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistClick();
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchedClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setClickHandler(callback) {
     this._callback.click = callback;
 
@@ -93,5 +71,27 @@ export default class Card extends Abstract {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  _cardClickHandler(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    this._callback.click();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }
