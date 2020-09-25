@@ -18,6 +18,7 @@ const footer = document.querySelector(`.footer`);
 let userStatisticsComponent = null;
 let filter = null;
 let content = null;
+let firstLoad = true;
 
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
@@ -38,7 +39,6 @@ const filterModel = new FilterModel();
 
 const userRank = new UserRank();
 
-render(header, userRank.getElement(), RenderPosition.BEFOREEND);
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
 
@@ -69,6 +69,12 @@ const handleStatsButtonClick = (menuItem) => {
   oldMenuItem = newMenuItem;
 };
 
+render(header, userRank.getElement(), RenderPosition.BEFOREEND);
+filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
+filter.init();
+content.init();
+
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 let moviesLocal = [];
@@ -95,21 +101,18 @@ apiWithProvider.getMovies()
 
     moviesStore.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
-    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
     render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
-    filter.init();
     content.init();
+    content.removeLoadingFilms();
   })
   .catch(() => {
     moviesModel.setMovies([]);
-    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
     render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
     content.init();
+    content.removeLoadingFilms();
   });
 
 window.addEventListener(`load`, () => {

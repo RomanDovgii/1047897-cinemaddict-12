@@ -10,7 +10,7 @@ import Provider from "../api/provider.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeData, handlePopup, moviesModel, api, commentsStore) { // change data is handle view action
+  constructor(changeData, handlePopup, moviesModel, api, commentsStore) {
     this._changeData = changeData;
     this._handlePopup = handlePopup;
     this._moviesModel = moviesModel;
