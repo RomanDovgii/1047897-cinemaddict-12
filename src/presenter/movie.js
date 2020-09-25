@@ -10,8 +10,8 @@ import Provider from "../api/provider.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeData, handlePopup, moviesModel, api, commentsStore) {
-    this._changeData = changeData;
+  constructor(changeInformation, handlePopup, moviesModel, api, commentsStore) {
+    this._changeInformation = changeInformation;
     this._handlePopup = handlePopup;
     this._moviesModel = moviesModel;
     this._commentsStore = commentsStore;
@@ -150,7 +150,7 @@ export default class Movie {
   }
 
   _handleWatchlistClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -163,7 +163,7 @@ export default class Movie {
   }
 
   _handleWatchedClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -177,7 +177,7 @@ export default class Movie {
   }
 
   _handleFavoriteClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -190,7 +190,7 @@ export default class Movie {
   }
 
   _handleWatchlistPopupClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -204,7 +204,7 @@ export default class Movie {
   }
 
   _handleWatchedPopupClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -219,7 +219,7 @@ export default class Movie {
   }
 
   _handleFavoritePopupClick() {
-    this._changeData(
+    this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
         Object.assign(
@@ -272,7 +272,7 @@ export default class Movie {
 
         this._api.deleteComment(update).then(() => {
           if (Provider.isOnline()) {
-            this._changeData(
+            this._changeInformation(
                 UserAction.POPUP_CHANGE,
                 UpdateType.MINOR,
                 Object.assign(
@@ -300,7 +300,7 @@ export default class Movie {
       case UserAction.ADD_COMMENT:
         this._api.addComment(update, this._movie.id).then(() => {
           if (Provider.isOnline()) {
-            this._changeData(
+            this._changeInformation(
                 UserAction.POPUP_CHANGE,
                 UpdateType.MINOR,
                 Object.assign(
