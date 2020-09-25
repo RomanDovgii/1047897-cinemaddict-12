@@ -15,14 +15,6 @@ const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 
-let userStatisticsComponent = null;
-let filter = null;
-let content = null;
-let firstLoad = true;
-
-let oldMenuItem = MenuItem.CHANGE_FILTER;
-let newMenuItem = MenuItem.CHANGE_FILTER;
-
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_COMMENTS_PREFIX = `cinemaddict-localstorage-comments`;
 const STORE_VERSION = `v12`;
@@ -38,6 +30,14 @@ const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
 
 const userRank = new UserRank();
+
+let userStatisticsComponent = null;
+let filter = null;
+let content = null;
+let firstLoad = true;
+
+let oldMenuItem = MenuItem.CHANGE_FILTER;
+let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
