@@ -2,8 +2,8 @@ import SmartView from "./smart.js";
 import {formateDuration} from "../utils/main.js";
 import moment from "moment";
 
-const generateGenres = (array) => {
-  return array.reduce(
+const generateGenres = (genres) => {
+  return genres.reduce(
       (accumulator, genre) => accumulator + `<span class="film-details__genre">${genre}</span>`, ``
   );
 };

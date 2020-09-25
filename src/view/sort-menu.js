@@ -6,10 +6,10 @@ const createSortMenuButton = (sortTypes) => {
   return sortTypes.reduce((accumulator, element) => accumulator + `<li><a href="#" data-type="${element}" class="sort__button">Sort by ${element}</a></li>`, ``);
 };
 
-const createSortMenuTemplate = (array) => {
+const createSortMenuTemplate = (sortTypes) => {
   return `
   <ul class="sort">
-    ${createSortMenuButton(array)}
+    ${createSortMenuButton(sortTypes)}
   </ul>
   `;
 };

@@ -1,18 +1,18 @@
 import Abstract from "./abstract.js";
 
-const createCountTemplate = (number) => {
+const createCountTemplate = (commentsCount) => {
   return `
-  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${number}</span></h3>
+  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
   `;
 };
 
 export default class CommentCounter extends Abstract {
-  constructor(number) {
+  constructor(commentsCount) {
     super();
-    this._number = number;
+    this._commentsCount = commentsCount;
   }
 
   getTemplate() {
-    return createCountTemplate(this._number);
+    return createCountTemplate(this._commentsCount);
   }
 }

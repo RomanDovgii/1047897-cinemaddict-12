@@ -9,10 +9,10 @@ const createStatisticsTemplate = (count) => {
 export default class Statistics extends Abstract {
   constructor(movies) {
     super();
-    this._moviesNumber = movies.length;
+    this._moviesTotal = movies.length;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._moviesNumber);
+    return createStatisticsTemplate(this._moviesTotal);
   }
 }

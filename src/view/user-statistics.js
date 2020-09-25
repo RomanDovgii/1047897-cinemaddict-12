@@ -112,9 +112,9 @@ const createUserFormTemplate = () => {
 };
 
 const createUserStatisticsTemplate = (totalMovies, totalDuration, topGenre) => {
-  const hoursString = `<span class="statistic__item-description">h</span>`;
-  const minutesString = `<span class="statistic__item-description">m</span>`;
-  const time = moment.duration(totalDuration, `minutes`).format(`h [${hoursString}] mm [${minutesString}]`);
+  const hourLetter = `<span class="statistic__item-description">h</span>`;
+  const minutesLetter = `<span class="statistic__item-description">m</span>`;
+  const time = moment.duration(totalDuration, `minutes`).format(`h [${hourLetter}] mm [${minutesLetter}]`);
 
   return `
   <ul class="statistic__text-list">

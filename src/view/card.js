@@ -1,4 +1,4 @@
-import {MAX_STRING_LENGTH} from "../utils/const.js";
+import {MAX_DESCRIPTION_LENGTH} from "../utils/const.js";
 import Abstract from "./abstract.js";
 import moment from "moment";
 import {formateDuration} from "../utils/main.js";
@@ -7,7 +7,7 @@ const createCardTemplate = (movie) => {
 
   const {name, release, runtime, genres, description, movieRating, path, isWatchlist, isWatched, isFavorite, comments} = movie;
 
-  const commentNumber = comments.length === 1 ? `${comments.length} comment` : `${comments.length} comments`;
+  const commentsCount = comments.length === 1 ? `${comments.length} comment` : `${comments.length} comments`;
 
   const watchlistControl = isWatchlist ? `film-card__controls-item--active` : ``;
   const wathcedControl = isWatched ? `film-card__controls-item--active` : ``;
@@ -24,8 +24,8 @@ const createCardTemplate = (movie) => {
       <span class="film-card__genre">${genre}</span>
     </p>
     <img src="${path}" alt="" class="film-card__poster">
-    <p class="film-card__description">${description.length > 140 ? `${description.slice(0, MAX_STRING_LENGTH)}…` : `${description}`}</p>
-    <a class="film-card__comments">${commentNumber}</a>
+    <p class="film-card__description">${description.length > 140 ? `${description.slice(0, MAX_DESCRIPTION_LENGTH)}…` : `${description}`}</p>
+    <a class="film-card__comments">${commentsCount}</a>
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${wathcedControl}">Mark as watched</button>
