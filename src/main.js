@@ -18,6 +18,7 @@ const footer = document.querySelector(`.footer`);
 let userStatisticsComponent = null;
 let filter = null;
 let content = null;
+let firstLoad = true;
 
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
@@ -29,16 +30,15 @@ const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
 const STORE_NAME_COMMENTS = `${STORE_COMMENTS_PREFIX}-${STORE_VERSION}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
+const moviesStore = new Store(STORE_NAME, window.localStorage);
 const commentsStore = new Store(STORE_NAME_COMMENTS, window.localStorage);
-const apiWithProvider = new Provider(api, store, commentsStore);
+const apiWithProvider = new Provider(api, moviesStore, commentsStore);
 
 const moviesModel = new MoviesModel();
 const filterModel = new FilterModel();
 
 const userRank = new UserRank();
 
-render(header, userRank.getElement(), RenderPosition.BEFOREEND);
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
 
@@ -50,7 +50,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.CHANGE_FILTER:
       content.destroy();
 
-      content = new MovieList(main, moviesModel, filterModel, filter, api);
+      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
 
       filter.init();
       content.init();
@@ -69,6 +69,12 @@ const handleStatsButtonClick = (menuItem) => {
   oldMenuItem = newMenuItem;
 };
 
+render(header, userRank.getElement(), RenderPosition.BEFOREEND);
+filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
+content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
+filter.init();
+content.init();
+
 const footerStats = footer.querySelector(`.footer__statistics`);
 
 let moviesLocal = [];
@@ -80,43 +86,33 @@ apiWithProvider.getMovies()
     return movies;
   })
   .then(() => {
-    const commentsLocal = [];
+    const commentsLocal = {};
 
     const moviesLocalForStore = moviesLocal.slice().map(MoviesModel.adaptToServer);
 
     moviesLocalForStore.map((movie) => {
       api.getComments(movie.id).then((comments) => {
-
-        const commentObj = {
-          id: movie.id,
-          commentsStored: comments
-        };
-
-        commentsLocal.push(commentObj);
-
+        commentsLocal[movie.id] = comments;
         return commentsLocal;
       }).then((comments) => {
         commentsStore.setItems(comments);
       });
     });
 
-    store.setItems(moviesLocalForStore);
+    moviesStore.setItems(moviesLocalForStore);
     moviesModel.setMovies(moviesLocal);
-    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
     render(footerStats, new Statistics(moviesLocal).getElement(), RenderPosition.BEFOREEND);
 
-    filter.init();
     content.init();
+    content.removeLoadingFilms();
   })
   .catch(() => {
     moviesModel.setMovies([]);
-    filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-    content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider);
     render(footerStats, new Statistics(moviesModel.getMovies()).getElement(), RenderPosition.BEFOREEND);
 
     filter.init();
     content.init();
+    content.removeLoadingFilms();
   });
 
 window.addEventListener(`load`, () => {

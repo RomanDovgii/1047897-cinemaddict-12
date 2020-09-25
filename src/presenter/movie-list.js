@@ -10,9 +10,10 @@ import LoadMoreButtonView from "../view/more-button.js";
 import UserRankView from "../view/user-rank.js";
 import MoviePresenter from "./movie.js";
 import moment from "moment";
+import MoviesModel from "../model/movies.js";
 
 export default class MovieList {
-  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api) {
+  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, moviesStore, commentsStore, firstLoad) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
@@ -23,6 +24,9 @@ export default class MovieList {
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
     this._api = api;
+    this._commentsStore = commentsStore;
+    this._moviesStore = moviesStore;
+    this._firstLoad = firstLoad;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -56,9 +60,7 @@ export default class MovieList {
     this._renderSort();
 
     this._renderFilmsContainer();
-    this._renderLoading();
 
-    remove(this._loadingFilmsComponent);
     this._filterPresenter.init();
     this._renderMain();
     this.rerenderUserRank(this._moviesModel.getMovies());
@@ -88,6 +90,10 @@ export default class MovieList {
         this._api.updateMovies(update).then((response) => {
           this._handlePopups();
           this._moviesModel.updateMovie(updateType, response);
+
+          this._moviesStore.setItems(this._moviesModel.getMovies().slice().map(MoviesModel.adaptToServer));
+
+
           if (this._moviePresenters[response.id]) {
             this._moviePresenters[response.id]._showPopup(response);
             return;
@@ -119,23 +125,27 @@ export default class MovieList {
       case UserAction.CARD_CHANGE:
         this._api.updateMovies(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
+
+          this._moviesStore.setItems(this._moviesModel.getMovies().slice().map(MoviesModel.adaptToServer));
         });
         break;
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType, information) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._moviePresenters[data.id].rerenderCard(data);
+        this._moviePresenters[information.id].rerenderCard(information);
         break;
       case UpdateType.MINOR:
         const cardsContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
         cardsContainer.innerHTML = ``;
         this._renderFilmsCards(0, this._renderFilms, MovieContainer.ALL, cardsContainer);
 
-        this._renderFilmsContainerRated();
-        this._renderFilmsContainerCommented();
+        if (this._filterModel.getFilter() === `ALL`) {
+          this._renderFilmsContainerRated();
+          this._renderFilmsContainerCommented();
+        }
 
         if (this._getMovies().length <= this._renderFilms) {
           remove(this._loadMoreButtonComponent);
@@ -215,7 +225,7 @@ export default class MovieList {
     const fragment = new DocumentFragment();
 
     preparedMovies.forEach((movie) => {
-      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._moviesModel, this._api);
+      const moviePresenter = new MoviePresenter(this._handleViewAction, this._handlePopups, this._moviesModel, this._api, this._commentsStore);
       const card = moviePresenter.init(movie);
       fragment.append(card);
 
@@ -274,12 +284,12 @@ export default class MovieList {
       this._renderMoreButton();
     }
 
-    if (this._isNoMoviesShown) {
+    if (this._isNoMoviesShown && !this._firstLoad) {
       replace(this._filmsAllComponent, this._noFilmsComponent);
       this._isNoMoviesShown = false;
     }
 
-    if (this._moviesMainContainer.childNodes.length === 0) {
+    if (this._moviesMainContainer.childNodes.length === 0 && !this._firstLoad) {
       replace(this._noFilmsComponent, this._filmsAllComponent);
       this._isNoMoviesShown = true;
     }
@@ -309,6 +319,14 @@ export default class MovieList {
 
   _renderNoFilms() {
     render(this._filmsComponent, this._noFilmsComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderLoadingFilms() {
+    render(this._filmsComponent, this._loadingFilmsComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  removeLoadingFilms() {
+    remove(this._loadingFilmsComponent);
   }
 
   _renderFilmsCards(min, max, type, place) {
@@ -365,8 +383,12 @@ export default class MovieList {
 
   _renderMain() {
     this._renderFilmsContainerAll();
+    if (this._firstLoad) {
+      this._renderLoadingFilms();
+      this._firstLoad = false;
+    }
 
-    if (!this._getMovies().length) {
+    if (!this._getMovies().length === 0) {
       this._renderNoFilms();
       return;
     }

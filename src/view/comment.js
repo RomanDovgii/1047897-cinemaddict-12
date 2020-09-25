@@ -4,7 +4,7 @@ import he from "he";
 import {UserAction, UpdateType} from "../utils/const.js";
 
 const createCommentTemplate = (comment) => {
-  const date = moment(comment.date).format(`YYYY/MM/DD HH:MM`);
+  const date = moment(comment.date).fromNow();
 
   return `
   <li class="film-details__comment">

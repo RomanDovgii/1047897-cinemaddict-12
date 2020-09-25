@@ -49,11 +49,11 @@ export default class Api {
       .then(CommentsModel.adaptToClient);
   }
 
-  sync(data) {
+  sync(information) {
     return this._load({
       url: `movies/sync`,
       method: Method.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(information),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then(Api.toJSON);

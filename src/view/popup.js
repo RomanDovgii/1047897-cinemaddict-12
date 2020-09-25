@@ -207,8 +207,8 @@ export default class Popup extends SmartView {
     );
   }
 
-  static parseDataToMovie(data) {
-    data = Object.assign({}, data);
-    return data;
+  static parseDataToMovie(information) {
+    information = Object.assign({}, information);
+    return information;
   }
 }

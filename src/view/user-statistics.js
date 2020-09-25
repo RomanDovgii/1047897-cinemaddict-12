@@ -1,7 +1,7 @@
 import Abstract from "./abstract.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import {createElement} from "../utils/main.js";
+import {createElement, getRank} from "../utils/main.js";
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import {replace} from "../utils/render.js";
@@ -20,12 +20,12 @@ const createCharts = (genresAndCount) => {
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
   const genres = [];
-  const counts = [];
+  const count = [];
 
   genresAndCount.forEach(
       (element) => {
         genres.push(element.name);
-        counts.push(element.counts);
+        count.push(element.count);
       }
   );
 
@@ -37,7 +37,7 @@ const createCharts = (genresAndCount) => {
     data: {
       labels: [...genres],
       datasets: [{
-        data: [...counts],
+        data: [...count],
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`
@@ -143,14 +143,16 @@ const createUserChartTemplate = () => {
 };
 
 const createUserStatisticsPageTemplate = (totalMovies, totalDuration, topGenre) => {
+  const rank = getRank(totalMovies);
+
   return `
   <section class="statistic">
-    <p class="statistic__rank">
-      Your rank
-      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Sci-Fighter</span>
+    ${rank !== `` ? `<p class="statistic__rank">
+    Your rank
+    <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+    <span class="statistic__rank-label">${rank}</span>
     </p>
-
+    ` : ``}
     ${createUserFormTemplate()}
     ${createUserStatisticsTemplate(totalMovies, totalDuration, topGenre)}
     ${createUserChartTemplate()}
@@ -180,7 +182,7 @@ export default class UserStatistics extends Abstract {
   }
 
   getChart() {
-    createCharts(this._genresAndCounts);
+    createCharts(this._genresAndCount);
   }
 
   filterMovies() {
@@ -189,7 +191,7 @@ export default class UserStatistics extends Abstract {
 
 
     this._genresAll = [];
-    this._genresAndCounts = [];
+    this._genresAndCount = [];
 
     this._movies.map((element) => {
       element.genres.map(
@@ -207,20 +209,15 @@ export default class UserStatistics extends Abstract {
               count: this._genresAll.slice().filter((genre) => genre === element).length
             };
 
-            this._genresAndCounts.push(elementObject);
+            this._genresAndCount.push(elementObject);
 
             this._genresAll = this._genresAll.filter((genre) => genre !== element);
           }
         }
     );
 
-<<<<<<< Updated upstream
     this._genresAndCount.sort((a, b) => b.count - a.count);
-    this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : `None`;
-=======
-    this._genresAndCounts.sort((a, b) => b.count - a.count);
-    this._topGenre = this._genresAndCounts.length > 0 ? this._genresAndCounts[0].name : ``;
->>>>>>> Stashed changes
+    this._topGenre = this._genresAndCount.length > 0 ? this._genresAndCount[0].name : ``;
   }
 
   _handleFormChange() {
