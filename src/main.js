@@ -11,15 +11,15 @@ import Api from "./api/index.js";
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
-const header = document.querySelector(`.header`);
-const main = document.querySelector(`.main`);
-const footer = document.querySelector(`.footer`);
-
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_COMMENTS_PREFIX = `cinemaddict-localstorage-comments`;
 const STORE_VERSION = `v12`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
 const STORE_NAME_COMMENTS = `${STORE_COMMENTS_PREFIX}-${STORE_VERSION}`;
+
+const header = document.querySelector(`.header`);
+const main = document.querySelector(`.main`);
+const footer = document.querySelector(`.footer`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 const moviesStore = new Store(STORE_NAME, window.localStorage);
