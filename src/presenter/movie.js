@@ -24,16 +24,16 @@ export default class Movie {
     this._showPopup = this._showPopup.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this.removePopup = this.removePopup.bind(this);
-    this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
-    this._handleWatchedClick = this._handleWatchedClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
 
-    this._handleWatchlistPopupClick = this._handleWatchlistPopupClick.bind(this);
-    this._handleWatchedPopupClick = this._handleWatchedPopupClick.bind(this);
-    this._handleFavoritePopupClick = this._handleFavoritePopupClick.bind(this);
+    this._watchlistPopupClickHandler = this._watchlistPopupClickHandler.bind(this);
+    this._watchedPopupClickHandler = this._watchedPopupClickHandler.bind(this);
+    this._favoritePopupClickHandler = this._favoritePopupClickHandler.bind(this);
 
     this._documentClickHandler = this._documentClickHandler.bind(this);
-    this._handlePopupButtonClick = this._handlePopupButtonClick.bind(this);
+    this._buttonPopupClickHandler = this._buttonPopupClickHandler.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
   }
 
@@ -108,6 +108,30 @@ export default class Movie {
     }
   }
 
+  removePopup() {
+    remove(this._popupComponent);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`click`, this._documentClickHandler);
+    this._popupOpen = false;
+  }
+
+
+  _setHandlersForPopup() {
+    this._popupComponent.setCloseButtonClickHandler(this.removePopup);
+    this._popupComponent.setWatchlistClickHandler(this._watchlistPopupClickHandler);
+    this._popupComponent.setWatchedClickHandler(this._watchedPopupClickHandler);
+    this._popupComponent.setFavoriteClickHandler(this._favoritePopupClickHandler);
+    document.addEventListener(`click`, this._documentClickHandler);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
+  }
+
+  _setHandlersForCard() {
+    this._cardComponent.setClickHandler(this._showPopup);
+    this._cardComponent.setWatchlistClickHandler(this._watchlistClickHandler);
+    this._cardComponent.setWatchedClickHandler(this._watchedClickHandler);
+    this._cardComponent.setFavoriteClickHandler(this._favoriteClickHandler);
+  }
+
   _showPopup() {
     if (this._popupOpen) {
       return;
@@ -142,14 +166,7 @@ export default class Movie {
     replace(this._commentsCounterComponent, this._oldCounter);
   }
 
-  removePopup() {
-    remove(this._popupComponent);
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    document.removeEventListener(`click`, this._documentClickHandler);
-    this._popupOpen = false;
-  }
-
-  _handleWatchlistClick() {
+  _watchlistClickHandler() {
     this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
@@ -162,7 +179,7 @@ export default class Movie {
         ));
   }
 
-  _handleWatchedClick() {
+  _watchedClickHandler() {
     this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
@@ -176,7 +193,7 @@ export default class Movie {
         ));
   }
 
-  _handleFavoriteClick() {
+  _favoriteClickHandler() {
     this._changeInformation(
         UserAction.CARD_CHANGE,
         UpdateType.MINOR,
@@ -189,7 +206,7 @@ export default class Movie {
         ));
   }
 
-  _handleWatchlistPopupClick() {
+  _watchlistPopupClickHandler() {
     this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -203,7 +220,7 @@ export default class Movie {
     );
   }
 
-  _handleWatchedPopupClick() {
+  _watchedPopupClickHandler() {
     this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -218,7 +235,7 @@ export default class Movie {
     );
   }
 
-  _handleFavoritePopupClick() {
+  _favoritePopupClickHandler() {
     this._changeInformation(
         UserAction.POPUP_CHANGE,
         UpdateType.MINOR,
@@ -238,7 +255,7 @@ export default class Movie {
     }
   }
 
-  _handlePopupButtonClick(updatedMovie) {
+  _buttonPopupClickHandler(updatedMovie) {
     this.rerenderCard(updatedMovie);
   }
 
@@ -248,22 +265,6 @@ export default class Movie {
     if ((!eventTarget.closest(`.film-details`))) {
       this.removePopup();
     }
-  }
-
-  _setHandlersForCard() {
-    this._cardComponent.setClickHandler(this._showPopup);
-    this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-  }
-
-  _setHandlersForPopup() {
-    this._popupComponent.setCloseButtonClickHandler(this.removePopup);
-    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistPopupClick);
-    this._popupComponent.setWatchedClickHandler(this._handleWatchedPopupClick);
-    this._popupComponent.setFavoriteClickHandler(this._handleFavoritePopupClick);
-    document.addEventListener(`click`, this._documentClickHandler);
-    document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _handleViewAction(actionType, updateType, update) {

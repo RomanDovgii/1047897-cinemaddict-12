@@ -66,10 +66,17 @@ export default class MovieList {
     this.rerenderUserRank(this._moviesModel.getMovies());
   }
 
-  _handlePopups() {
-    Object.values(this._moviePresenters).forEach((presenter) => presenter.removePopup());
-    Object.values(this._moviePresentersTop).forEach((presenter) => presenter.removePopup());
-    Object.values(this._moviePresentersCommented).forEach((presenter) => presenter.removePopup());
+  rerenderUserRank(movies) {
+    const header = document.querySelector(`.header`);
+    const oldUserRank = document.querySelector(`.header__profile`);
+    oldUserRank.remove();
+
+    const newUserRank = new UserRankView(movies);
+    render(header, newUserRank.getElement(), RenderPosition.BEFOREEND);
+  }
+
+  removeLoadingFilms() {
+    remove(this._loadingFilmsComponent);
   }
 
   destroy() {
@@ -245,15 +252,6 @@ export default class MovieList {
     return fragment;
   }
 
-  rerenderUserRank(movies) {
-    const header = document.querySelector(`.header`);
-    const oldUserRank = document.querySelector(`.header__profile`);
-    oldUserRank.remove();
-
-    const newUserRank = new UserRankView(movies);
-    render(header, newUserRank.getElement(), RenderPosition.BEFOREEND);
-  }
-
   _renderSort() {
     if (this._sortComponent) {
       this._newSort = new SortView();
@@ -325,10 +323,6 @@ export default class MovieList {
     render(this._filmsComponent, this._loadingFilmsComponent, RenderPosition.AFTERBEGIN);
   }
 
-  removeLoadingFilms() {
-    remove(this._loadingFilmsComponent);
-  }
-
   _renderFilmsCards(min, max, type, place) {
     const films = this._generateCards(min, max, type);
     render(place, films, RenderPosition.BEFOREEND);
@@ -347,6 +341,30 @@ export default class MovieList {
       render(this._filmsAllComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
       this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
+    }
+  }
+
+  _renderMain() {
+    this._renderFilmsContainerAll();
+    if (this._firstLoad) {
+      this._renderLoadingFilms();
+      this._firstLoad = false;
+    }
+
+    if (!this._getMovies().length === 0) {
+      this._renderNoFilms();
+      return;
+    }
+
+    const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
+    const nonZeroCommentsCount = this._getMovies().slice().filter((movie) => movie.comments.length > 0).length;
+
+    if (nonZeroRatingCount !== 0 && this._filterModel.getFilter() === `ALL`) {
+      this._renderFilmsContainerRated();
+    }
+
+    if (nonZeroCommentsCount !== 0 && this._filterModel.getFilter() === `ALL`) {
+      this._renderFilmsContainerCommented();
     }
   }
 
@@ -381,27 +399,9 @@ export default class MovieList {
     }
   }
 
-  _renderMain() {
-    this._renderFilmsContainerAll();
-    if (this._firstLoad) {
-      this._renderLoadingFilms();
-      this._firstLoad = false;
-    }
-
-    if (!this._getMovies().length === 0) {
-      this._renderNoFilms();
-      return;
-    }
-
-    const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
-    const nonZeroCommentsCount = this._getMovies().slice().filter((movie) => movie.comments.length > 0).length;
-
-    if (nonZeroRatingCount !== 0 && this._filterModel.getFilter() === `ALL`) {
-      this._renderFilmsContainerRated();
-    }
-
-    if (nonZeroCommentsCount !== 0 && this._filterModel.getFilter() === `ALL`) {
-      this._renderFilmsContainerCommented();
-    }
+  _handlePopups() {
+    Object.values(this._moviePresenters).forEach((presenter) => presenter.removePopup());
+    Object.values(this._moviePresentersTop).forEach((presenter) => presenter.removePopup());
+    Object.values(this._moviePresentersCommented).forEach((presenter) => presenter.removePopup());
   }
 }

@@ -32,13 +32,8 @@ export default class Filters {
     remove(prevFilterComponent);
   }
 
-  _handleFilterTypeChange(filterType) {
-
-    if (this._currentFilter === filterType) {
-      return;
-    }
-
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  setStatsButtonClick(callback) {
+    this._filterComponent.setStatusButtonClick(callback);
   }
 
   _getFilters() {
@@ -68,7 +63,12 @@ export default class Filters {
     ];
   }
 
-  setStatsButtonClick(callback) {
-    this._filterComponent.setStatusButtonClick(callback);
+  _handleFilterTypeChange(filterType) {
+
+    if (this._currentFilter === filterType) {
+      return;
+    }
+
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 }
