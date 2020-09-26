@@ -33,7 +33,7 @@ export const createElement = (template) => {
 
 export const sentences = FISH_TEXT.split(`. `);
 
-export const convertEnumToArray = (localEnum) => {
+export const convertEnumToCollection = (localEnum) => {
   return Object.values(localEnum);
 };
 

@@ -1,6 +1,6 @@
 import Abstract from "./abstract.js";
 import {SortType} from "../utils/const.js";
-import {convertEnumToArray} from "../utils/main.js";
+import {convertEnumToCollection} from "../utils/main.js";
 
 const createSortMenuButton = (sortTypes) => {
   return sortTypes.reduce((accumulator, element) => accumulator + `<li><a href="#" data-type="${element}" class="sort__button">Sort by ${element}</a></li>`, ``);
@@ -18,7 +18,7 @@ export default class SortMenu extends Abstract {
   constructor() {
     super();
     this._sortMenuClickHandler = this._sortMenuClickHandler.bind(this);
-    this._sortTypes = convertEnumToArray(SortType);
+    this._sortTypes = convertEnumToCollection(SortType);
   }
 
   getTemplate() {
