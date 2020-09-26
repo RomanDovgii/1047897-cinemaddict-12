@@ -40,7 +40,7 @@ export default class Provider {
 
     const storeComments = this._commentsStore.getItems();
 
-    let rightComments = storeComments[movieId];
+    const rightComments = storeComments[movieId];
 
     return Promise.resolve(rightComments);
   }

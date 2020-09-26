@@ -16,6 +16,7 @@ const STORE_COMMENTS_PREFIX = `cinemaddict-localstorage-comments`;
 const STORE_VERSION = `v12`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VERSION}`;
 const STORE_NAME_COMMENTS = `${STORE_COMMENTS_PREFIX}-${STORE_VERSION}`;
+const FIRST_LOAD = true;
 
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -34,7 +35,7 @@ const userRank = new UserRank();
 let userStatisticsComponent = null;
 let filter = null;
 let content = null;
-let firstLoad = true;
+
 
 let oldMenuItem = MenuItem.CHANGE_FILTER;
 let newMenuItem = MenuItem.CHANGE_FILTER;
@@ -71,7 +72,7 @@ const handleStatsButtonClick = (menuItem) => {
 
 render(header, userRank.getElement(), RenderPosition.BEFOREEND);
 filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
+content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, FIRST_LOAD);
 filter.init();
 content.init();
 

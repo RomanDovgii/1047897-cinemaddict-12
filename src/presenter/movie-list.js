@@ -41,8 +41,8 @@ export default class MovieList {
 
     this._moviesMainContainer = this._filmsAllComponent.getElement().querySelector(`.films-list__container`);
 
-    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
-    this._handleSortButtonClick = this._handleSortButtonClick.bind(this);
+    this._loadMoreButtonClickHandler = this._loadMoreButtonClickHandler.bind(this);
+    this._sortButtonClickHandler = this._sortButtonClickHandler.bind(this);
     this._handlePopups = this._handlePopups.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -257,7 +257,7 @@ export default class MovieList {
       this._newSort = new SortView();
       replace(this._newSort, this._sortComponent);
       this._sortComponent = this._newSort;
-      this._sortComponent.setClickHandler(this._handleSortButtonClick);
+      this._sortComponent.setClickHandler(this._sortButtonClickHandler);
       return;
     }
 
@@ -265,7 +265,7 @@ export default class MovieList {
 
     render(this._mainContainer, this._sortComponent, RenderPosition.BEFOREEND);
 
-    this._sortComponent.setClickHandler(this._handleSortButtonClick);
+    this._sortComponent.setClickHandler(this._sortButtonClickHandler);
   }
 
   _renderLoading() {
@@ -340,7 +340,7 @@ export default class MovieList {
 
       render(this._filmsAllComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
-      this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
+      this._loadMoreButtonComponent.setClickHandler(this._loadMoreButtonClickHandler);
     }
   }
 
@@ -373,7 +373,7 @@ export default class MovieList {
     this._moviesMainContainer.innerHTML = ``;
   }
 
-  _handleSortButtonClick(sortMethod) {
+  _sortButtonClickHandler(sortMethod) {
     this._currentSortMethod = sortMethod;
 
     if (this._currentSortMethod !== this._previousSortMethod) {
@@ -386,7 +386,7 @@ export default class MovieList {
     this._renderMoreButton();
   }
 
-  _handleLoadMoreButtonClick() {
+  _loadMoreButtonClickHandler() {
     const filmCount = this._getMovies().length;
     const renderedFilmCount = Math.min(filmCount, this._renderFilms + CARD_COUNT_MAIN);
 
