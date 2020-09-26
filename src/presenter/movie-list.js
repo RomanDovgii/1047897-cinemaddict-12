@@ -13,7 +13,7 @@ import moment from "moment";
 import MoviesModel from "../model/movies.js";
 
 export default class MovieList {
-  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, moviesStore, commentsStore, firstLoad) {
+  constructor(mainContainer, moviesModel, filterModel, filterPresenter, api, moviesStore, commentsStore) {
     this._mainContainer = mainContainer;
     this._popupOpen = false;
     this._renderFilms = CARD_COUNT_MAIN;
@@ -26,7 +26,7 @@ export default class MovieList {
     this._api = api;
     this._commentsStore = commentsStore;
     this._moviesStore = moviesStore;
-    this._firstLoad = firstLoad;
+    this._firstLoad = true;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
