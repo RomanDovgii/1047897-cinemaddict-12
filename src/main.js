@@ -7,7 +7,7 @@ import MoviesModel from "./model/movies.js";
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filters.js";
 import StatisticsView from "./view/user-statistics.js";
-import Api from "./api/index.js";
+import Api from "./api/api.js";
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
@@ -34,6 +34,7 @@ const userRank = new UserRank();
 let userStatisticsComponent = null;
 let filter = null;
 let content = null;
+let firstLoad = true;
 
 
 let oldMenuItem = MenuItem.CHANGE_FILTER;
@@ -41,6 +42,7 @@ let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
+  firstLoad = false;
 
   if (oldMenuItem === newMenuItem) {
     return;
@@ -50,7 +52,7 @@ const handleStatsButtonClick = (menuItem) => {
     case MenuItem.CHANGE_FILTER:
       content.destroy();
 
-      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
+      content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
 
       filter.init();
       content.init();
@@ -71,7 +73,7 @@ const handleStatsButtonClick = (menuItem) => {
 
 render(header, userRank.getElement(), RenderPosition.BEFOREEND);
 filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonClick);
-content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore);
+content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
 filter.init();
 content.init();
 

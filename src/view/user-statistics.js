@@ -6,6 +6,8 @@ import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import {replace} from "../utils/render.js";
 
+const BAR_HEIGHT = 50;
+
 momentDurationFormatSetup(moment);
 
 moment.updateLocale(`en`, {
@@ -16,7 +18,6 @@ moment.updateLocale(`en`, {
 });
 
 const createCharts = (genresAndCounts) => {
-  const BAR_HEIGHT = 50;
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
   const genres = [];
@@ -206,20 +207,23 @@ export default class UserStatistics extends Abstract {
       );
     });
 
-    this._genresAll.forEach(
-        (element) => {
-          if (this._genresAll.includes(element)) {
-            const elementObject = {
-              name: element,
-              count: this._genresAll.slice().filter((genre) => genre === element).length
-            };
+    this._genresAndCounts = this._genresAll.reduce((accumulator, element) => {
+      const countFull = this._genresAll.length;
+      this._genresAll = this._genresAll.filter((genre) => genre !== element);
+      const countWithoutParticularGenre = this._genresAll.length;
+      const rigthMovies = countFull - countWithoutParticularGenre;
 
-            this._genresAndCounts.push(elementObject);
+      if (rigthMovies) {
+        const elementObject = {
+          name: element,
+          count: rigthMovies,
+        };
 
-            this._genresAll = this._genresAll.filter((genre) => genre !== element);
-          }
-        }
-    );
+        accumulator.push(elementObject);
+      }
+
+      return accumulator;
+    }, []);
 
     this._genresAndCounts.sort((a, b) => b.count - a.count);
     this._topGenre = this._genresAndCounts.length > 0 ? this._genresAndCounts[0].name : ``;

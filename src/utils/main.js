@@ -1,4 +1,4 @@
-import {MAIN_IMAGES_PATH, ImageType, FISH_TEXT, MINUTES_IN_HOUR} from "./const.js";
+import {MAIN_IMAGES_PATH, ImageType, MINUTES_IN_HOUR, UserRank} from "./const.js";
 import moment from "moment";
 
 export const formateDuration = (duration) => {
@@ -31,21 +31,19 @@ export const createElement = (template) => {
   return newElement.firstElementChild;
 };
 
-export const sentences = FISH_TEXT.split(`. `);
-
 export const convertEnumToCollection = (localEnum) => {
   return Object.values(localEnum);
 };
 
 export const getRank = (moviesTotal) => {
   switch (true) {
-    case (moviesTotal <= 10) && (moviesTotal > 0):
-      return `novice`;
-    case (moviesTotal <= 20) && (moviesTotal > 10):
-      return `fan`;
-    case (moviesTotal > 20):
-      return `movie buff`;
+    case (moviesTotal <= UserRank.NOVICE.maximunMovies) && (moviesTotal > UserRank.NO_RANK.maximunMovies):
+      return UserRank.NOVICE.name;
+    case (moviesTotal <= UserRank.FAN.maximunMovies) && (moviesTotal > UserRank.NOVICE.maximunMovies):
+      return UserRank.FAN.name;
+    case (moviesTotal > UserRank.FAN.maximunMovies):
+      return UserRank.MOVIE_BUFF.name;
     default:
-      return ``;
+      return UserRank.NO_RANK.name;
   }
 };

@@ -39,7 +39,7 @@ const createNewCommentTemplate = () => {
   `;
 };
 
-const emojiPreviewTemplate = (emoji) => {
+const getEmojiPreviewTemplate = (emoji) => {
   const emojiPath = getPath(`emoji`, emoji);
   return `<img class="film-details__emoji-preview" src="${emojiPath}" width="55" height="55" alt="${emoji}">`;
 };
@@ -67,6 +67,12 @@ export default class AddComment extends SmartView {
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._sendMessageKeydownHandler);
   }
 
+  renderEmojiContainer(emoji) {
+    const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    const imagePreviewElement = createElement(getEmojiPreviewTemplate(emoji));
+    render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
+  }
+
   showProblem() {
     const element = this.getElement();
     element.classList.add(`shake`);
@@ -83,7 +89,8 @@ export default class AddComment extends SmartView {
     const emojiInputs = element.querySelectorAll(`.film-details__emoji-item`);
 
     textarea.disabled = true;
-    emojiInputs.map((input) => {
+
+    Array.from(emojiInputs).map((input) => {
       input.disabled = true;
     });
   }
@@ -129,15 +136,13 @@ export default class AddComment extends SmartView {
 
   _emojiClickHandler(evt) {
     const emoji = evt.target.closest(`.film-details__emoji-label`).getAttribute(`for`);
-    const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    const imagePreviewElement = createElement(emojiPreviewTemplate(emoji));
     const existingImagePreviewElement = this.getElement().querySelector(`.film-details__emoji-preview`);
 
     if (!existingImagePreviewElement) {
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
+      this.renderEmojiContainer(emoji);
     } else {
       existingImagePreviewElement.remove();
-      render(emojiContainer, imagePreviewElement, RenderPosition.BEFOREEND);
+      this.renderEmojiContainer(emoji);
     }
   }
 

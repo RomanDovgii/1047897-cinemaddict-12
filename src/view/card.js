@@ -1,4 +1,4 @@
-import {MAX_DESCRIPTION_LENGTH} from "../utils/const.js";
+import {MAX_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH_WITH_ELLIPSIS} from "../utils/const.js";
 import Abstract from "./abstract.js";
 import moment from "moment";
 import {formateDuration} from "../utils/main.js";
@@ -16,7 +16,7 @@ const createCardTemplate = (movie) => {
 
   return `
   <article class="film-card">
-    <h class="film-card__title">${name}</h 3>
+    <h3 class="film-card__title">${name}</h3>
     <p class="film-card__rating">${movieRating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${moment(release).format(`YYYY`)}</span>
@@ -24,7 +24,7 @@ const createCardTemplate = (movie) => {
       <span class="film-card__genre">${genre}</span>
     </p>
     <img src="${path}" alt="" class="film-card__poster">
-    <p class="film-card__description">${description.length > 140 ? `${description.slice(0, MAX_DESCRIPTION_LENGTH)}…` : `${description}`}</p>
+    <p class="film-card__description">${description.length > MAX_DESCRIPTION_LENGTH ? `${description.slice(0, MAX_DESCRIPTION_LENGTH_WITH_ELLIPSIS)}…` : `${description}`}</p>
     <a class="film-card__comments">${commentsCount}</a>
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistControl}">Add to watchlist</button>

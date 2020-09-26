@@ -10,10 +10,9 @@ import Provider from "../api/provider.js";
 import moment from "moment";
 
 export default class Movie {
-  constructor(changeInformation, handlePopup, moviesModel, api, commentsStore) {
+  constructor(changeInformation, handlePopup, api, commentsStore) {
     this._changeInformation = changeInformation;
     this._handlePopup = handlePopup;
-    this._moviesModel = moviesModel;
     this._commentsStore = commentsStore;
     this._popupOpen = false;
 
@@ -37,17 +36,13 @@ export default class Movie {
     this._handleViewAction = this._handleViewAction.bind(this);
   }
 
-  init(movie, observerNotify) {
-    this._observerNotify = observerNotify;
+  init(movie) {
     this._movie = movie;
     this._comments = this._movie.comments;
     this._cardComponent = new CardView(this._movie);
     this._popupComponent = new PopupView(this._movie);
 
     this._setHandlersForCard();
-
-    this._cardComponentOld = this._cardComponent;
-    this._cardComponentNew = null;
 
     return this._cardComponent.getElement();
   }
@@ -65,26 +60,16 @@ export default class Movie {
     remove(this._oldCardComponent);
   }
 
-  rerenderPopup(updatedMovie) {
-    this._movie = updatedMovie;
-    this._comments = this._movie.comments;
-    this.removePopup();
-    this._showPopup();
-  }
-
   renderCounter() {
     this._commentsCounterComponent = new CommentsCounterView(this._movie.comments.length);
-    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
-    render(commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
+    render(this._commentsMainContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
   }
 
   renderComments() {
-    const commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
-
     this._commentsModel.getComments().map((element) => {
       const comment = new CommentView(element);
 
-      render(commentsContainer, comment, RenderPosition.BEFOREEND);
+      render(this._commentsContainer, comment, RenderPosition.BEFOREEND);
       comment.setDeleteHandler(this._handleViewAction);
 
       this._commentsViews[element.id] = comment;
@@ -94,10 +79,8 @@ export default class Movie {
   }
 
   renderAddComment() {
-    const commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
-
     this._newComment = new AddCommentView(this._handleViewAction);
-    render(commentsMainContainer, this._newComment, RenderPosition.BEFOREEND);
+    render(this._commentsMainContainer, this._newComment, RenderPosition.BEFOREEND);
 
     if (Provider.isOnline()) {
       this._newComment.unlock();
@@ -144,6 +127,8 @@ export default class Movie {
     const body = document.querySelector(`.body`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
+    this._commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
+    this._commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
 
     this.renderCounter();
 
@@ -157,13 +142,6 @@ export default class Movie {
 
     this._setHandlersForPopup();
     this._popupOpen = true;
-  }
-
-  _updateCounter() {
-    this._oldCounter = this._commentsCounterComponent;
-    this._commentsCounterComponent = new CommentsCounterView(this._commentsModel.getComments().length);
-
-    replace(this._commentsCounterComponent, this._oldCounter);
   }
 
   _watchlistClickHandler() {
