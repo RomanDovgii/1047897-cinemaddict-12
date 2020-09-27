@@ -209,11 +209,15 @@ export default class UserStatistics extends Abstract {
 
     this._genresAndCounts = this._genresAll.reduce((accumulator, element) => {
       const countFull = this._genresAll.length;
+      if (countFull === 0) {
+        return accumulator;
+      }
+
       this._genresAll = this._genresAll.filter((genre) => genre !== element);
       const countWithoutParticularGenre = this._genresAll.length;
       const rigthMovies = countFull - countWithoutParticularGenre;
 
-      if (rigthMovies) {
+      if (rigthMovies > 0) {
         const elementObject = {
           name: element,
           count: rigthMovies,
