@@ -127,8 +127,8 @@ export default class Movie {
     const body = document.querySelector(`.body`);
 
     render(body, this._popupComponent, RenderPosition.BEFOREEND);
-    this._commentsMainContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-wrap`);
-    this._commentsContainer = this._popupComponent.getElement().querySelector(`.film-details__comments-list`);
+    this._commentsMainContainer = this._popupComponent.getCommentsMainContainer();
+    this._commentsContainer = this._popupComponent.getCommentsContainer();
 
     this.renderCounter();
 

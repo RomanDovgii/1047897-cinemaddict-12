@@ -299,14 +299,14 @@ export default class MovieList {
 
   _renderFilmsContainerRated() {
     render(this._filmsComponent, this._filmsRatedComponent, RenderPosition.BEFOREEND);
-    this._cardsContainerRated = this._filmsRatedComponent.getElement().querySelector(`.films-list__container`);
+    this._cardsContainerRated = this._filmsRatedComponent.getCardsContainer();
     this._cardsContainerRated.innerHTML = ``;
     this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainer.TOP, this._cardsContainerRated);
   }
 
   _renderFilmsContainerCommented() {
     render(this._filmsComponent, this._filmsCommentedComponent, RenderPosition.BEFOREEND);
-    this._cardsContainerCommented = this._filmsCommentedComponent.getElement().querySelector(`.films-list__container`);
+    this._cardsContainerCommented = this._filmsCommentedComponent.getCardsContainer();
     this._cardsContainerCommented.innerHTML = ``;
     this._renderFilmsCards(0, CARD_COUNT_EXTRA, MovieContainer.COMMENTED, this._cardsContainerCommented);
   }
@@ -347,7 +347,7 @@ export default class MovieList {
       this._firstLoad = false;
     }
 
-    if (!this._getMovies().length === 0) {
+    if (this._getMovies().length === 0) {
       this._renderNoFilms();
       return;
     } else {

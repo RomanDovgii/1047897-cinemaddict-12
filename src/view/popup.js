@@ -125,6 +125,14 @@ export default class Popup extends SmartView {
     return createPopupTemplate(this._data);
   }
 
+  getCommentsMainContainer() {
+    return this.getElement().querySelector(`.film-details__comments-wrap`);
+  }
+
+  getCommentsContainer() {
+    return this.getElement().querySelector(`.film-details__comments-list`);
+  }
+
   setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);

@@ -22,4 +22,8 @@ export default class FilmsContainer extends Abstract {
   getTemplate() {
     return createFilmsContainerTemplate(this._container);
   }
+
+  getCardsContainer() {
+    return this.getElement().querySelector(`.films-list__container`);
+  }
 }
