@@ -42,7 +42,6 @@ let newMenuItem = MenuItem.CHANGE_FILTER;
 
 const handleStatsButtonClick = (menuItem) => {
   newMenuItem = menuItem;
-  firstLoad = false;
 
   if (oldMenuItem === newMenuItem) {
     return;
@@ -76,6 +75,7 @@ filter = new FilterPresenter(main, moviesModel, filterModel, handleStatsButtonCl
 content = new MovieList(main, moviesModel, filterModel, filter, apiWithProvider, moviesStore, commentsStore, firstLoad);
 filter.init();
 content.init();
+firstLoad = false;
 
 const footerStats = footer.querySelector(`.footer__statistics`);
 
