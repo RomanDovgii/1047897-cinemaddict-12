@@ -344,15 +344,16 @@ export default class MovieList {
     this._renderFilmsContainerAll();
     if (this._firstLoad) {
       this._renderLoadingFilms();
-      this._firstLoad = false;
     }
 
-    if (this._getMovies().length === 0) {
+    if ((this._getMovies().length === 0) && (!this._firstLoad)) {
       this._renderNoFilms();
       return;
     } else {
       remove(this._noFilmsComponent);
     }
+
+    this._firstLoad = false;
 
     const nonZeroRatingCount = this._getMovies().slice().filter((movie) => movie.movieRating > 0).length;
     const nonZeroCommentsCount = this._getMovies().slice().filter((movie) => movie.comments.length > 0).length;
