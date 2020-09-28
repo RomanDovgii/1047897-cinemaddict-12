@@ -17,20 +17,20 @@ moment.updateLocale(`en`, {
   ]
 });
 
-const createCharts = (genresAndCounts) => {
+const createCharts = (genresNonRepeated, genresInformation) => {
   const statisticCtx = document.querySelector(`.statistic__chart`);
 
   const genres = [];
   const counts = [];
 
-  genresAndCounts.forEach(
+  genresNonRepeated.forEach(
       (element) => {
-        genres.push(element.name);
-        counts.push(element.count);
+        genres.push(element);
+        counts.push(genresInformation[element]);
       }
   );
 
-  statisticCtx.height = BAR_HEIGHT * genresAndCounts.length;
+  statisticCtx.height = BAR_HEIGHT * genresNonRepeated.length;
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -167,6 +167,8 @@ export default class UserStatistics extends Abstract {
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
     this._formChangeHandler = this._formChangeHandler.bind(this);
+    this._genreAndCount = {};
+    this._genresNonRepeated = [];
   }
 
   getTemplate() {
@@ -183,7 +185,7 @@ export default class UserStatistics extends Abstract {
   }
 
   getChart() {
-    createCharts(this._genresAndCounts);
+    createCharts(this._genresNonRepeated, this._genreAndCount);
   }
 
   setFormChange(callback) {
@@ -192,6 +194,8 @@ export default class UserStatistics extends Abstract {
   }
 
   filterMovies() {
+    this._genresNonRepeated = [];
+    this._genreAndCount = {};
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
 
@@ -207,30 +211,20 @@ export default class UserStatistics extends Abstract {
       );
     });
 
-    this._genresAndCounts = this._genresAll.reduce((accumulator, element) => {
-      const countFull = this._genresAll.length;
-      if (countFull === 0) {
-        return accumulator;
+    this._genresAll.forEach((element) => {
+      if (this._genreAndCount[element]) {
+        this._genreAndCount[element] = this._genreAndCount[element] + 1;
+      } else {
+        this._genreAndCount[element] = 1;
+        this._genresNonRepeated.push(element);
       }
+    });
 
-      this._genresAll = this._genresAll.filter((genre) => genre !== element);
-      const countWithoutParticularGenre = this._genresAll.length;
-      const rigthMovies = countFull - countWithoutParticularGenre;
+    this._genresNonRepeated.sort((a, b) => {
+      return this._genreAndCount[b] - this._genreAndCount[a];
+    });
 
-      if (rigthMovies > 0) {
-        const elementObject = {
-          name: element,
-          count: rigthMovies,
-        };
-
-        accumulator.push(elementObject);
-      }
-
-      return accumulator;
-    }, []);
-
-    this._genresAndCounts.sort((a, b) => b.count - a.count);
-    this._topGenre = this._genresAndCounts.length > 0 ? this._genresAndCounts[0].name : ``;
+    this._topGenre = this._genresNonRepeated.length > 0 ? this._genresNonRepeated[0] : ``;
   }
 
   _formChangeHandler() {
