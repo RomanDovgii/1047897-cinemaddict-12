@@ -167,8 +167,6 @@ export default class UserStatistics extends Abstract {
     this._moviesModel = moviesModel;
     this._movies = this._moviesModel.getMovies().filter((movie) => movie.isWatched);
     this._formChangeHandler = this._formChangeHandler.bind(this);
-    this._genreAndCount = {};
-    this._genresNonRepeated = [];
   }
 
   getTemplate() {
@@ -185,7 +183,7 @@ export default class UserStatistics extends Abstract {
   }
 
   getChart() {
-    createCharts(this._genresNonRepeated, this._genreAndCount);
+    createCharts(this._genresNonRepeated, this._genresAndCounts);
   }
 
   setFormChange(callback) {
@@ -195,13 +193,12 @@ export default class UserStatistics extends Abstract {
 
   filterMovies() {
     this._genresNonRepeated = [];
-    this._genreAndCount = {};
+    this._genresAndCounts = {};
     this._moviesWatched = this._movies.length;
     this._duration = this._movies.reduce((accumulator, element) => accumulator + element.runtime, 0);
 
 
     this._genresAll = [];
-    this._genresAndCounts = [];
 
     this._movies.map((element) => {
       element.genres.map(
@@ -212,16 +209,16 @@ export default class UserStatistics extends Abstract {
     });
 
     this._genresAll.forEach((element) => {
-      if (this._genreAndCount[element]) {
-        this._genreAndCount[element] = this._genreAndCount[element] + 1;
+      if (this._genresAndCounts[element]) {
+        this._genresAndCounts[element] = this._genresAndCounts[element] + 1;
       } else {
-        this._genreAndCount[element] = 1;
+        this._genresAndCounts[element] = 1;
         this._genresNonRepeated.push(element);
       }
     });
 
     this._genresNonRepeated.sort((a, b) => {
-      return this._genreAndCount[b] - this._genreAndCount[a];
+      return this._genresAndCounts[b] - this._genresAndCounts[a];
     });
 
     this._topGenre = this._genresNonRepeated.length > 0 ? this._genresNonRepeated[0] : ``;
